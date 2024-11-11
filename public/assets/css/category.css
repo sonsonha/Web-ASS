@@ -1,0 +1,201 @@
+main {
+    background-color: #1b2838; 
+    color: rgb(238, 226, 226); 
+    margin: 0;
+    padding: 0;
+}
+
+/* Background Styling */
+.trending-carousel {
+    position: relative;
+    height: 500px; 
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.5s ease-in-out;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center; /* Căn giữa carousel theo chiều ngang */
+    padding-bottom: 50px;
+    overflow: hidden; /* Đảm bảo nội dung không vượt ra ngoài */
+}
+
+/* Gradient overlay ở hai bên */
+.trending-carousel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0; /* Gradient bắt đầu từ bên trái */
+    right: 0; /* Gradient kết thúc ở bên phải */
+    width: 100%; /* Che toàn bộ chiều rộng */
+    background: linear-gradient(to right, #1b2838 5%, transparent 30%, transparent 70%, #1b2838 95%);
+    /* Gradient hai bên sẽ mờ ít hơn và rõ nét ở giữa */
+    z-index: 1; /* Overlay nằm trên ảnh nền */
+}
+
+/* Gradient từ bên dưới */
+.trending-carousel::after {
+    content: "";
+    position: absolute;
+    bottom: 0; /* Gradient mờ từ dưới lên */
+    left: 0;
+    width: 100%; /* Che toàn bộ chiều rộng */
+    height: 40%; /* Tạo hiệu ứng mờ dần phía dưới */
+    background: linear-gradient(to top, #1b2838, transparent); /* Gradient từ dưới lên trên */
+    z-index: 1; /* Overlay nằm trên ảnh nền */
+}
+
+/* Carousel Container */
+#gameCarousel {
+    position: relative;
+    z-index: 2; /* Đảm bảo carousel nằm trên gradient */
+    width: 70%; /* Giảm chiều rộng carousel */
+    max-width: 1000px; /* Giới hạn chiều rộng tối đa */
+    background: rgba(0, 0, 0, 0.5); /* Nền tối đậm hơn cho carousel */
+    border-radius: 10px; /* Bo góc carousel */
+    padding: 15px; /* Khoảng cách bên trong carousel */
+}
+
+/* Carousel Content */
+.carousel-content {
+    display: flex;
+    align-items: center;
+    color: white;
+    padding: 20px;
+}
+
+.game-image {
+    width: 120px; /* Giảm chiều rộng ảnh game */
+    height: auto;
+    margin-right: 15px;
+    border-radius: 8px;
+}
+
+.game-details {
+    max-width: 55%; /* Giới hạn chiều rộng phần chi tiết game */
+}
+
+.game-details h2 {
+    font-size: 1.5rem; /* Giảm kích thước font */
+}
+
+.game-details .tags span {
+    display: inline-block;
+    background: #2a475e;    
+    color: white;
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+}
+
+/* Carousel Inner */
+.carousel-inner {
+    height: auto;
+}
+
+/* Nút điều hướng */
+.carousel-control-prev,
+.carousel-control-next {
+    filter: invert(100%);
+}
+
+/* Category Title Styling */
+/* Category Name Inside the Carousel */
+.carousel-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.2); 
+    z-index: 3; /* Ensure it sits above other carousel content */
+}
+
+.carousel-header h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Game Cards Section */
+.game-cards {
+    background-color: #1b2838;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Individual Game Card */
+.game-card {
+    position: relative;
+    background-color: #2a475e;
+    border: none;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-body {
+    padding: 15px;
+    text-align: center;
+    color: white;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.price {
+    font-size: 1rem;
+    color: #27ae60;
+}
+
+/* Discount Label */
+.discount-label,
+.prepurchase-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.prepurchase-label {
+    background-color: #3498db;
+}
+
+/* Show More Button */
+.show-more {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #2a475e;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.show-more:hover {
+    background-color: #1b2838;
+    color: #ffffff;
+}

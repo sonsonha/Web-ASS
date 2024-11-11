@@ -1,16 +1,19 @@
 <?php
-// A simple router for serving static pages
+session_start();
 
 $requestUri = $_SERVER['REQUEST_URI'];
 
-echo $requestUri;
-
-if ($requestUri === '/' || $requestUri === '/index.php') {
-    include '../app/views/home/home.php';
-} elseif ($requestUri === '/    ') {
-    include '../app/views/products/list.php';
+// Category routing
+if (preg_match('/\/category\/(.+)/', $requestUri, $matches)) {
+    $category = ucfirst($matches[1]); // Get category name
+    $categoryFile = "../app/views/categories/$category.php";
+    if (file_exists($categoryFile)) {
+        include $categoryFile;
+    } else {
+        http_response_code(404);
+        include '../app/views/errors/404.php';
+    }
 } else {
-    http_response_code(404);
-    include '../app/views/errors/404.php';
+    // Other routes
+    include '../app/views/home.php';
 }
-?>
