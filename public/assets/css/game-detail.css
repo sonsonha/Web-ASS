@@ -1,0 +1,140 @@
+html, body {
+    background-color: #1b2838 !important; /* Dark background */
+    color: #e6e6e6 !important; /* Default text color */
+}
+
+
+
+
+
+.breadcrumb-item a {
+    color: #58a6ff;
+}
+/* Main Display Area */
+/* Display Area Styling */
+.display-area {
+    position: relative;
+    width: 100%; /* Adjust as needed, e.g., 70% for a specific width */
+    max-width: 800px; /* Maximum width of the display */
+    height: 450px; /* Fixed height */
+    margin-bottom: 20px;
+    background-color: #000; /* Optional: Black background for display area */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Optional border styling */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensures content stays within the fixed area */
+}
+
+/* Video Styling */
+.display-area video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video fills the area without distortion */
+    background: black; /* Black background for empty space */
+}
+
+/* Image Styling */
+.display-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image fills the area without distortion */
+    background: black; /* Black background for empty space */
+}
+
+
+/* Thumbnail Carousel */
+.thumbnail-carousel img {
+    width: 100px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.img-detail {
+    width: 300px;
+    height: 150px;
+    cursor: pointer;
+    /* transition: transform 0.2s ease; */
+}
+
+.thumbnail-carousel img:hover {
+    transform: scale(1.1);
+    border: 2px solid #58a6ff;
+}
+
+/* Hide video controls until displayed */
+#mainDisplay {
+    display: none;
+}
+
+
+.tags .badge {
+    margin-right: 5px;
+    font-size: 0.9rem;
+}
+
+.purchase-section {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.purchase-section .btn-success {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+
+/* Add to Cart Section */
+.purchase-section {
+    background-color: #2a475e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.purchase-section .btn-success {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Additional Sections */
+section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+}
+
+section ul {
+    list-style: none;
+    padding: 0;
+}
+
+section ul li {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.admin-controls button {
+    margin-right: 10px;
+}
+
+.review {
+    background-color: #2a475e;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.review img {
+    border-radius: 50%;
+}
+
+.comments .comment {
+    background-color: #3b4f63;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.comment-buttons button {
+    margin-right: 10px;
+}
+
