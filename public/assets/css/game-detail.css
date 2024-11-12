@@ -138,3 +138,16 @@ section ul li {
     margin-right: 10px;
 }
 
+.modal-content {
+    background-color: #2a475e;
+    color: #e6e6e6;
+}
+
+.modal-header, .modal-footer {
+    border: none;
+}
+
+/* .mt-2  {
+
+    padding-left: 20px;
+} */
