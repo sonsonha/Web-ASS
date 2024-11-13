@@ -1,216 +1,278 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const thumbnails = document.querySelectorAll(".thumbnail");
-    const mainDisplay = document.getElementById("mainDisplay");
-    const imageDisplay = document.getElementById("imageDisplay");
-    const videoSource = document.getElementById("videoSource");
-
-    thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener("click", function () {
-            const type = this.getAttribute("data-type");
-            if (type === "image") {
-                // Display image
-                mainDisplay.style.display = "none";
-                imageDisplay.style.display = "block";
-                imageDisplay.src = this.src;
-            } else if (type === "video") {
-                // Display video
-                imageDisplay.style.display = "none";
-                mainDisplay.style.display = "block";
-                videoSource.src = this.getAttribute("data-src");
-                mainDisplay.load(); // Reload the video source
-                mainDisplay.play(); // Auto-play the video
-            }
-        });
-    });
-});
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    const modal = new bootstrap.Modal(document.getElementById("loginModal"));
-
-    // Check for buttons with the 'data-bs-toggle' and trigger modal
-    document.querySelectorAll("[data-bs-toggle='modal']").forEach(button => {
-        button.addEventListener("click", function (event) {
-            modal.show();
-        });
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Handle Like/Dislike toggling
-    document.querySelectorAll(".like-btn, .dislike-btn").forEach((button) => {
-        let toggled = false; // Track if the button has been toggled
-
-        button.addEventListener("click", function () {
-            const reviewId = this.getAttribute("data-review-id");
-            const action = this.classList.contains("like-btn") ? "likes" : "dislikes";
-
-            // Determine if the count should increase or decrease
-            const updateAction = toggled ? "decrease" : "increase";
-
-            fetch("/api/like_dislike.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `review_id=${reviewId}&action=${action}&update_action=${updateAction}`,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        const countSpan = this.textContent.match(/\d+/)[0];
-                        const newCount = toggled
-                            ? parseInt(countSpan) - 1
-                            : parseInt(countSpan) + 1;
-
-                        this.textContent = this.textContent.replace(/\d+/, newCount);
-                        toggled = !toggled; // Toggle the state
-                    } else {
-                        alert(data.message || "Failed to update like/dislike.");
-                    }
-                })
-                .catch((err) => console.error(err));
-        });
-    });
-});
-
-
-document.querySelectorAll(".comment-form").forEach((form) => {
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const userId = this.getAttribute("data-user-id"); // Get user ID from form attribute
-        const gameId = this.querySelector("#game_id").value; // Get game ID from hidden input
-        const reviewId = this.getAttribute("data-review-id"); // Get review ID if applicable
-        const message = this.querySelector("textarea").value;
-        const rating = this.querySelector("#rating").value;
-
-        if (message.trim() && rating) {
-            fetch("/api/add_comment.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `user_id=${userId}&game_id=${gameId}&review_id=${reviewId}&message=${encodeURIComponent(message)}&rating=${rating}`,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        const commentSection = this.closest(".review").querySelector(".comments");
-                        const newComment = document.createElement("div");
-                        newComment.className = "comment mb-2";
-                        newComment.innerHTML = `
-                            <strong>${data.username || "You"}:</strong> ${message}
-                            <span class="text-warning">
-                                ${"⭐".repeat(rating)}
-                            </span>
-                        `;
-                        commentSection.appendChild(newComment);
-                        this.querySelector("textarea").value = "";
-                        this.querySelector("#rating").value = "";
-                    } else {
-                        alert(data.message || "Failed to add comment.");
-                    }
-                })
-                .catch((err) => console.error(err));
-        } else {
-            alert("Comment and rating cannot be empty.");
-        }
-    });
-});
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const reviewForm = document.getElementById("reviewForm");
-    const reviewsContainer = document.querySelector(".reviews-container");
-
-    reviewForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const gameId = document.getElementById("game_id").value;
-        const rating = document.getElementById("rating").value;
-        const message = document.getElementById("message").value;
-
-        fetch("/api/submit_review.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `game_id=${gameId}&rating=${rating}&message=${encodeURIComponent(message)}`,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    const newReview = `
-                        <div class="review mb-4">
-                            <div class="d-flex align-items-center mb-2">
-                                <img src="${data.review.avatar}" alt="Avatar" class="rounded-circle" width="50">
-                                <div class="ms-3">
-                                    <h5 class="mb-0">${data.review.username}</h5>
-                                    <span class="text-warning">
-                                        ${"⭐".repeat(data.review.rating)}
-                                    </span>
-                                </div>
-                            </div>
-                            <p class="mb-2">${data.review.message}</p>
-                            <div class="d-flex gap-3 mt-2">
-                                <button class="btn btn-sm btn-outline-success">👍 0</button>
-                                <button class="btn btn-sm btn-outline-danger">👎 0</button>
-                            </div>
-                        </div>`;
-                    reviewsContainer.innerHTML += newReview;
-                    reviewForm.reset(); 
-                } else {
-                    alert(data.message || "Failed to submit the review.");
-                }
-            })
-            .catch((err) => console.error("Error:", err));
-    });
-});
-
-document.querySelectorAll(".hide-btn").forEach((button) => {
-    button.addEventListener("click", function () {
-        const messageId = this.getAttribute("data-message-id"); // Message id is random from back-end. When the message sent, it will random their idMessage
-        const action = this.textContent.trim() === "Hide" ? "hide" : "unhide";
-
-        fetch("/api/hide_message.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `message_id=${messageId}&action=${action}`,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    this.textContent = action === "hide" ? "Unhide" : "Hide";
-                } else {
-                    alert(data.message || "Failed to update the message visibility.");
-                }
-            })
-            .catch((err) => console.error("Error:", err));
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const addToCartButton = document.querySelector(".add-to-cart-btn");
-
-    addToCartButton.addEventListener("click", function () {
-        const userId = this.getAttribute("data-user-id");
-        const gameId = this.getAttribute("data-game-id");
-        const price = this.getAttribute("data-price");
-
-        if (!userId) {
-            alert("Please log in to add items to your cart.");
-            return;
-        }
-
-        fetch("/api/add_to_cart.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `user_id=${userId}&game_id=${gameId}&price=${price}`,
-        })
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('fetch_game_details.php') // Fetch game, reviews, and user data
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                alert("Item added to cart successfully!");
-            } else {
-                alert(data.message || "Failed to add item to cart.");
-            }
+            const { game, reviews, user } = data;
+            populateGameDetails(game);
+            populateReviews(reviews);
+            setupReviewSection(game, user);
         })
-        .catch(error => console.error("Error:", error));
-    });
+        .catch(error => console.error('Error fetching game details:', error));
 });
+
+// Set up the review section based on user role and game ownership
+function setupReviewSection(game, user) {
+    const reviewFormSection = document.getElementById('review-form-section');
+    const reviewsSection = document.getElementById('reviews-section');
+    const noReviewsMessage = document.getElementById('no-reviews-message');
+
+    // Admin Role
+    if (user.role === 'admin') {
+        reviewFormSection.style.display = 'none'; // Hide review form
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'btn btn-warning';
+        toggleButton.textContent = 'Enable/Disable Comments';
+        reviewsSection.appendChild(toggleButton);
+
+        // Handle comment toggle (placeholder logic)
+        toggleButton.addEventListener('click', () => {
+            // Add backend call to toggle comments
+            alert('Toggle comments logic here.');
+        });
+        return;
+    }
+
+    // Check if comments are disabled
+    if (game.comments_disabled) {
+        reviewFormSection.innerHTML = '<p class="text-danger">The comments are disabled!</p>';
+        return;
+    }
+
+    // Guest Role
+    if (user.role === 'guest') {
+        const submitButton = document.querySelector('#reviewForm button[type="submit"]');
+        submitButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLoginAlert(); // Show login modal
+        });
+        return;
+    }
+
+    // User Role
+    if (user.role === 'user') {
+        if (!user['game-own'].includes(game.id)) {
+            // User doesn't own the game
+            reviewFormSection.innerHTML = '<p class="text-warning">You must purchase the game to leave a review.</p>';
+        }
+    }
+}
+
+// Populate game details dynamically
+
+// function populateGameDetails(game) {
+//     if (!game) {
+//         console.error('Game data is missing.');
+//         return;
+//     }
+//     document.querySelector('h1').textContent = game.title;
+//     document.querySelector('.breadcrumb-item.active').textContent = game.title;
+//     document.getElementById('game-title').textContent = game.title;
+//     document.getElementById('game-introduction').textContent = game.introduction || 'No introduction available.';
+//     document.getElementById('about-game').textContent = game.about || 'No description available.';
+//     document.getElementById('game-price').textContent = game.price || 'Unknown price';
+// }
+
+function populateGameDetails(game) {
+    if (!game) {
+        console.error('Game data is missing.');
+        return;
+    }
+
+    // Update title and breadcrumb
+    document.querySelector('h1').textContent = game.title;
+    document.querySelector('.breadcrumb-item.active').textContent = game.title;
+
+    // Update pricing section
+    const purchaseSection = document.querySelector('.purchase-section');
+    if (purchaseSection) {
+        purchaseSection.querySelector('h4').textContent = `Buy ${game.title}`;
+        purchaseSection.querySelector('#discount-info').textContent = game.discount;
+        purchaseSection.querySelector('#original-price').textContent = game.original_price;
+        purchaseSection.querySelector('#final-price').textContent = game.price;
+    }
+
+    // Update introduction and about sections
+    document.getElementById('game-introduction').textContent = game.introduction || 'Introduction not available.';
+    document.getElementById('about-game').textContent = game.about || 'Description not available.';
+
+    // Populate system requirements
+    const systemReq = game.system_requirements || {};
+    populateSystemRequirements(systemReq);
+}
+
+// Populate system requirements dynamically
+function populateSystemRequirements(systemReq) {
+    const minReq = document.getElementById('minimum-req');
+    const recReq = document.getElementById('recommended-req');
+
+    if (minReq) minReq.innerHTML = '';
+    if (recReq) recReq.innerHTML = '';
+
+    if (systemReq.minimum && minReq) {
+        Object.entries(systemReq.minimum).forEach(([key, value]) => {
+            minReq.innerHTML += `<li><strong>${key}:</strong> ${value}</li>`;
+        });
+    }
+
+    if (systemReq.recommended && recReq) {
+        Object.entries(systemReq.recommended).forEach(([key, value]) => {
+            recReq.innerHTML += `<li><strong>${key}:</strong> ${value}</li>`;
+        });
+    }
+}
+
+// Populate reviews dynamically
+function populateReviews(reviews) {
+    const reviewsContainer = document.getElementById('reviews-container');
+    reviewsContainer.innerHTML = '';
+
+    if (!reviews || reviews.length === 0) {
+        reviewsContainer.innerHTML = '<p>No reviews yet. Be the first to review!</p>';
+        return;
+    }
+
+    reviews.forEach((review) => {
+        const reviewHTML = `
+            <div class="review mb-4">
+                <div class="d-flex align-items-center mb-2">
+                    <img src="${review.avatar}" alt="${review.username}" class="rounded-circle" width="50">
+                    <div class="ms-3">
+                        <h5>${review.username}</h5>
+                        <span class="text-warning">${'⭐'.repeat(review.rating)}</span>
+                    </div>
+                </div>
+                <p>${review.message}</p>
+            </div>`;
+        reviewsContainer.innerHTML += reviewHTML;
+    });
+}
+
+// Show login alert modal for guests
+function showLoginAlert() {
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sign In Required</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please sign in to take this action.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="/login.php" class="btn btn-primary">Sign In</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    const modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+}
+
+// Fetch game data and reviews when the page loads
+// document.addEventListener('DOMContentLoaded', () => {
+//     fetch('fetch_game_details.php') // Replace with the correct endpoint
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error(`HTTP error! Status: ${response.status}`);
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             populateGameDetails(data.game);
+//             populateReviews(data.reviews);
+//             user
+//         })
+//         .catch(error => console.error('Error fetching game details:', error));
+// });
+
+// // Populate game details dynamically
+// function populateGameDetails(game) {
+//     if (!game) {
+//         console.error('Game data is missing.');
+//         return;
+//     }
+
+//     // Update title and breadcrumb
+//     document.querySelector('h1').textContent = game.title;
+//     document.querySelector('.breadcrumb-item.active').textContent = game.title;
+
+//     // Update pricing section
+//     const purchaseSection = document.querySelector('.purchase-section');
+//     if (purchaseSection) {
+//         purchaseSection.querySelector('h4').textContent = `Buy ${game.title}`;
+//         purchaseSection.querySelector('#discount-info').textContent = game.discount;
+//         purchaseSection.querySelector('#original-price').textContent = game.original_price;
+//         purchaseSection.querySelector('#final-price').textContent = game.price;
+//     }
+
+//     // Update introduction and about sections
+//     document.getElementById('game-introduction').textContent = game.introduction || 'Introduction not available.';
+//     document.getElementById('about-game').textContent = game.about || 'Description not available.';
+
+//     // Populate system requirements
+//     const systemReq = game.system_requirements || {};
+//     populateSystemRequirements(systemReq);
+// }
+
+// // Populate system requirements dynamically
+// function populateSystemRequirements(systemReq) {
+//     const minReq = document.getElementById('minimum-req');
+//     const recReq = document.getElementById('recommended-req');
+
+//     if (minReq) minReq.innerHTML = '';
+//     if (recReq) recReq.innerHTML = '';
+
+//     if (systemReq.minimum && minReq) {
+//         Object.entries(systemReq.minimum).forEach(([key, value]) => {
+//             minReq.innerHTML += `<li><strong>${key}:</strong> ${value}</li>`;
+//         });
+//     }
+
+//     if (systemReq.recommended && recReq) {
+//         Object.entries(systemReq.recommended).forEach(([key, value]) => {
+//             recReq.innerHTML += `<li><strong>${key}:</strong> ${value}</li>`;
+//         });
+//     }
+// }
+
+// // Populate reviews dynamically
+// function populateReviews(reviews) {
+//     const reviewsContainer = document.getElementById('reviews-container');
+//     if (!reviewsContainer) {
+//         console.error('Element with id "reviews-container" not found.');
+//         return;
+//     }
+
+//     // Clear existing reviews
+//     reviewsContainer.innerHTML = '';
+
+//     if (!reviews || reviews.length === 0) {
+//         reviewsContainer.innerHTML = '<p>No reviews yet. Be the first to review!</p>';
+//         return;
+//     }
+
+//     // Populate reviews
+//     reviews.forEach(review => {
+//         reviewsContainer.innerHTML += `
+//             <div class="review mb-4">
+//                 <div class="d-flex align-items-center mb-2">
+//                     <img src="${review.avatar}" alt="${review.username}" class="rounded-circle" width="50">
+//                     <div class="ms-3">
+//                         <h5 class="mb-0">${review.username}</h5>
+//                         <span class="text-warning">${'⭐'.repeat(review.rating)}</span>
+//                     </div>
+//                 </div>
+//                 <p class="mb-2">${review.message}</p>
+//                 <div class="d-flex gap-3 mt-2">
+//                     <button class="btn btn-sm btn-outline-success">👍 ${review.likes}</button>
+//                     <button class="btn btn-sm btn-outline-danger">👎 ${review.dislikes}</button>
+//                 </div>
+//             </div>`;
+//     });
+// }

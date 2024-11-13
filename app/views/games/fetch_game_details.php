@@ -1,15 +1,20 @@
 <?php
-session_start();
-
+// fetch_game_details.php
+$user = [
+    'id' => '1',
+    'username' => 'Gamer123',   
+    'avatar' => '/public/assets/images/avatar1.jpg',
+    'role' => 'admin', // admin, user, or guest(not login)
+    'game-own' => [1, 4, 5], // List game_id user own
+];
+// Simulated game data and reviews
 $reviews = [
     1 => [
         [
             'username' => 'Gamer123',
             'avatar' => '/public/assets/images/avatar1.jpg',
-            'rating' => 5,
-            'message' => 'Amazing game with incredible graphics!',
-            'likes' => 10,
-            'dislikes' => 2,
+            'rating' => 1,
+            'message' => 'Bad!',
         ],
         [
             'username' => 'PlayerXYZ',
@@ -19,36 +24,38 @@ $reviews = [
             'likes' => 5,
             'dislikes' => 1,
         ],
+        [
+            'username' => 'yasuo',
+            'avatar' => '/public/assets/images/avatar2.jpg',
+            'rating' => 5,
+            'message' => 'Great game but could use more content.',
+            'likes' => 5,
+            'dislikes' => 1,
+        ],
     ],
 ];
-
-$averageRating = 4.5;
-
-
-$gameId = 1; // The ID of the game
-$numberOfReviews = isset($reviews[$gameId]) ? count($reviews[$gameId]) : 0;
-
-// $user
 
 $game = [
     'id' => 1,
     'title' => 'Age of Mythology ',
     'release_date' => 'September 5, 2024',
-    'reviews' => 'Very Positive ('.$numberOfReviews. ' Reviews)',
+    'trending' => false,
+    'reviews' => 3,
     'background_image' => '/public/assets/images/aom-bg.jpg',
     'description' => 'From the creators of the award-winning Age of Empires franchise...',
-    'price' => '360,000đ', // This base on discount (= discount*original_price)
+    'price' => '360,000đ',
     'original_price' => '450,000đ',
     'discount' => '20%',
     'developer' => 'World\'s Edge, Forgotten Empires',
     'publisher' => 'Xbox Game Studios',
     'tags' => ['Strategy', 'RTS', 'Mythology', 'Action RTS', 'Fantasy'],
+    'background' => '/public/assets/images/aom-bg.jpg',
     'thumbnails' => [
         ['type' => 'image', 'src' => '/public/assets/images/game1.webp'],
         ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
         ['type' => 'image', 'src' => '/public/assets/images/game3.webp'],
-        ['type' => 'video', 'src' => '/public/assets/videos/game1.mp4', 'thumbnail' => '/public/assets/images/thumbnail-video1.jpg'],
-        ['type' => 'video', 'src' => '/public/assets/videos/game2.mp4', 'thumbnail' => '/public/assets/images/thumbnail-video2.jpg']
+        ['type' => 'video', 'src' => '/public/assets/videos/game1.mp4'],
+        ['type' => 'video', 'src' => '/public/assets/videos/game2.mp4']
     ],
     'introduction' => 'Age of Mythology: Retold is a modern reimagining of the classic RTS game that blends historical elements with mythology.',
     'about' => 'Step into a world of gods, monsters, and legendary heroes. Play through campaigns inspired by ancient mythology or battle with friends in multiplayer modes.',
@@ -72,10 +79,13 @@ $game = [
     ],
 ];
 
-$userRole = 'guest'; // Simulate logged-in user role
-$userHasBoughtGame = true; // Set to true for review form display
-$commentsEnabled = true;
+// Simulate fetching data based on game ID
+$response = [
+    'game' => $game,
+    'reviews' => $reviews[$game['id']] ?? [],
+    'user' => $user,
+];
 
-
-
-include 'detail.php';
+// Return as JSON
+header('Content-Type: application/json');
+echo json_encode($response);
