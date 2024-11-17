@@ -147,7 +147,7 @@ section ul li {
     border: none;
 }
 
-/* .mt-2  {
-
-    padding-left: 20px;
-} */
+.blurred {
+    opacity: 0.5;
+    /* pointer-events: none; */
+}
