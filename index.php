@@ -2,7 +2,7 @@
 // Set the default page
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
-// Sanitize the page variable to prevent directory traversal attacks
+// Sanitize the page variable
 $page = basename($page);
 
 // Define the path to the main views folder
@@ -16,7 +16,6 @@ $directories = [
     "error" => "error/",
     "home" => "home/",
     "store" => "store/",
-    "templates" => "templates/",
     "user" => "user/"
 ];
 
@@ -33,5 +32,6 @@ foreach ($directories as $dir) {
 
 // If file not found, include the 404 page
 if (!$file_found) {
-    include($base_path . "error/404.php"); // Load custom 404 page from "error" folder
+    include($base_path . "error/404.php");
 }
+?>

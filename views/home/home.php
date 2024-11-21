@@ -18,22 +18,22 @@
                 </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="/views/assets/img/home/2004_1.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 1">
+                        <img src="assets/img/home/2004_1.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="/views/assets/img/home/freefire.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 2">
+                        <img src="assets/img/home/freefire.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="/views/assets/img/home/game-wall.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 3">
+                        <img src="assets/img/home/game-wall.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 3">
                     </div>
                     <div class="carousel-item">
-                        <img src="/views/assets/img/home/gta-5-.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 4">
+                        <img src="assets/img/home/gta-5-.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 4">
                     </div>
                     <div class="carousel-item">
-                        <img src="/views/assets/img/home/lol.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 5">
+                        <img src="assets/img/home/lol.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 5">
                     </div>
                     <div class="carousel-item">
-                        <img src="/views/assets/img/home/valorant.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 6">
+                        <img src="assets/img/home/valorant.jpg" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="Slide 6">
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                 <!-- Add cards for featured games, as in your original layout -->
                 <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card">
-                        <img src="/views/assets/img/images.jpg" class="card-img-top w-100" style="height: 400px; object-fit: cover;" alt="Game 1">
+                        <img src="assets/img/images.jpg" class="card-img-top w-100" style="height: 400px; object-fit: cover;" alt="Game 1">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="card-title mb-0">Today's Offer</h5>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card">
-                        <img src="/views/assets/img/icarus-2.jpg" class="card-img-top w-100" style="height: 400px; object-fit: cover;" alt="Game 1">
+                        <img src="assets/img/icarus-2.jpg" class="card-img-top w-100" style="height: 400px; object-fit: cover;" alt="Game 1">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="card-title mb-0">Today's Offer</h5>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="col-md-4 col-lg-4 mb-3">
                     <div class="card">
-                        <img src="/views/assets/img/aow.jpg" class="card-img-top w-100" style="height: 400px; object-fit: cover;" alt="Game 1">
+                        <img src="assets/img/aow.jpg" class="card-img-top w-100" style="height: 400px; object-fit: cover;" alt="Game 1">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="card-title mb-0">Today's Offer</h5>
@@ -130,25 +130,25 @@
             <!-- Phần hiển thị quảng cáo -->
             <aside class="mb-3" style="background-color: #f8f9fa; padding: 10px;">
 
-                <img src="/views/assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
+                <img src="assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
                 <!-- Add more advertisement images as needed -->
             </aside>
             <!-- Phần hiển thị quảng cáo -->
             <aside class="mb-3" style="background-color: #f8f9fa; padding: 10px;">
 
-                <img src="/views/assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
+                <img src="assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
                 <!-- Add more advertisement images as needed -->
             </aside>
             <!-- Phần hiển thị quảng cáo -->
             <aside class="mb-3" style="background-color: #f8f9fa; padding: 10px;">
 
-                <img src="/views/assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
+                <img src="assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
                 <!-- Add more advertisement images as needed -->
             </aside>
             <!-- Phần hiển thị quảng cáo -->
             <aside class="mb-3" style="background-color: #f8f9fa; padding: 10px;">
 
-                <img src="/views/assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
+                <img src="assets/img/home/picmix.com_9868202.gif" class="img-fluid mb-3" alt="Ad 2">
                 <!-- Add more advertisement images as needed -->
             </aside>
         </div>

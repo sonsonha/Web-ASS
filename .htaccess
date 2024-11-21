@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Nếu không phải là tệp hoặc thư mục thực tế
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Viết lại URL từ /page thành index.php?page=page
+RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?page=$1 [L,QSA]
+
+# Nếu URL là rỗng ("/"), chuyển tới trang chủ
+RewriteRule ^$ index.php?page=home [L,QSA]

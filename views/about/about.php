@@ -5,4 +5,3 @@
     <p>Our game store offers the best gaming experiences for players.</p>
 </div>
 
-<?php include(__DIR__ . '/../templates/footer.php'); ?>
