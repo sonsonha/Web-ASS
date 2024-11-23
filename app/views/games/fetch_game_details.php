@@ -111,7 +111,7 @@ $games = [
     [
         'id' => 1,
         'title' => 'Age of Mythology ',
-        'enable_comments' => true,
+        'enable_comments' => false,
         'release_date' => 'September 5, 2024',
         'trending' => false,
         'reviews' => 3,
@@ -128,8 +128,10 @@ $games = [
             ['type' => 'image', 'src' => '/public/assets/images/game1.webp'],
             ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
             ['type' => 'image', 'src' => '/public/assets/images/game3.webp'],
-            ['type' => 'video', 'src' => '/public/assets/videos/game1.mp4'],
-            ['type' => 'video', 'src' => '/public/assets/videos/game2.mp4']
+            ['type' => 'video', 'src' => '/public/assets/videos/video1.mp4'],
+            ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
+            ['type' => 'video', 'src' => '/public/assets/videos/game2.mp4'],
+            ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
         ],
         'introduction' => 'Age of Mythology: Retold is a modern reimagining of the classic RTS game that blends historical elements with mythology.',
         'about' => 'Step into a world of gods, monsters, and legendary heroes. Play through campaigns inspired by ancient mythology or battle with friends in multiplayer modes.',

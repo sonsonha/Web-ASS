@@ -121,26 +121,93 @@ main {
 }
 
 /* Game Cards Section */
-.game-cards {
-    background-color: #1b2838;
-    padding: 20px;
-    border-radius: 10px;
+/* Individual Game Card */
+/* Game List Row */
+#gameCardsRow {
+    display: flex;
+    gap: 15px;
+    flex-wrap: nowrap;
+    overflow-x: auto; /* Allow horizontal scrolling for small screens */
+    padding-bottom: 10px;
 }
 
-/* Individual Game Card */
+/* Game Card */
 .game-card {
-    position: relative;
+    width: 180px; /* Adjust width for the card */
+    height: 360px; /* Ensure height is double the width */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     background-color: #2a475e;
     border: none;
-    overflow: hidden;
     border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 30px; /* Add spacing between cards */
 }
 
 .game-card:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
 }
+
+/* Card Image */
+.game-card img {
+    height: 240px; /* 2/3 height of the card */
+    object-fit: cover;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Card Content */
+.game-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    text-align: center;
+}
+
+
+.game-card .card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.game-card .price {
+    font-size: 0.9rem;
+    color: #27ae60;
+}
+
+/* Discount Label */
+.discount-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .game-card {
+        width: 150px;
+        height: 300px;
+    }
+
+    .game-card img {
+        height: 200px;
+    }
+}
+
 
 .card-img-top {
     height: 180px;
@@ -198,4 +265,64 @@ main {
 .show-more:hover {
     background-color: #1b2838;
     color: #ffffff;
+}
+
+/* Trending Games Section */
+.trending-games {
+    background-color: #1b2838;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Trending Game Card */
+.trending-games .game-card {
+    position: relative;
+    background-color: #2a475e;
+    border: none;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 300px;
+    width: 300px;
+}
+
+.trending-games .game-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.trending-games .game-card .card-img-top {
+    height: 50%; /* Half the height of the card */
+    object-fit: cover;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.trending-games .card-body {
+    padding: 15px;
+    text-align: center;
+    color: white;
+}
+
+.trending-games .card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.trending-games .price {
+    font-size: 1rem;
+    color: #27ae60;
+}
+
+.trending-games .discount-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    z-index: 2;
 }

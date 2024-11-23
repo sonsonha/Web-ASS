@@ -17,29 +17,113 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Fetched Data:', data); // Debug the data
             const { game, reviews, user } = data;
             populateGameDetails(game);
-            populateReviews(reviews, user);
+            populateReviews(reviews, user, game);
             setupReviewSection(game, user);
+            setupThumbnails(game.thumbnails);
         })
         .catch(error => console.error('Error fetching game details:', error));
 });
 
+function setupThumbnails(thumbnails) {
+    const thumbnailsContainer = document.getElementById('thumbnails');
+    // const mainDisplayImage = document.getElementById('imageDisplay');
+    // const mainDisplayVideo = document.getElementById('mainDisplay');
+    // const videoSource = document.getElementById('videoSource');
+    let currentIndex = 0;
+
+    // Populate thumbnails
+    thumbnails.forEach((thumbnail, index) => {
+        const thumbnailElement = document.createElement('div');
+        thumbnailElement.className = 'thumbnail';
+        thumbnailElement.dataset.index = index;
+
+        if (thumbnail.type === 'image') {
+            const img = document.createElement('img');
+            img.src = thumbnail.src;
+            img.alt = `Thumbnail ${index + 1}`;
+            thumbnailElement.appendChild(img);
+        } else if (thumbnail.type === 'video') {
+            const video = document.createElement('video');
+            video.src = thumbnail.src;
+            video.muted = true;
+            video.loop = true;
+            video.setAttribute('playsinline', 'true');
+            thumbnailElement.appendChild(video);
+        }
+
+        // Click Event for Thumbnail
+        thumbnailElement.addEventListener('click', () => displayMedia(index, thumbnails));
+        thumbnailsContainer.appendChild(thumbnailElement);
+    });
+
+    // Auto-Slideshow
+
+    function startSlideshow() {
+        const mainDisplayVideo = document.getElementById('mainDisplay');
+        // const mainDisplayImage = document.getElementById('imageDisplay');
+        // const videoSource = document.getElementById('videoSource');
+    
+        function playNextSlide() {
+            currentIndex = (currentIndex + 1) % thumbnails.length;
+            const selectedThumbnail = thumbnails[currentIndex];
+    
+            displayMedia(currentIndex, thumbnails);
+    
+            if (selectedThumbnail.type === 'video') {
+                mainDisplayVideo.onended = playNextSlide; // Wait for video to end
+            } else {
+                setTimeout(playNextSlide, 1000); // Show images for 5 seconds
+            }
+        }
+    
+        playNextSlide(); // Start the slideshow
+    }
+    
+
+    startSlideshow();
+}
+
+function displayMedia(index, thumbnails) {
+    const mainDisplayImage = document.getElementById('imageDisplay');
+    const mainDisplayVideo = document.getElementById('mainDisplay');
+    const videoSource = document.getElementById('videoSource');
+    const selectedThumbnail = thumbnails[index];
+
+    if (selectedThumbnail.type === 'image') {
+        mainDisplayVideo.style.display = 'none';
+        mainDisplayImage.style.display = 'block';
+        mainDisplayImage.src = selectedThumbnail.src;
+    } else if (selectedThumbnail.type === 'video') {
+        mainDisplayImage.style.display = 'none';
+        mainDisplayVideo.style.display = 'block';
+        videoSource.src = selectedThumbnail.src;
+        mainDisplayVideo.load();
+        mainDisplayVideo.play();
+    }
+}
 
 // Set up the review section based on user role and game ownership
 function setupReviewSection(game, user) {
     const reviewFormSection = document.getElementById('review-form-section');
     const reviewsSection = document.getElementById('reviews-section');
-    const noReviewsMessage = document.getElementById('no-reviews-message');
+    // const noReviewsMessage = document.getElementById('no-reviews-message');
 
     // Admin Role
     if (user.role === 'admin') {
         reviewFormSection.style.display = 'none'; // Hide review form
         const toggleButton = document.createElement('button');
-        toggleButton.className = 'btn btn-danger';
-        toggleButton.textContent = 'Enable/Disable Comments';
+        const hiddenClass = game.enable_comments ? 'btn-danger' : 'btn-success';
+        toggleButton.className = `btn ${hiddenClass}`;
+        toggleButton.textContent = game.enable_comments ? 'Disable Comments' : 'Enable Comments';
         reviewsSection.appendChild(toggleButton);
 
         // Handle comment toggle (placeholder logic)
         toggleButton.addEventListener('click', () => {
+            fetch('toggle_comments.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ game_id: game.id, enable_comments: !game.enable_comments})
+            })
             // Add backend call to toggle comments
             alert('Toggle comments logic here.');
         });
@@ -122,7 +206,7 @@ function populateSystemRequirements(systemReq) {
 }
 
 // Populate reviews dynamically
-function populateReviews(reviews, user) {
+function populateReviews(reviews, user, game) {
     const reviewsContainer = document.getElementById('reviews-container');
     reviewsContainer.innerHTML = '';
 
@@ -162,6 +246,12 @@ function populateReviews(reviews, user) {
     if (user.role === 'admin') {
         setupAdminReviewButtons(game); // Attach event listeners for admin actions
     }
+    document.getElementById('game-price').textContent = game.price || 'Unknown';
+    document.getElementById('release-date').textContent = game.release_date || 'Unknown';
+    document.getElementById('reviews-count').textContent = reviews.length || 'Have not been reviewed yet';
+    document.getElementById('publisher').textContent = game.publisher || 'Unknown';
+
+    document.getElementById('game-title').textContent = game.title || 'Unknown';
 }
 
 function setupAdminReviewButtons(game) {

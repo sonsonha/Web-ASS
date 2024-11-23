@@ -38,10 +38,15 @@
                     <img id="imageDisplay" src="/public/assets/images/feature1.jpg" alt="Game Display">
                 </div>
 
-                <!-- Thumbnails -->
-                <div class="thumbnail-carousel mt-3 d-flex gap-2" id="thumbnails">
-                    <!-- Thumbnails populated dynamically -->
+                <!-- Thumbnail Carousel -->
+                <div class="thumbnail-carousel-container">
+                    <button class="thumbnail-nav prev">&lt;</button>
+                    <div class="thumbnail-carousel mt-3 d-flex gap-2" id="thumbnails">
+                        <!-- Thumbnails populated dynamically -->
+                    </div>
+                    <button class="thumbnail-nav next">&gt;</button>
                 </div>
+
 
                 <!-- Add to Cart Section -->
                 <section class="purchase-section bg-dark text-white p-4 rounded my-4">

@@ -3,96 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store - Browse Categories</title>
+    <title>Epic Games Store - Home</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/public/assets/css/store.css">
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
 </head>
-<body>
+<body class="bg-dark">
     <?php include '../layouts/header.php'; ?> <!-- Include shared header -->
 
-    <main class="container mt-4">
-        <!-- Browse by Category Section -->
-        <section class="categories mb-5">
-            <h2 class="text-white mb-4">Browse by Category</h2>
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <div class="category-card text-center">
-                        <img src="/public/assets/images/yes.webp" alt="Racing" class="img-fluid rounded">
-                        <div class="category-overlay">
-                            <h5 class="text-white">RACING</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="category-card text-center">
-                        <img src="/public/assets/images/game1.webp" alt="Strategy" class="img-fluid rounded">
-                        <div class="category-overlay">
-                            <h5 class="text-white">STRATEGY</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="category-card text-center">
-                        <img src="/public/assets/images/game3.webp" alt="Story-Rich" class="img-fluid rounded">
-                        <div class="category-overlay">
-                            <h5 class="text-white">STORY-RICH</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="category-card text-center">
-                        <img src="/public/assets/images/game6.webp" alt="Anime" class="img-fluid rounded">
-                        <div class="category-overlay">
-                            <h5 class="text-white">ANIME</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <main class="container my-5 bg-dark">
+    <?php include '../layouts/nav_bar.php'; ?>
 
-        <!-- Game Cards Section -->
-        <section class="game-cards">
-            <h2 class="text-white mb-4">Games</h2>
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <img src="/public/assets/images/game3.webp" class="card-img-top" alt="Game 1">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Game Title 1</h5>
-                            <p class="card-text text-success">Price: 100,000đ</p>
-                            <a href="#" class="btn btn-primary">View Details</a>
+        <div class="container text-center">
+            <div class="row g-2">
+                <!-- Carousel Section -->
+                <div class="col-9 bg-dark d-none d-lg-block">
+                    <div class="swiper-container" id="gameSwiper">
+                        <div class="swiper-wrapper" id="swiperWrapper">
+                            <!-- Slides will be dynamically populated -->
                         </div>
+                        <!-- Navigation Buttons -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                        <!-- Pagination -->
+                        <div class="swiper-pagination"></div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <img src="/public/assets/images/game6.webp" class="card-img-top" alt="Game 2">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Game Title 2</h5>
-                            <p class="card-text text-success">Price: 150,000đ</p>
-                            <a href="#" class="btn btn-primary">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <img src="/public/assets/images/yes.webp" class="card-img-top" alt="Game 3">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Game Title 3</h5>
-                            <p class="card-text text-success">Price: 200,000đ</p>
-                            <a href="#" class="btn btn-primary">View Details</a>
-                        </div>
-                    </div>
+
+                <!-- Thumbnails Section -->
+                <div class="col-lg-3 col-12">
+                    <div id="thumbnails" class="d-flex flex-column gap-2 overflow-auto" style="height: 100%;"></div>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <div class="container mt-5">
+            <h2 class="text text-white">Category</h2>
+            <div class="card-carousel">
+                <!-- Cards Wrapper -->
+                <div class="row flex-nowrap overflow-auto" id="carouselWrapper">
+                    <!-- Cards will be dynamically rendered here -->
+                </div>
+
+                <!-- Controls (Hidden on Small Screens) -->
+                <div class="d-flex justify-content-between mt-3 d-none d-md-flex">
+                    <button id="prevButton" class="btn btn-primary">&lt; Prev</button>
+                    <button id="nextButton" class="btn btn-primary">Next &gt;</button>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="container mt-5">
+            <h2 class="text text-white">Trending Games</h2>
+            <div class="card-carousel">
+                <div class="row flex-nowrap overflow-auto" id="trendingGamesWrapper">
+                    <!-- Trending games cards will be dynamically rendered here -->
+                </div>
+
+                <!-- Controls -->
+                <div class="d-flex justify-content-between mt-3 d-none d-md-flex">
+                    <button id="trendingPrevButton" class="btn btn-primary">&lt; Prev</button>
+                    <button id="trendingNextButton" class="btn btn-primary">Next &gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <h2 class="text text-white">New Releases</h2>
+            <div class="card-carousel">
+                <div class="row flex-nowrap overflow-auto" id="newReleasesWrapper">
+                    <!-- New releases cards will be dynamically rendered here -->
+                </div>
+
+                <!-- Controls -->
+                <div class="d-flex justify-content-between mt-3 d-none d-md-flex">
+                    <button id="newPrevButton" class="btn btn-primary">&lt; Prev</button>
+                    <button id="newNextButton" class="btn btn-primary">Next &gt;</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container mt-5">
+            <h2 class="text text-white">Top Rate</h2>
+            <div class="card-carousel">
+                <div class="row flex-nowrap overflow-auto" id="topRateWrapper">
+                    <!-- Top rate games cards will be dynamically rendered here -->
+                </div>
+
+                <!-- Controls -->
+                <div class="d-flex justify-content-between mt-3 d-none d-md-flex">
+                    <button id="topRatePrevButton" class="btn btn-primary">&lt; Prev</button>
+                    <button id="topRateNextButton" class="btn btn-primary">Next &gt;</button>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <?php include '../layouts/footer.php'; ?> <!-- Include shared footer -->
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/public/assets/js/store.js"></script>
 </body>
 </html>
