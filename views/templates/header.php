@@ -30,6 +30,9 @@
 
             </div>
             <div class="navbar-auth">
+                <a href="cart" id="cartLink" class="btn btn-link small" style="display: none;color:azure">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
                 <a href="login" id="loginLink" class="btn btn-link small">Login</a>
                 <a href="logout" id="logoutLink" class="btn btn-link small" style="display: none;">Logout</a>
             </div>
@@ -43,15 +46,19 @@
                     const userLink = document.getElementById('userLink');
                     const loginLink = document.getElementById('loginLink');
                     const logoutLink = document.getElementById('logoutLink');
+                    const cartLink = document.getElementById('cartLink'); // Nút giỏ hàng
 
                     // Hiển thị hoặc ẩn liên kết dựa trên vai trò
                     if (role === 'guest') {
                         adminLink.style.display = 'none';
                         userLink.style.display = 'none';
+                        cartLink.style.display = 'none'; // Ẩn giỏ hàng
                     } else if (role === 'user') {
                         adminLink.style.display = 'none';
+                        cartLink.style.display = 'inline'; // Hiển thị giỏ hàng
                     } else if (role === 'admin') {
                         userLink.style.display = 'none';
+                        cartLink.style.display = 'none'; // Ẩn giỏ hàng
                     }
 
                     // Quản lý trạng thái đăng nhập

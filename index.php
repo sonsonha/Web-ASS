@@ -1,14 +1,8 @@
 <?php
-// Set the default page
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
-// Sanitize the page variable
-$page = basename($page);
-
-// Define the path to the main views folder
+// Define paths
 $base_path = "views/";
-
-// Define the paths to specific directories under "views"
 $directories = [
     "about" => "about/",
     "admin" => "admin/",
@@ -16,10 +10,30 @@ $directories = [
     "error" => "error/",
     "home" => "home/",
     "store" => "store/",
-    "user" => "user/"
+    "user" => "user/",
+    "cart" => "cart/",
+    "detail" => "detail/",
 ];
 
-// Loop through the directories to find the requested page
+// Search handling
+if ($page === 'search') {
+    require_once "controllers/SearchController.php";
+    $query = isset($_GET['q']) ? filter_var($_GET['q'], FILTER_SANITIZE_STRING) : '';
+    $controller = new SearchController();
+    $controller->search($query);
+    exit;
+}
+
+// Detail handling
+if ($page === 'item' && isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    require_once "controllers/DetailController.php";
+    $controller = new DetailController();
+    $controller->detail($id);
+    exit;
+}
+
+// Include the requested page
 $file_found = false;
 foreach ($directories as $dir) {
     $full_path = $base_path . $dir . $page . ".php";
@@ -30,7 +44,6 @@ foreach ($directories as $dir) {
     }
 }
 
-// If file not found, include the 404 page
 if (!$file_found) {
     include($base_path . "error/404.php");
 }
