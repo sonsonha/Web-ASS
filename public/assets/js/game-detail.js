@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then((data) => {
             console.log('Fetched Data:', data); // Debug the data
             const { game, reviews, user } = data;
-            populateGameDetails(game);
+            populateGameDetails(game);``
             populateReviews(reviews, user, game);
             setupReviewSection(game, user);
             setupThumbnails(game.thumbnails);
@@ -43,31 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch((error) => console.error('Error fetching game details:', error));
         
 });
-
-
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     fetch('fetch_game_details.php', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ user_id: userId, game_id: gameId })
-//     })
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error(`HTTP error! Status: ${response.status}`);
-//             }
-//             return response.json();
-//         })
-//         .then(data => {
-//             console.log('Fetched Data:', data); // Debug the data
-//             const { game, reviews, user } = data;
-//             populateGameDetails(game);
-//             populateReviews(reviews, user, game);
-//             setupReviewSection(game, user);
-//             setupThumbnails(game.thumbnails);
-//         })
-//         .catch(error => console.error('Error fetching game details:', error));
-// });
 
 function setupThumbnails(thumbnails) {
     const thumbnailsContainer = document.getElementById('thumbnails');
@@ -293,7 +268,7 @@ function populateReviews(reviews, user, game) {
     }
     document.getElementById('game-price').textContent = game.price || 'Unknown';
     document.getElementById('release-date').textContent = game.release_date || 'Unknown';
-    document.getElementById('reviews-count').textContent = reviews.length || 'Have not been reviewed yet';
+    document.getElementById('reviews-count').textContent = reviews.avrRating || 'Have not been reviewed yet'; // Add average rating
     document.getElementById('publisher').textContent = game.publisher || 'Unknown';
 
     document.getElementById('game-title').textContent = game.title || 'Unknown';
