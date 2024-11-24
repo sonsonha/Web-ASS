@@ -18,10 +18,13 @@
 
 </head>
 <body class="bg-dark">
-    <?php include '../layouts/header.php'; ?> <!-- Include shared header -->
+    <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
+    
+    
+
 
     <main class="container my-5 bg-dark">
-    <?php include '../layouts/nav_bar.php'; ?>
+    <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
 
         <div class="container text-center">
             <div class="row g-2">
@@ -111,7 +114,7 @@
 
     </main>
 
-    <?php include '../layouts/footer.php'; ?> <!-- Include shared footer -->
+    <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

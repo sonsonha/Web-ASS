@@ -11,7 +11,7 @@
 </head>
 <body>
     <!-- Include Header -->
-    <?php include '../layouts/header.php'; ?>
+    <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
     <main class="container my-5">
         <!-- Breadcrumb Navigation -->
@@ -145,8 +145,8 @@
     </main> 
 
     <!-- Include Footer -->
-    <?php include '../layouts/footer.php'; ?>
 
+    <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->

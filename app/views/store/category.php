@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/public/assets/css/category.css">
 </head>
 <body>
-    <?php include '../layouts/header.php'; ?> <!-- Include shared header -->
+    <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
     <main>
         <!-- Trending Games Carousel -->
@@ -39,7 +39,7 @@
                 <div class="col">
                 </div>
                 <div class="col-12">
-                    <?php include '../layouts/nav_bar.php'; ?> <!-- Include shared nav bar -->
+                <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
                 </div>
                 <div class="col">
                 </div>
@@ -65,7 +65,7 @@
 
     </main>
 
-    <?php include '../layouts/footer.php'; ?> <!-- Include shared footer -->
+    <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -42,7 +42,7 @@
 </head>
 <body>
 
-    <?php include '../layouts/header.php'; ?>
+    <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
     <div class="container my-5">
         <div class="row justify-content-center">
@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    <?php include '../layouts/footer.php'; ?>
+    <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

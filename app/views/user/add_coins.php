@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-    <?php include '../layouts/header.php'; ?>
+    <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
     <div class="card bg-dark">
         <h4 class="title">Add Coins</h4>
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 
-    <?php include '../layouts/footer.php'; ?>
+    <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
