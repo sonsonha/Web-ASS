@@ -31,7 +31,7 @@ function fetchCategoryGames(category) {
         isLoading = true;
         showSpinner(gameCardsContainer);
 
-        fetch('fetch_category_games.php', {
+        fetch('test_api/fetch_category_games.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ category, page }),

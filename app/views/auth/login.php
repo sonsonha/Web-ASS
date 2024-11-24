@@ -145,57 +145,99 @@
             <span>Password</span>
         </label>
         <button class="submit" type="button" id="loginButton">Login</button>
-        <p class="signin">Don't have an account? <a href="register">Sign up</a></p>
+        <p class="signin">Don't have an account? <a href="/app/views/auth/register.php">Sign up</a></p>
     </form>
 </div>
 
+
 <script>
-    document.getElementById('loginButton').addEventListener('click', async () => {
+    // Mock Data - Danh sách tài khoản mẫu
+    const mockUsers = [{
+            email: "admin@gmail.com",
+            password: "1",
+            profile: {
+                username: "testuser",
+                email: "test@example.com",
+                role: "admin",
+                phone_number: "0123456789",
+            },
+        },
+        {
+            email: "user@gmail.com",
+            password: "1",
+            profile: {
+                username: "user123",
+                email: "user@example.com",
+                role: "user",
+                phone_number: "0987654321",
+            },
+        },
+    ];
+
+    // Xử lý sự kiện login
+    document.getElementById('loginButton').addEventListener('click', () => {
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
 
         if (!email || !password) {
-            alert('Please enter your full username and password!');
+            alert('Please enter your email and password!');
             return;
         }
 
+        // Kiểm tra thông tin trong mock data
+        const user = mockUsers.find(
+            (u) => u.email === email && u.password === password
+        );
 
+        if (user) {
+            // Lưu thông tin vào localStorage
+            localStorage.setItem('username', user.profile.username);
+            localStorage.setItem('email', user.profile.email);
+            localStorage.setItem('role', user.profile.role);
+            localStorage.setItem('phone_number', user.profile.phone_number);
 
-        try {
-            const response = await fetch('http://localhost:8080/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                }),
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-
-                localStorage.setItem('accessToken', data.accessToken);
-                localStorage.setItem('refreshToken', data.refreshToken);
-                localStorage.setItem('username', data.profile.username);
-                localStorage.setItem('email', data.profile.email);
-                localStorage.setItem('role', data.profile.role);
-                localStorage.setItem('phone_number', data.profile.phone_number);
-                // alert(`
-                //     Access Token: ${localStorage.getItem('accessToken')}
-                //     Username: ${localStorage.getItem('username')}
-                //     Email: ${localStorage.getItem('email')}
-                //     Role: ${localStorage.getItem('role')}
-                //     Phone Number: ${localStorage.getItem('phone_number')}
-                // `);
-                window.location.href = 'home';
-            } else {
-                alert(data.error || 'Login Failed!');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred, please try again!');
+            // Chuyển hướng sau khi đăng nhập thành công
+            window.location.href = 'home';
+        } else {
+            alert('Invalid email or password!');
         }
     });
+
+    // try {
+    //     const response = await fetch('http://localhost:8080/login', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             email,
+    //             password
+    //         }),
+    //     });
+
+    //     const data = await response.json();
+    //     if (response.ok) {
+
+    //         localStorage.setItem('accessToken', data.accessToken);
+    //         localStorage.setItem('refreshToken', data.refreshToken);
+    //         localStorage.setItem('username', data.profile.username);
+    //         localStorage.setItem('email', data.profile.email);
+    //         localStorage.setItem('role', data.profile.role);
+    //         localStorage.setItem('phone_number', data.profile.phone_number);
+    //         // alert(`
+    //         //     Access Token: ${localStorage.getItem('accessToken')}
+    //         //     Username: ${localStorage.getItem('username')}
+    //         //     Email: ${localStorage.getItem('email')}
+    //         //     Role: ${localStorage.getItem('role')}
+    //         //     Phone Number: ${localStorage.getItem('phone_number')}
+    //         // `);
+    //         window.location.href = 'home';
+    //     } else {
+    //         alert(data.error || 'Login Failed!');
+    //     }
+    // } catch (error) {
+    //     console.error('Error:', error);
+    //     alert('An error occurred, please try again!');
+    // }
+    // });
 </script>

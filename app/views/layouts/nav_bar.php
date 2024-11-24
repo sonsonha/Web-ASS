@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         categories.forEach((category) => {
             const dropdownItem = document.createElement("li");
             dropdownItem.innerHTML = `
-                <a class="dropdown-item" href="/app/views/store/category.php?category=${category.slug}">
+                <a class="dropdown-item" href="app/views/store/category.php?category=${category.slug}">
                     ${category.name}
                 </a>`;
             dropdownMenu.appendChild(dropdownItem);

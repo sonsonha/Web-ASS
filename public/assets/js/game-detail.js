@@ -1,19 +1,38 @@
 const userId = '1'; // Example user ID
-const gameId = 1;   // Example game ID
+// const gameId = 1;   // Example game ID
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('fetch_game_details.php', {
+    // Get game_id from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameId = urlParams.get('id'); // Retrieve the id from the query string
+
+    if (!gameId) {
+        console.error('No game ID provided in the URL.');
+        return;
+    }
+    console.log("ABC log: ", gameId, userId);
+
+    // Get user_id from local storage
+    // const userId = localStorage.getItem('user_id'); // Assuming user_id is saved as 'user_id'
+
+    if (!userId) {
+        console.error('No user ID found in local storage.');
+        return;
+    }
+
+    // Fetch game details and user information
+    fetch('test_api/fetch_game_details.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, game_id: gameId })
+        body: JSON.stringify({ user_id: userId, game_id: gameId }),
     })
-        .then(response => {
+        .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
-        .then(data => {
+        .then((data) => {
             console.log('Fetched Data:', data); // Debug the data
             const { game, reviews, user } = data;
             populateGameDetails(game);
@@ -21,8 +40,34 @@ document.addEventListener('DOMContentLoaded', () => {
             setupReviewSection(game, user);
             setupThumbnails(game.thumbnails);
         })
-        .catch(error => console.error('Error fetching game details:', error));
+        .catch((error) => console.error('Error fetching game details:', error));
+        
 });
+
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     fetch('fetch_game_details.php', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ user_id: userId, game_id: gameId })
+//     })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error(`HTTP error! Status: ${response.status}`);
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             console.log('Fetched Data:', data); // Debug the data
+//             const { game, reviews, user } = data;
+//             populateGameDetails(game);
+//             populateReviews(reviews, user, game);
+//             setupReviewSection(game, user);
+//             setupThumbnails(game.thumbnails);
+//         })
+//         .catch(error => console.error('Error fetching game details:', error));
+// });
 
 function setupThumbnails(thumbnails) {
     const thumbnailsContainer = document.getElementById('thumbnails');
@@ -119,7 +164,7 @@ function setupReviewSection(game, user) {
 
         // Handle comment toggle (placeholder logic)
         toggleButton.addEventListener('click', () => {
-            fetch('toggle_comments.php', {
+            fetch('test_api/toggle_comments.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ game_id: game.id, enable_comments: !game.enable_comments})
@@ -264,7 +309,7 @@ function setupAdminReviewButtons(game) {
             const newShow = !currentShow; // Toggle visibility status
 
             // Send toggle visibility request to the backend
-            fetch('update_review_visibility.php', {
+            fetch('test_api/update_review_visibility.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -304,7 +349,7 @@ function setupAdminReviewButtons(game) {
             if (!confirm('Are you sure you want to delete this review?')) return;
 
             // Send delete request to the backend
-            fetch('delete_review.php', {
+            fetch('test_api/delete_review.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -1,19 +1,50 @@
 <?php
-session_start();
+$page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
-$requestUri = $_SERVER['REQUEST_URI'];
+// Define paths
+$base_path = "views/";
+$directories = [
+    "about" => "about/",
+    "admin" => "admin/",
+    "auth" => "auth/",
+    "error" => "error/",
+    "home" => "home/",
+    "store" => "store/",
+    "user" => "user/",
+    "cart" => "cart/",
+    "detail" => "detail/",
+];
 
-// Category routing
-if (preg_match('/\/category\/(.+)/', $requestUri, $matches)) {
-    $category = ucfirst($matches[1]); // Get category name
-    $categoryFile = "../app/views/categories/$category.php";
-    if (file_exists($categoryFile)) {
-        include $categoryFile;
-    } else {
-        http_response_code(404);
-        include '../app/views/errors/404.php';
-    }
-} else {
-    // Other routes
-    include '../app/views/home.php';
+// Search handling
+if ($page === 'search') {
+    require_once "controllers/SearchController.php";
+    $query = isset($_GET['q']) ? filter_var($_GET['q'], FILTER_SANITIZE_STRING) : '';
+    $controller = new SearchController();
+    $controller->search($query);
+    exit;
 }
+
+// Detail handling
+if ($page === 'item' && isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    require_once "controllers/DetailController.php";
+    $controller = new DetailController();
+    $controller->detail($id);
+    exit;
+}
+
+// Include the requested page
+$file_found = false;
+foreach ($directories as $dir) {
+    $full_path = $base_path . $dir . $page . ".php";
+    if (file_exists($full_path)) {
+        include($full_path);
+        $file_found = true;
+        break;
+    }
+}
+
+if (!$file_found) {
+    include($base_path . "error/404.php");
+}
+?>

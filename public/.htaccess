@@ -1,0 +1,8 @@
+# Set store.php as the default index file
+DirectoryIndex store.php
+
+# Additional configurations (if any)
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]

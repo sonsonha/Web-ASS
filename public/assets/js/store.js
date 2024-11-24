@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Fetch categories from the back-end
     let categories = [];
     try {
-        const response = await fetch("fetch_categories.php");
+        const response = await fetch("test_api/fetch_categories.php");
         if (!response.ok) throw new Error("Failed to fetch categories");
         categories = await response.json();
     } catch (error) {
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 </div>
                 `;
-            carouselWrapper.appendChild(cardElement);
+            carouselWrapper.appendChild(cardElement);   
 
             cardElement.querySelector('.category-card').addEventListener('click', () => {
                 window.location.href = `/app/views/store/category.php?category=${category.slug}`;
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch games from the backend
     try {
-        const response = await fetch("fetch_carousel_games.php");
+        const response = await fetch("test_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch game data");
         games = await response.json();
     } catch (error) {
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch new releases from the backend
     try {
-        const response = await fetch("fetch_new_releases.php");
+        const response = await fetch("test_api/fetch_new_releases.php");
         if (!response.ok) throw new Error("Failed to fetch new releases");
         newReleases = await response.json();
     } catch (error) {
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch trending games from the backend
     try {
-        const response = await fetch("fetch_trending_games.php");
+        const response = await fetch("test_api/fetch_trending_games.php");
         if (!response.ok) throw new Error("Failed to fetch trending games");
         trendingGames = await response.json();
     } catch (error) {
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch top-rated games from the backend
     try {
-        const response = await fetch("fetch_top_rate_games.php");
+        const response = await fetch("test_api/fetch_top_rate_games.php");
         if (!response.ok) throw new Error("Failed to fetch top-rated games");
         topRateGames = await response.json();
     } catch (error) {

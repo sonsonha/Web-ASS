@@ -182,12 +182,75 @@
                 <span>Confirm password</span>
             </label>
             <button class="submit" type="button" id="regitsterButton">Submit</button>
-            <p class="signin">Already have an acount ? <a href="login">Login</a> </p>
+            <p class="signin">Already have an acount ? <a href="/app/views/auth/login.php">Login</a> </p>
         </form>
 
     </div>
 
     <script>
+        const mockUsers = [{
+                username: "testuser",
+                email: "test@example.com"
+            },
+            {
+                username: "johndoe",
+                email: "johndoe@example.com"
+            },
+        ];
+
+        document.getElementById('regitsterButton').addEventListener('click', () => {
+            const firstname = document.getElementById('firstname').value.trim();
+            const lastname = document.getElementById('lastname').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmpassword = document.getElementById('confirmpassword').value.trim();
+
+            // Kiểm tra các trường trống
+            if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
+                alert('Please enter all the information!');
+                return;
+            }
+
+            // Kiểm tra mật khẩu có khớp không
+            if (password !== confirmpassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Kiểm tra xem email hoặc username đã tồn tại trong mockUsers chưa
+            const isEmailTaken = mockUsers.some((user) => user.email === email);
+            const isUsernameTaken = mockUsers.some((user) => user.username === username);
+
+            if (isEmailTaken) {
+                alert('This email is already in use!');
+                return;
+            }
+
+            if (isUsernameTaken) {
+                alert('This username is already in use!');
+                return;
+            }
+
+            // Nếu mọi thứ hợp lệ, thêm người dùng mới vào danh sách mockUsers
+            const newUser = {
+                firstname,
+                lastname,
+                username,
+                email,
+                password,
+            };
+            mockUsers.push(newUser);
+
+            // Lưu thông tin vào localStorage
+            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
+            localStorage.setItem('firstname', firstname);
+            localStorage.setItem('lastname', lastname);
+
+            alert('Registration successful!');
+            window.location.href = 'home';
+        });
         document.getElementById('regitsterButton').addEventListener('click', async () => {
             const firstname = document.getElementById('firstname').value.trim();
             const lastname = document.getElementById('lastname').value.trim();
