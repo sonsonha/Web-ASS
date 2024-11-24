@@ -1,5 +1,11 @@
 <?php include(__DIR__ . '/../templates/header.php'); ?>
-
+<style>
+    body {
+        background-color: black;
+        color: white;
+        
+    }
+</style>
 <!-- Main Content with Sidebar Layout -->
 <div class="container-fluid mt-5">
     <div class="row">

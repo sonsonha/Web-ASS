@@ -188,7 +188,17 @@
     </div>
 
     <script>
-        document.getElementById('regitsterButton').addEventListener('click', async () => {
+        const mockUsers = [{
+                username: "testuser",
+                email: "test@example.com"
+            },
+            {
+                username: "johndoe",
+                email: "johndoe@example.com"
+            },
+        ];
+
+        document.getElementById('regitsterButton').addEventListener('click', () => {
             const firstname = document.getElementById('firstname').value.trim();
             const lastname = document.getElementById('lastname').value.trim();
             const username = document.getElementById('username').value.trim();
@@ -196,54 +206,107 @@
             const password = document.getElementById('password').value.trim();
             const confirmpassword = document.getElementById('confirmpassword').value.trim();
 
+            // Kiểm tra các trường trống
             if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
-                alert('Please enter your information!');
+                alert('Please enter all the information!');
                 return;
             }
+
+            // Kiểm tra mật khẩu có khớp không
             if (password !== confirmpassword) {
                 alert('Passwords do not match!');
                 return;
             }
-            // console.log('Sending:', {
-            //     email,
-            //     password
-            // }); 
 
-            try {
-                const response = await fetch('http://localhost:8080/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        firstname,
-                        lastname,
-                        username,
-                        email,
-                        password,
-                    }),
-                });
+            // Kiểm tra xem email hoặc username đã tồn tại trong mockUsers chưa
+            const isEmailTaken = mockUsers.some((user) => user.email === email);
+            const isUsernameTaken = mockUsers.some((user) => user.username === username);
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert(data.message);
-                    localStorage.setItem('accessToken', data.accessToken);
-                    window.location.href = 'home';
-                } else if (data.error) {
-                    if (data.error.includes('username')) {
-                        alert('This username is already in use!');
-                    } else if (data.error.includes('email')) {
-                        alert('This email is already in use!');
-                    } else {
-                        alert(data.error || 'Registration Failed!');
-                    }
-                } else {
-                    alert('An unknown error occurred. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred, please try again!');
+            if (isEmailTaken) {
+                alert('This email is already in use!');
+                return;
             }
+
+            if (isUsernameTaken) {
+                alert('This username is already in use!');
+                return;
+            }
+
+            // Nếu mọi thứ hợp lệ, thêm người dùng mới vào danh sách mockUsers
+            const newUser = {
+                firstname,
+                lastname,
+                username,
+                email,
+                password,
+            };
+            mockUsers.push(newUser);
+
+            // Lưu thông tin vào localStorage
+            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
+            localStorage.setItem('firstname', firstname);
+            localStorage.setItem('lastname', lastname);
+
+            alert('Registration successful!');
+            window.location.href = 'home';
         });
+        // document.getElementById('regitsterButton').addEventListener('click', async () => {
+        //     const firstname = document.getElementById('firstname').value.trim();
+        //     const lastname = document.getElementById('lastname').value.trim();
+        //     const username = document.getElementById('username').value.trim();
+        //     const email = document.getElementById('email').value.trim();
+        //     const password = document.getElementById('password').value.trim();
+        //     const confirmpassword = document.getElementById('confirmpassword').value.trim();
+
+        //     if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
+        //         alert('Please enter your information!');
+        //         return;
+        //     }
+        //     if (password !== confirmpassword) {
+        //         alert('Passwords do not match!');
+        //         return;
+        //     }
+        //     // console.log('Sending:', {
+        //     //     email,
+        //     //     password
+        //     // }); 
+
+        //     try {
+        //         const response = await fetch('http://localhost:8080/register', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify({
+        //                 firstname,
+        //                 lastname,
+        //                 username,
+        //                 email,
+        //                 password,
+        //             }),
+        //         });
+
+        //         const data = await response.json();
+
+        //         if (response.ok) {
+        //             alert(data.message);
+        //             localStorage.setItem('accessToken', data.accessToken);
+        //             window.location.href = 'home';
+        //         } else if (data.error) {
+        //             if (data.error.includes('username')) {
+        //                 alert('This username is already in use!');
+        //             } else if (data.error.includes('email')) {
+        //                 alert('This email is already in use!');
+        //             } else {
+        //                 alert(data.error || 'Registration Failed!');
+        //             }
+        //         } else {
+        //             alert('An unknown error occurred. Please try again.');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //         alert('An error occurred, please try again!');
+        //     }
+        // });
     </script>

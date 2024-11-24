@@ -1,0 +1,63 @@
+
+/* General navbar styling */
+body {
+    background-color: black;    
+}
+#navbarNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Left side links */
+.navbar-nav {
+    margin-left: 20px;
+    display: flex;
+    gap: 10px;
+}
+.navbar-nav .navlink, 
+.navbar-auth a {
+    font-family: Inter, sans-serif;
+    font-size: 16px; /* Điều chỉnh kích thước chữ nếu cần */
+    font-weight: normal; /* Đặt độ đậm của chữ */
+}
+
+/* Styling for nav links */
+.navlink {
+    color: rgb(255, 255, 255); /* Default color for links */
+    text-decoration: none;
+    padding: 5px 10px; /* Add some spacing */
+    border-radius: 5px; /* Rounded edges */
+}
+
+.navlink:hover {
+    text-decoration: none; 
+    color: rgb(160, 160, 160); /* Dark gray on hover */
+}
+
+/* Right side (Login & Logout) */
+.navbar-auth {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Styling for Login */
+#loginLink {
+    color: white;
+    text-decoration: none;
+}
+
+#loginLink:hover {
+    color: rgb(0, 183, 255);
+}
+
+/* Styling for Logout */
+#logoutLink {
+    color: red;
+    text-decoration: none;
+}
+
+#logoutLink:hover {
+    color: darkred;
+}
