@@ -2,6 +2,8 @@ const userId = '1'; // Example user ID
 // const gameId = 1;   // Example game ID
 
 document.addEventListener('DOMContentLoaded', () => {
+    const userId = '1'; // Example user ID (replace with actual logic)
+
     // Get game_id from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const gameId = urlParams.get('id'); // Retrieve the id from the query string
@@ -10,13 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('No game ID provided in the URL.');
         return;
     }
-    console.log("ABC log: ", gameId, userId);
-
-    // Get user_id from local storage
-    // const userId = localStorage.getItem('user_id'); // Assuming user_id is saved as 'user_id'
 
     if (!userId) {
-        console.error('No user ID found in local storage.');
+        console.error('No user ID found.');
         return;
     }
 
@@ -34,15 +32,64 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then((data) => {
             console.log('Fetched Data:', data); // Debug the data
-            const { game, reviews, user } = data;
-            populateGameDetails(game);``
-            populateReviews(reviews, user, game);
-            setupReviewSection(game, user);
-            setupThumbnails(game.thumbnails);
+            const { game, user } = data;
+            populateGameDetails(game, user);
         })
         .catch((error) => console.error('Error fetching game details:', error));
-        
 });
+
+function populateGameDetails(game, user) {
+    if (!game) {
+        console.error('Game data is missing.');
+        return;
+    }
+
+    // Update game details
+    document.getElementById('game-title').textContent = game.title || 'Unknown';
+    document.getElementById('buy-game-title').textContent = `Buy ${game.title}`;
+    document.getElementById('discount-info').textContent = game.discount || '';
+    document.getElementById('original-price').textContent = game.original_price || '';
+    document.getElementById('final-price').textContent = game.price || '';
+    document.getElementById('game-thumbnail').src = game.thumbnail || '/public/assets/images/default-thumbnail.jpg';
+    document.getElementById('release-date').textContent = game.release_date || 'Unknown';
+    document.getElementById('publisher').textContent = game.publisher || 'Unknown';
+
+    // Add to Cart or Install button logic
+    const addToCartButton = document.getElementById('add-to-cart-btn');
+
+    if (user['game-own'].includes(game.id) || game.is_free) {
+        // If the game is already owned or is free
+        addToCartButton.textContent = 'Install';
+        addToCartButton.classList.replace('btn-success', 'btn-primary');
+        addToCartButton.addEventListener('click', () => {
+            // Navigate to the game installation page or handle installation logic
+            window.location.href = `/app/views/games/install.php?game_id=${game.id}`;
+        });
+    } else {
+        // If the game is not owned and not free
+        addToCartButton.textContent = 'Add to Cart';
+        addToCartButton.addEventListener('click', () => {
+            addToCart(userId, game.id);
+        });
+    }
+}
+
+function addToCart(userId, gameId) {
+    fetch('test_api/add_to_cart.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, game_id: gameId }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert('Game added to cart successfully!');
+            } else {
+                alert('Failed to add game to cart.');
+            }
+        })
+        .catch((error) => console.error('Error adding game to cart:', error));
+}
 
 function setupThumbnails(thumbnails) {
     const thumbnailsContainer = document.getElementById('thumbnails');

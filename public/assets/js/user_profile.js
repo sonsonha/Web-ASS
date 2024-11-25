@@ -66,6 +66,7 @@ function populateGamesOwned(games) {
                 <div class="card-body">
                     <h5 class="card-title">${game.title}</h5>
                     <p class="card-text">${game.price || 'Free'}</p>
+                    <button type="button" class="btn btn-success">Install now</button>
                 </div>
             </div>
         </a>
