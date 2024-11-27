@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch game details and user information
-    fetch('test_api/fetch_game_details.php', {
+    fetch('/app/views/games/test_api/fetch_game_details.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -32,8 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then((data) => {
             console.log('Fetched Data:', data); // Debug the data
-            const { game, user } = data;
+            const { game, reviews, user } = data;
             populateGameDetails(game, user);
+            populateReviews(reviews, user, game);
+            setupReviewSection(game, user);
+            setupThumbnails(game.thumbnails);
         })
         .catch((error) => console.error('Error fetching game details:', error));
 });
@@ -63,7 +66,7 @@ function populateGameDetails(game, user) {
         addToCartButton.classList.replace('btn-success', 'btn-primary');
         addToCartButton.addEventListener('click', () => {
             // Navigate to the game installation page or handle installation logic
-            window.location.href = `/app/views/games/install.php?game_id=${game.id}`;
+            window.location.href = `/app/views/games/test_api/install.php?game_id=${game.id}`;
         });
     } else {
         // If the game is not owned and not free
@@ -75,7 +78,7 @@ function populateGameDetails(game, user) {
 }
 
 function addToCart(userId, gameId) {
-    fetch('test_api/add_to_cart.php', {
+    fetch('/app/views/games/test_api/add_to_cart.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -186,7 +189,7 @@ function setupReviewSection(game, user) {
 
         // Handle comment toggle (placeholder logic)
         toggleButton.addEventListener('click', () => {
-            fetch('test_api/toggle_comments.php', {
+            fetch('/app/views/games/test_api/toggle_comments.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ game_id: game.id, enable_comments: !game.enable_comments})
@@ -331,7 +334,7 @@ function setupAdminReviewButtons(game) {
             const newShow = !currentShow; // Toggle visibility status
 
             // Send toggle visibility request to the backend
-            fetch('test_api/update_review_visibility.php', {
+            fetch('/app/views/games/test_api/update_review_visibility.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -371,7 +374,7 @@ function setupAdminReviewButtons(game) {
             if (!confirm('Are you sure you want to delete this review?')) return;
 
             // Send delete request to the backend
-            fetch('test_api/delete_review.php', {
+            fetch('/app/views/games/test_api/delete_review.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -17,7 +17,7 @@ $users = [
         'id' => '1',
         'username' => 'Gamer123',   
         'avatar' => '/public/assets/images/avatar1.jpg',
-        'role' => 'admin',
+        'role' => 'user',
         'game-own' => [1, 4, 5],
     ],
     [
@@ -111,7 +111,7 @@ $games = [
     [
         'id' => 1,
         'title' => 'Age of Mythology ',
-        'enable_comments' => false,
+        'enable_comments' => true,
         'release_date' => 'September 5, 2024',
         'trending' => false,
         'reviews' => 3,
