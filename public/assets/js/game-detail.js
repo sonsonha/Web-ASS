@@ -1,10 +1,5 @@
-const userId = '1'; // Example user ID
-// const gameId = 1;   // Example game ID
-
 document.addEventListener('DOMContentLoaded', () => {
     const userId = '1'; // Example user ID (replace with actual logic)
-
-    // Get game_id from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const gameId = urlParams.get('id'); // Retrieve the id from the query string
 
@@ -25,13 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ user_id: userId, game_id: gameId }),
     })
         .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             return response.json();
         })
         .then((data) => {
-            console.log('Fetched Data:', data); // Debug the data
             const { game, reviews, user } = data;
             populateGameDetails(game, user);
             populateReviews(reviews, user, game);
@@ -41,40 +33,176 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch((error) => console.error('Error fetching game details:', error));
 });
 
+function setupThumbnails(thumbnails) {
+    const thumbnailsContainer = document.getElementById('thumbnails');
+    const mainDisplayImage = document.getElementById('imageDisplay');
+    const mainDisplayVideo = document.getElementById('mainDisplay');
+    const videoSource = document.getElementById('videoSource');
+
+    let currentIndex = 0;
+    let autoSlideTimeout;
+
+    // Populate thumbnails
+    thumbnails.forEach((thumbnail, index) => {
+        const thumbnailElement = document.createElement('div');
+        thumbnailElement.className = 'thumbnail';
+        thumbnailElement.dataset.index = index;
+
+        if (thumbnail.type === 'image') {
+            const img = document.createElement('img');
+            img.src = thumbnail.src;
+            thumbnailElement.appendChild(img);
+        } else if (thumbnail.type === 'video') {
+            const video = document.createElement('video');
+            video.src = thumbnail.src;
+            video.muted = true; // Mute to comply with autoplay policies
+            video.loop = false;
+            video.setAttribute('playsinline', 'true');
+            thumbnailElement.appendChild(video);
+        }
+
+        // Click event for thumbnails
+        thumbnailElement.addEventListener('click', () => {
+            currentIndex = index; // Update index for clicked thumbnail
+            clearTimeout(autoSlideTimeout); // Pause auto-slide
+            displayMedia(index, thumbnails, false);
+            startAutoSlide(); // Resume auto-slide after interaction
+        });
+
+        thumbnailsContainer.appendChild(thumbnailElement);
+    });
+
+    // Display selected media
+    function displayMedia(index, thumbnails, auto = false) {
+        const selectedThumbnail = thumbnails[index];
+
+        if (selectedThumbnail.type === 'image') {
+            mainDisplayVideo.style.display = 'none';
+            mainDisplayImage.style.display = 'block';
+            mainDisplayImage.src = selectedThumbnail.src;
+            if (auto) scheduleNextSlide(5000); // Wait 5 seconds for images
+        } else if (selectedThumbnail.type === 'video') {
+            mainDisplayImage.style.display = 'none';
+            mainDisplayVideo.style.display = 'block';
+            if (videoSource.src !== selectedThumbnail.src) {
+                videoSource.src = selectedThumbnail.src;
+                mainDisplayVideo.load();
+            }
+
+            // Ensure video is muted
+            mainDisplayVideo.muted = true;
+
+            // Attempt to play the video
+            mainDisplayVideo
+                .play()
+                .then(() => {
+                    if (auto) {
+                        mainDisplayVideo.onended = () => {
+                            scheduleNextSlide();
+                        };
+                    }
+                })
+                .catch((error) => {
+                    console.warn('Video playback failed:', error);
+
+                    // Add a fallback listener for user interaction
+                    document.addEventListener(
+                        'click',
+                        () => {
+                            mainDisplayVideo
+                                .play()
+                                .then(() => console.log('Video playback resumed after interaction'))
+                                .catch((err) => console.error('Playback still failed:', err));
+                        },
+                        { once: true }
+                    );
+                });
+        }
+    }
+
+    // Schedule the next slide
+    function scheduleNextSlide(delay = 0) {
+        clearTimeout(autoSlideTimeout);
+        autoSlideTimeout = setTimeout(() => {
+            currentIndex = (currentIndex + 1) % thumbnails.length;
+            displayMedia(currentIndex, thumbnails, true);
+        }, delay);
+    }
+
+    // Auto-slide function
+    function startAutoSlide() {
+        displayMedia(currentIndex, thumbnails, true);
+    }
+
+    // Start auto-slide
+    startAutoSlide();
+}
+
+
 function populateGameDetails(game, user) {
     if (!game) {
         console.error('Game data is missing.');
         return;
     }
 
-    // Update game details
+    // Update the breadcrumb and game title
+    document.querySelector('.breadcrumb-item.active').textContent = game.title;
     document.getElementById('game-title').textContent = game.title || 'Unknown';
     document.getElementById('buy-game-title').textContent = `Buy ${game.title}`;
-    document.getElementById('discount-info').textContent = game.discount || '';
-    document.getElementById('original-price').textContent = game.original_price || '';
-    document.getElementById('final-price').textContent = game.price || '';
-    document.getElementById('game-thumbnail').src = game.thumbnail || '/public/assets/images/default-thumbnail.jpg';
+
+    document.getElementById('game-thumbnail').src = game.thumbnail || '/public/assets/images/game6.webp';
     document.getElementById('release-date').textContent = game.release_date || 'Unknown';
     document.getElementById('publisher').textContent = game.publisher || 'Unknown';
 
-    // Add to Cart or Install button logic
-    const addToCartButton = document.getElementById('add-to-cart-btn');
+    // Discount badge logic
+    const discountBadge = document.getElementById('discount-badge');
+    const discountPercentage = document.getElementById('discount-percentage');
+    
+    const originalPrice = document.getElementById('original-price');
+    const finalPrice = document.getElementById('final-price');
 
-    if (user['game-own'].includes(game.id) || game.is_free) {
-        // If the game is already owned or is free
-        addToCartButton.textContent = 'Install';
-        addToCartButton.classList.replace('btn-success', 'btn-primary');
-        addToCartButton.addEventListener('click', () => {
-            // Navigate to the game installation page or handle installation logic
-            window.location.href = `/app/views/games/test_api/install.php?game_id=${game.id}`;
-        });
+    if (game.discount) {
+        discountPercentage.textContent = game.discount;
+        discountBadge.classList.remove('d-none');
+        originalPrice.textContent = `${game.original_price} coins`;
+        if (!user['game-own'].includes(game.id)) {
+            finalPrice.textContent = `${game.price} coins`; // Show price in coins
+        }
+        else {
+            finalPrice.textContent = user.role == 'user' ? 'Owned' : `${game.price} coins`; // Show price in coins
+        }
     } else {
-        // If the game is not owned and not free
+        discountBadge.classList.add('d-none');
+        originalPrice.textContent = ''; // Hide original price if no discount
+        finalPrice.textContent = `${game.price} coins`; // Show price in coins
+    }
+
+    // Add to Cart or download button logic
+    const addToCartButton = document.getElementById('add-to-cart-btn');
+    if ((user['game-own'].includes(game.id) || game.is_free) && user.role === 'user') {
+        addToCartButton.textContent = `Download Now`;
+        addToCartButton.classList.replace('btn-success', 'btn-primary');
+        // addToCartButton.addEventListener('click', () => {
+        //     window.location.href = `/app/views/games/test_api/download.php?game_id=${game.id}`;
+        // });
+    } else {
         addToCartButton.textContent = 'Add to Cart';
         addToCartButton.addEventListener('click', () => {
+            if (user.role === 'guest') {
+                showLoginAlert('addToCart'); // Show login modal
+                return;
+            }
             addToCart(userId, game.id);
         });
     }
+
+    // Update introduction and about sections
+    document.getElementById('game-introduction').textContent = game.introduction || 'Introduction not available.';
+    document.getElementById('about-game').textContent = game.about || 'Description not available.';
+
+    // Populate system requirements
+    const systemReq = game.system_requirements || {};
+    populateSystemRequirements(systemReq);
 }
 
 function addToCart(userId, gameId) {
@@ -92,84 +220,6 @@ function addToCart(userId, gameId) {
             }
         })
         .catch((error) => console.error('Error adding game to cart:', error));
-}
-
-function setupThumbnails(thumbnails) {
-    const thumbnailsContainer = document.getElementById('thumbnails');
-    // const mainDisplayImage = document.getElementById('imageDisplay');
-    // const mainDisplayVideo = document.getElementById('mainDisplay');
-    // const videoSource = document.getElementById('videoSource');
-    let currentIndex = 0;
-
-    // Populate thumbnails
-    thumbnails.forEach((thumbnail, index) => {
-        const thumbnailElement = document.createElement('div');
-        thumbnailElement.className = 'thumbnail';
-        thumbnailElement.dataset.index = index;
-
-        if (thumbnail.type === 'image') {
-            const img = document.createElement('img');
-            img.src = thumbnail.src;
-            img.alt = `Thumbnail ${index + 1}`;
-            thumbnailElement.appendChild(img);
-        } else if (thumbnail.type === 'video') {
-            const video = document.createElement('video');
-            video.src = thumbnail.src;
-            video.muted = true;
-            video.loop = true;
-            video.setAttribute('playsinline', 'true');
-            thumbnailElement.appendChild(video);
-        }
-
-        // Click Event for Thumbnail
-        thumbnailElement.addEventListener('click', () => displayMedia(index, thumbnails));
-        thumbnailsContainer.appendChild(thumbnailElement);
-    });
-
-    // Auto-Slideshow
-
-    function startSlideshow() {
-        const mainDisplayVideo = document.getElementById('mainDisplay');
-        // const mainDisplayImage = document.getElementById('imageDisplay');
-        // const videoSource = document.getElementById('videoSource');
-    
-        function playNextSlide() {
-            currentIndex = (currentIndex + 1) % thumbnails.length;
-            const selectedThumbnail = thumbnails[currentIndex];
-    
-            displayMedia(currentIndex, thumbnails);
-    
-            if (selectedThumbnail.type === 'video') {
-                mainDisplayVideo.onended = playNextSlide; // Wait for video to end
-            } else {
-                setTimeout(playNextSlide, 1000); // Show images for 5 seconds
-            }
-        }
-    
-        playNextSlide(); // Start the slideshow
-    }
-    
-
-    startSlideshow();
-}
-
-function displayMedia(index, thumbnails) {
-    const mainDisplayImage = document.getElementById('imageDisplay');
-    const mainDisplayVideo = document.getElementById('mainDisplay');
-    const videoSource = document.getElementById('videoSource');
-    const selectedThumbnail = thumbnails[index];
-
-    if (selectedThumbnail.type === 'image') {
-        mainDisplayVideo.style.display = 'none';
-        mainDisplayImage.style.display = 'block';
-        mainDisplayImage.src = selectedThumbnail.src;
-    } else if (selectedThumbnail.type === 'video') {
-        mainDisplayImage.style.display = 'none';
-        mainDisplayVideo.style.display = 'block';
-        videoSource.src = selectedThumbnail.src;
-        mainDisplayVideo.load();
-        mainDisplayVideo.play();
-    }
 }
 
 // Set up the review section based on user role and game ownership
@@ -211,7 +261,7 @@ function setupReviewSection(game, user) {
         const submitButton = document.querySelector('#reviewForm button[type="submit"]');
         submitButton.addEventListener('click', (e) => {
             e.preventDefault();
-            showLoginAlert(); // Show login modal
+            showLoginAlert('review'); // Show login modal
         });
         return;
     }
@@ -226,33 +276,6 @@ function setupReviewSection(game, user) {
 }
 
 // Populate game details dynamically
-function populateGameDetails(game) {
-    if (!game) {
-        console.error('Game data is missing.');
-        return;
-    }
-
-    // Update title and breadcrumb
-    document.querySelector('h1').textContent = game.title;
-    document.querySelector('.breadcrumb-item.active').textContent = game.title;
-
-    // Update pricing section
-    const purchaseSection = document.querySelector('.purchase-section');
-    if (purchaseSection) {
-        purchaseSection.querySelector('h4').textContent = `Buy ${game.title}`;
-        purchaseSection.querySelector('#discount-info').textContent = game.discount;
-        purchaseSection.querySelector('#original-price').textContent = game.original_price;
-        purchaseSection.querySelector('#final-price').textContent = game.price;
-    }
-
-    // Update introduction and about sections
-    document.getElementById('game-introduction').textContent = game.introduction || 'Introduction not available.';
-    document.getElementById('about-game').textContent = game.about || 'Description not available.';
-
-    // Populate system requirements
-    const systemReq = game.system_requirements || {};
-    populateSystemRequirements(systemReq);
-}
 
 // Populate system requirements dynamically
 function populateSystemRequirements(systemReq) {
@@ -285,12 +308,12 @@ function populateReviews(reviews, user, game) {
         return;
     }
 
-    reviews.forEach((review) => {
+    reviews.forEach((review, index) => { // Add 'index' here
         // Add a class to blur hidden comments for admin
         const hiddenClass = !review.show ? 'blurred' : '';
 
         // Only show reviews disabled in admin role
-        const reviewHTML = user.role === 'admin' || review.show ? ` 
+        const reviewHTML = user.role === 'admin' || review.show ? `
             <div class="review mb-4 ${hiddenClass}">
                 <div class="d-flex align-items-center mb-2">
                     <img src="${review.avatar}" alt="${review.username}" class="rounded-circle" width="50">
@@ -300,6 +323,14 @@ function populateReviews(reviews, user, game) {
                     </div>
                 </div>
                 <p>${review.message}</p>
+                <div class="d-flex gap-2 mt-2">
+                    <button class="btn btn-sm like-btn ${review.userLiked ? 'active' : ''}" data-review-index="${index}" data-action="like">
+                        👍 <span class="like-count text-white">${review.likes || 0}</span>
+                    </button>
+                    <button class="btn btn-sm dislike-btn ${review.userDisliked ? 'active' : ''}" data-review-index="${index}" data-action="dislike">
+                        👎 <span class="dislike-count  text-white">${review.dislikes || 0}</span>
+                    </button>
+                </div>
                 ${user.role === 'admin' ? `
                     <div class="d-flex gap-2 mt-2">
                         <button class="btn btn-sm btn-outline-primary toggle-visibility-btn" data-id="${review.id}" data-show="${review.show}">
@@ -308,20 +339,146 @@ function populateReviews(reviews, user, game) {
                         <button class="btn btn-sm btn-outline-danger delete-review-btn" data-id="${review.id}">
                             Delete
                         </button>
-                    </div>` : ''}
+                    </div>` : `
+                        <button class="btn btn-sm btn-outline-primary reply-btn" data-review-index="${index}">
+                            Reply
+                        </button>
+                        <div class="reply-input-container d-none mt-3">
+                            <textarea class="form-control reply-input" rows="2" placeholder="Write your reply..."></textarea>
+                            <button class="btn btn-success btn-sm mt-2 submit-reply-btn">Reply</button>
+                        </div>`}
             </div>` : '';
-        reviewsContainer.innerHTML += reviewHTML;
+        const reviewElement = document.createElement('div');
+        reviewElement.innerHTML = reviewHTML;
+        reviewsContainer.appendChild(reviewElement);
+
+        // Like/Dislike Event Listeners
+        const likeBtn = reviewElement.querySelector('.like-btn');
+        const dislikeBtn = reviewElement.querySelector('.dislike-btn');
+
+        if (likeBtn) {
+            likeBtn.addEventListener('click', () => handleLikeDislike(user, game.id, review, 'like', likeBtn, dislikeBtn));
+        }
+        if (dislikeBtn) {
+            dislikeBtn.addEventListener('click', () => handleLikeDislike(user, game.id, review, 'dislike', likeBtn, dislikeBtn));
+        }
+
+
+        // likeBtn.addEventListener('click', () => handleLikeDislike(user, game.id, review, 'like', likeBtn, dislikeBtn));
+        // dislikeBtn.addEventListener('click', () => handleLikeDislike(user, game.id, review, 'dislike', likeBtn, dislikeBtn));
+
+        // Add event listeners for Reply button
+        if (user.role !== 'admin') {
+            const replyBtn = reviewElement.querySelector('.reply-btn');
+            const replyContainer = reviewElement.querySelector('.reply-input-container');
+            const replyInput = reviewElement.querySelector('.reply-input');
+            const submitReplyBtn = reviewElement.querySelector('.submit-reply-btn');
+
+            replyBtn?.addEventListener('click', () => {
+                if (user.role === 'guest') {
+                    showLoginAlert('reply');
+                } else {
+                    replyContainer.classList.toggle('d-none');
+                }
+            });
+
+            submitReplyBtn?.addEventListener('click', () => {
+                const replyMessage = replyInput.value.trim();
+                if (replyMessage) {
+                    sendReplyToBackend(game.id, review.username, user.id, replyMessage);
+                } else {
+                    alert('Reply cannot be empty.');
+                }
+            });
+        }
     });
 
     if (user.role === 'admin') {
         setupAdminReviewButtons(game); // Attach event listeners for admin actions
     }
+
     document.getElementById('game-price').textContent = game.price || 'Unknown';
     document.getElementById('release-date').textContent = game.release_date || 'Unknown';
-    document.getElementById('reviews-count').textContent = reviews.avrRating || 'Have not been reviewed yet'; // Add average rating
-    document.getElementById('publisher').textContent = game.publisher || 'Unknown';
+    document.getElementById('reviews-count').textContent = `${game.rating}/5⭐` || 'N/A'; // Add average rating
+}
 
-    document.getElementById('game-title').textContent = game.title || 'Unknown';
+// Handle Like/Dislike Logic
+function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {
+    if (user.role === 'guest') {
+        showLoginAlert(reply);
+        return;
+    }
+
+    const isLike = action === 'like';
+    const oppositeAction = isLike ? 'dislike' : 'like';
+    const targetBtn = isLike ? likeBtn : dislikeBtn;
+    const oppositeBtn = isLike ? dislikeBtn : likeBtn;
+    const targetCount = targetBtn.querySelector(isLike ? '.like-count' : '.dislike-count');
+    const oppositeCount = oppositeBtn.querySelector(isLike ? '.dislike-count' : '.like-count');
+
+    const currentCount = parseInt(targetCount.textContent, 10);
+    const oppositeCurrentCount = parseInt(oppositeCount.textContent, 10);
+
+    const isActive = targetBtn.classList.contains('active');
+    const oppositeActive = oppositeBtn.classList.contains('active');
+
+    // Update UI
+    if (isActive) {
+        targetBtn.classList.remove('active');
+        targetCount.textContent = currentCount - 1;
+    } else {
+        targetBtn.classList.add('active');
+        targetCount.textContent = currentCount + 1;
+
+        if (oppositeActive) {
+            oppositeBtn.classList.remove('active');
+            oppositeCount.textContent = oppositeCurrentCount - 1;
+        }
+    }
+
+    // Call API
+    fetch('/app/views/games/test_api/update_like_dislike.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            game_id: gameId,
+            review_id: review.id,
+            user_id: user.id,
+            action,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (!data.success) {
+                alert('Failed to update like/dislike.');
+            }
+        })
+        .catch((error) => console.error('Error updating like/dislike:', error));
+}
+
+
+// Function to send the reply to the backend
+function sendReplyToBackend(gameId, reviewUsername, userId, replyMessage) {
+    fetch('/app/views/games/test_api/submit_reply.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            game_id: gameId,
+            review_username: reviewUsername,
+            user_id: userId,
+            reply_message: replyMessage,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert('Reply submitted successfully.');
+                location.reload(); // Reload to display the new reply
+            } else {
+                alert('Failed to submit reply.');
+            }
+        })
+        .catch((error) => console.error('Error submitting reply:', error));
 }
 
 function setupAdminReviewButtons(game) {
@@ -399,26 +556,162 @@ function setupAdminReviewButtons(game) {
 }
 
 // Show login alert modal for guests
-function showLoginAlert() {
-    const modal = document.createElement('div');
-    modal.className = 'modal fade';
-    modal.innerHTML = `
-        <div class="modal-dialog">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header">
-                    <h5 class="modal-title">Sign In Required</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Please sign in to take this action.</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="/login.php" class="btn btn-primary">Sign In</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>`;
-    document.body.appendChild(modal);
-    const modalInstance = new bootstrap.Modal(modal);
-    modalInstance.show();
+function showLoginAlert(action) {
+    const modalTitle = document.getElementById('loginModalLabel');
+    const modalBody = document.getElementById('loginModalBody');
+    
+    // Update content based on the action
+    if (action === 'addToCart') {
+        modalTitle.textContent = 'Sign In Required';
+        modalBody.innerHTML = '<p>Please sign in to buy the game.</p>';
+    } else if (action === 'review') {
+        modalTitle.textContent = 'Sign In Required';
+        modalBody.innerHTML = '<p>Please sign in to leave a review.</p>';
+    } else if (action === 'reply') {
+        modalTitle.textContent = 'Sign In Required';
+        modalBody.innerHTML = '<p>Please sign in to leave a reply on the comments.</p>';
+    }
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+    modal.show();
 }
+
+
+// Star rating system
+// Star rating system and Review Submission
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize the star rating system
+    const starRatingContainer = document.getElementById('star-rating');
+    const ratingInput = document.getElementById('rating');
+    const reviewForm = document.getElementById('reviewForm');
+    const messageInput = document.getElementById('message');
+    const gameId = document.getElementById('game_id').value; // Hidden input for game ID
+
+    if (starRatingContainer && ratingInput) {
+        const totalStars = 5;
+
+        // Create stars dynamically
+        for (let i = 1; i <= totalStars; i++) {
+            const star = document.createElement('span');
+            star.classList.add('star');
+            star.setAttribute('data-value', i);
+            star.innerHTML = '★'; // Solid star
+            starRatingContainer.appendChild(star);
+
+            // Add hover and click event listeners
+            star.addEventListener('mouseover', () => highlightStars(i));
+            star.addEventListener('mouseout', resetStars);
+            star.addEventListener('click', () => selectRating(i));
+        }
+    }
+
+    // Highlight stars on hover
+    function highlightStars(count) {
+        const stars = starRatingContainer.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            star.style.color = index < count ? '#ffc107' : '#333'; // Yellow for hovered stars
+        });
+    }
+
+    // Reset stars when not hovering
+    function resetStars() {
+        const selectedRating = parseInt(ratingInput.value, 10);
+        const stars = starRatingContainer.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            star.style.color = index < selectedRating ? '#ffc107' : '#333'; // Yellow for selected, black for unselected
+        });
+    }
+
+    // Select a rating
+    function selectRating(count) {
+        ratingInput.value = count; // Set the selected rating value
+        highlightStars(count); // Persist the selection visually
+    }
+
+    // Handle review submission
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent form submission
+            const rating = parseInt(ratingInput.value, 10);
+            const message = messageInput.value.trim();
+
+            if (!rating) {
+                alert('Please select a star rating!');
+                return;
+            }
+
+            const defaultMessages = {
+                5: 'Very Good!',
+                4: 'Good',
+                3: 'Average',
+                2: 'Poor',
+                1: 'Very Bad!!!',
+            };
+
+            const reviewMessage = message || defaultMessages[rating];
+
+            // Send data to the backend
+            fetch('/app/views/games/test_api/submit_review.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    game_id: gameId,
+                    rating,
+                    message: reviewMessage,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert('Review submitted successfully!');
+                        location.reload(); // Reload the page to show the new review
+                    } else {
+                        alert('Failed to submit review. Please try again.');
+                    }
+                })
+                .catch((error) => console.error('Error submitting review:', error));
+        });
+    }
+});
+
+// Display stars based on the rating
+// function displayFractionalStars(rating) {
+//     const starsContainer = document.getElementById('average-rating-stars');
+//     starsContainer.innerHTML = ''; // Clear existing stars
+
+//     const fullStars = Math.floor(rating); // Number of full stars
+//     const hasHalfStar = rating % 1 >= 0.5; // Check if there's a half-star
+//     const emptyStars = 5 - Math.ceil(rating); // Remaining empty stars
+
+//     // Create full stars
+//     for (let i = 0; i < fullStars; i++) {
+//         const star = document.createElement('span');
+//         star.classList.add('star');
+//         star.innerHTML = '★';
+//         starsContainer.appendChild(star);
+//     }
+
+//     // Create half star if applicable
+//     if (hasHalfStar) {
+//         const halfStar = document.createElement('span');
+//         halfStar.classList.add('star', 'half'); // Apply `half` class
+//         halfStar.innerHTML = '★';
+//         starsContainer.appendChild(halfStar);
+//     }
+
+//     // Create empty stars
+//     for (let i = 0; i < emptyStars; i++) {
+//         const star = document.createElement('span');
+//         star.classList.add('star', 'dim');
+//         star.innerHTML = '★';
+//         starsContainer.appendChild(star);
+//     }
+// }
+
+// // Example usage: Update average rating
+// document.addEventListener('DOMContentLoaded', () => {
+//     const averageRating = 4.3; // Example value (replace with dynamic data)
+//     displayFractionalStars(averageRating);
+//     document.getElementById('reviews-count').textContent = `${averageRating.toFixed(1)} stars`;
+// });

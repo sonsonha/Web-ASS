@@ -10,7 +10,9 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 // Extract `user_id` and `game_id` from the request
 $userId = $input['user_id'] ?? null;
+$reviewUsername = $input['review_username'] ?? null;
 $gameId = $input['game_id'] ?? null;
+$replyMessage = $input['reply_message'] ?? null;
 
 $users = [
     [
@@ -57,6 +59,8 @@ $reviews = [
             'avatar' => '/public/assets/images/avatar1.jpg',
             'rating' => 1,
             'show' => true,
+            'likes' => 91,
+            'dislikes' => 5,
             'message' => 'Bad!',
         ],
         [
@@ -110,16 +114,18 @@ $reviews = [
 $games = [
     [
         'id' => 1,
+        'is_free' => false,
         'title' => 'Age of Mythology ',
         'enable_comments' => true,
         'release_date' => 'September 5, 2024',
         'trending' => false,
         'reviews' => 3,
+        'rating' => 4.5,
         'background_image' => '/public/assets/images/aom-bg.jpg',
         'description' => 'From the creators of the award-winning Age of Empires franchise...',
-        'price' => '360,000đ',
-        'original_price' => '450,000đ',
-        'discount' => '20%',
+        'price' => '360',
+        'original_price' => '450',
+        'discount' => '30',
         'developer' => 'World\'s Edge, Forgotten Empires',
         'publisher' => 'Xbox Game Studios',
         'genres' => ['Strategy', 'RTS', 'Mythology', 'Action RTS', 'Fantasy'],

@@ -14,6 +14,9 @@
     <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
     <main class="container my-5">
+
+        <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
+        
         <!-- Breadcrumb Navigation -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-dark text-white p-3 rounded">
@@ -31,25 +34,34 @@
             <!-- Left Content -->
             <div class="col-md-8">
                 <!-- Display Area -->
-                <div class="display-area">
+                <!-- <div class="display-area">
                     <video id="mainDisplay" controls style="display: none;">
                         <source id="videoSource" src="" type="video/mp4">
                     </video>
                     <img id="imageDisplay" src="/public/assets/images/feature1.jpg" alt="Game Display">
+                </div> -->
+
+                <div class="display-area">
+                    <video id="mainDisplay" controls>
+                        <source id="videoSource" src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <img id="imageDisplay" src="/public/assets/images/feature1.jpg" alt="Game Display">
                 </div>
+
 
                 <!-- Thumbnail Carousel -->
                 <div class="thumbnail-carousel-container">
-                    <button class="thumbnail-nav prev">&lt;</button>
+                    <!-- <button class="thumbnail-nav prev">&lt;</button> -->
                     <div class="thumbnail-carousel mt-3 d-flex gap-2" id="thumbnails">
                         <!-- Thumbnails populated dynamically -->
                     </div>
-                    <button class="thumbnail-nav next">&gt;</button>
+                    <!-- <button class="thumbnail-nav next">&gt;</button> -->
                 </div>
 
 
                 <!-- Add to Cart Section -->
-                <section class="purchase-section bg-dark text-white p-4 rounded my-4">
+                <!-- <section class="purchase-section bg-dark text-white p-4 rounded my-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h4 id="buy-game-title">Buy Game Name</h4>
@@ -63,7 +75,28 @@
                             Add to Cart
                         </button>
                     </div>
+                </section> -->
+
+                <section class="purchase-section bg-dark text-white p-4 rounded my-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 id="buy-game-title">Buy Game Name</h4>
+                            <div class="d-flex align-items-center gap-3">
+                                <div id="discount-badge" class="badge bg-danger d-none">
+                                    <span id="discount-percentage"></span>% OFF
+                                </div>
+                                <p id="pricing-info" class="mb-0">
+                                    <span class="text-decoration-line-through text-muted" id="original-price"></span>
+                                    <span class="text-success ms-2" id="final-price"></span>
+                                </p>
+                            </div>
+                        </div>
+                        <button class="btn btn-success add-to-cart-btn" id="add-to-cart-btn">
+                            Add to Cart
+                        </button>
+                    </div>
                 </section>
+
 
                 <!-- Game Introduction -->
                 <section class="bg-dark text-white p-4 rounded my-4">
@@ -102,10 +135,12 @@
             <!-- Right Sidebar -->
             <div class="col-md-4">
                 <div class="bg-dark text-white p-4 rounded">
-                    <img id="game-thumbnail" src="/public/assets/images/game1.webp" alt="Game Thumbnail" class="img-detail">
-                    <p id="game-description">Game Introduction</p>
+                    <img id="game-thumbnail" src="" alt="Game Thumbnail" class="img-detail">
+                    <!-- <p id="game-description">Game Introduction</p> -->
                     <p><strong>Release Date:</strong> <span id="release-date">Unknown</span></p>
-                    <p><strong>Reviews:</strong> <span id="reviews-count">Unknown</span></p>
+                    <!-- <p><strong>Reviews:</strong> <span id="reviews-count">Unknown</span></p> -->
+                    <p><strong>Average Rating:</strong> <span id="reviews-count"></span></p>
+                    <!-- <div id="average-rating-stars" class="rating-stars"></div> -->
                     <p><strong>Price:</strong> <span class="text-success" id="game-price">Unknown</span></p>
                     <p><strong>Publisher:</strong> <span class="text-success" id="publisher">Unknown</span></p>
                 </div>
@@ -121,28 +156,46 @@
         </section>
 
         <!-- Add Review Form -->
+
         <section id="review-form-section" class="bg-dark text-white p-4 rounded my-4">
             <h4>Leave a Review</h4>
             <form id="reviewForm">
                 <input type="hidden" name="game_id" id="game_id">
                 <div class="mb-3">
                     <label for="rating" class="form-label">Rating</label>
-                    <select name="rating" id="rating" class="form-select">
-                        <option value="5">⭐⭐⭐⭐⭐</option>
-                        <option value="4">⭐⭐⭐⭐</option>
-                        <option value="3">⭐⭐⭐</option>
-                        <option value="2">⭐⭐</option>
-                        <option value="1">⭐</option>
-                    </select>
+                    <div id="star-rating" class="d-flex gap-1">
+                        <!-- Stars will be dynamically created -->
+                    </div>
+                    <input type="hidden" name="rating" id="rating" value="0">
                 </div>
                 <div class="mb-3">
                     <label for="message" class="form-label">Your Review</label>
-                    <textarea name="message" id="message" rows="3" class="form-control" required></textarea>
+                    <textarea name="message" id="message" rows="3" class="form-control"></textarea>
                 </div>
-                <button type="submit" class="btn btn-success">Submit Review</button>
+                <button type="submit" class="btn btn-success">Review</button>
             </form>
         </section>
+
     </main> 
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Sign In Required</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="loginModalBody">
+                    <p>Please sign in to take this action.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="/app/views/auth/login.php" class="btn btn-primary">Sign In</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Include Footer -->
 

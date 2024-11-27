@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         // Fetch categories from the backend
-        const response = await fetch("fetch_categories.php");
+        const response = await fetch("test_api/fetch_categories.php");
         if (!response.ok) throw new Error("Failed to fetch categories");
         const categories = await response.json();
 
