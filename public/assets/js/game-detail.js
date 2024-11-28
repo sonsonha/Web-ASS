@@ -29,115 +29,98 @@ document.addEventListener('DOMContentLoaded', () => {
             populateReviews(reviews, user, game);
             setupReviewSection(game, user);
             setupThumbnails(game.thumbnails);
+            fetchPopularArticles(user);
         })
         .catch((error) => console.error('Error fetching game details:', error));
 });
 
-function setupThumbnails(thumbnails) {
-    const thumbnailsContainer = document.getElementById('thumbnails');
-    const mainDisplayImage = document.getElementById('imageDisplay');
-    const mainDisplayVideo = document.getElementById('mainDisplay');
-    const videoSource = document.getElementById('videoSource');
-
-    let currentIndex = 0;
-    let autoSlideTimeout;
-
-    // Populate thumbnails
-    thumbnails.forEach((thumbnail, index) => {
-        const thumbnailElement = document.createElement('div');
-        thumbnailElement.className = 'thumbnail';
-        thumbnailElement.dataset.index = index;
-
-        if (thumbnail.type === 'image') {
-            const img = document.createElement('img');
-            img.src = thumbnail.src;
-            thumbnailElement.appendChild(img);
-        } else if (thumbnail.type === 'video') {
-            const video = document.createElement('video');
-            video.src = thumbnail.src;
-            video.muted = true; // Mute to comply with autoplay policies
-            video.loop = false;
-            video.setAttribute('playsinline', 'true');
-            thumbnailElement.appendChild(video);
+function fetchPopularArticles (user) {
+    // Fetch the articles data
+    fetch('/app/views/games/test_api/fetch_popular_articles.php')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json(); // Parse the response as JSON
+    })
+    .then(data => {
+        // Check if data is an array
+        if (Array.isArray(data)) {
+            console.log('Fetched Articles:', data); // Log the fetched data
+            const articlesContainer = document.getElementById('popular-articles');
+            // Loop through each article and create a card
+            data.forEach(article => {   
+                const articleCard = document.createElement('div');
+                articleCard.classList.add('card', 'mb-3');
+                articleCard.style.width = '18rem'; // Adjust the size of the card
 
-        // Click event for thumbnails
-        thumbnailElement.addEventListener('click', () => {
-            currentIndex = index; // Update index for clicked thumbnail
-            clearTimeout(autoSlideTimeout); // Pause auto-slide
-            displayMedia(index, thumbnails, false);
-            startAutoSlide(); // Resume auto-slide after interaction
-        });
+                articleCard.innerHTML = `
+                    <img src="${article.image}" class="card-img-top" alt="${article.title}">
+                    <div class="card-body">
+                        <h5 class="card-title">${article.title}</h5>
+                        <p class="card-text">${article.description}</p>
+                        <a href="${article.link}" class="btn btn-primary">Read More</a>
+                    </div>
+                `;
 
-        thumbnailsContainer.appendChild(thumbnailElement);
-    });
-
-    // Display selected media
-    function displayMedia(index, thumbnails, auto = false) {
-        const selectedThumbnail = thumbnails[index];
-
-        if (selectedThumbnail.type === 'image') {
-            mainDisplayVideo.style.display = 'none';
-            mainDisplayImage.style.display = 'block';
-            mainDisplayImage.src = selectedThumbnail.src;
-            if (auto) scheduleNextSlide(5000); // Wait 5 seconds for images
-        } else if (selectedThumbnail.type === 'video') {
-            mainDisplayImage.style.display = 'none';
-            mainDisplayVideo.style.display = 'block';
-            if (videoSource.src !== selectedThumbnail.src) {
-                videoSource.src = selectedThumbnail.src;
-                mainDisplayVideo.load();
-            }
-
-            // Ensure video is muted
-            mainDisplayVideo.muted = true;
-
-            // Attempt to play the video
-            mainDisplayVideo
-                .play()
-                .then(() => {
-                    if (auto) {
-                        mainDisplayVideo.onended = () => {
-                            scheduleNextSlide();
-                        };
-                    }
-                })
-                .catch((error) => {
-                    console.warn('Video playback failed:', error);
-
-                    // Add a fallback listener for user interaction
-                    document.addEventListener(
-                        'click',
-                        () => {
-                            mainDisplayVideo
-                                .play()
-                                .then(() => console.log('Video playback resumed after interaction'))
-                                .catch((err) => console.error('Playback still failed:', err));
-                        },
-                        { once: true }
-                    );
+                // Add the card to the container
+                articlesContainer.appendChild(articleCard);
+                // Add click event for the edit button (only for admin)
+                if (user.role === 'admin') {
+                    const editBtn = card.querySelector('.edit-article-btn');
+                    editBtn.addEventListener('click', () => {
+                        openEditModal(article); // Open the modal with the article's data
                 });
         }
-    }
-
-    // Schedule the next slide
-    function scheduleNextSlide(delay = 0) {
-        clearTimeout(autoSlideTimeout);
-        autoSlideTimeout = setTimeout(() => {
-            currentIndex = (currentIndex + 1) % thumbnails.length;
-            displayMedia(currentIndex, thumbnails, true);
-        }, delay);
-    }
-
-    // Auto-slide function
-    function startAutoSlide() {
-        displayMedia(currentIndex, thumbnails, true);
-    }
-
-    // Start auto-slide
-    startAutoSlide();
+            });
+        } else {
+            console.error('Expected an array, but got:', data);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching articles:', error);
+    });
 }
 
+function openEditModal(article) {
+    // Populate the modal with article data
+    document.getElementById('editImage').value = article.image;
+    document.getElementById('editTitle').value = article.title;
+    document.getElementById('editDescription').value = article.description;
+
+    // Store the article ID for updating
+    const editArticleForm = document.getElementById('editArticleForm');
+    editArticleForm.onsubmit = function (e) {
+        e.preventDefault();
+
+        const updatedArticle = {
+            id: article.id,
+            image: document.getElementById('editImage').value,
+            title: document.getElementById('editTitle').value,
+            description: document.getElementById('editDescription').value
+        };
+
+        // Send the updated data to the back-end
+        fetch('/app/views/games/test_api/update_article.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedArticle)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Article updated successfully!');
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert('Failed to update the article.');
+            }
+        })
+        .catch(error => console.error('Error updating article:', error));
+    };
+
+    // Show the modal
+    new bootstrap.Modal(document.getElementById('editArticleModal')).show();
+}
 
 function populateGameDetails(game, user) {
     if (!game) {
@@ -153,6 +136,22 @@ function populateGameDetails(game, user) {
     document.getElementById('game-thumbnail').src = game.thumbnail || '/public/assets/images/game6.webp';
     document.getElementById('release-date').textContent = game.release_date || 'Unknown';
     document.getElementById('publisher').textContent = game.publisher || 'Unknown';
+
+    // Update genres - make genres clickable
+    const genresContainer = document.getElementById('genres');
+    genresContainer.innerHTML = ''; // Clear any existing genres
+    game.genres.forEach(genre => {
+        const genreLink = document.createElement('a');
+        genreLink.href = `/app/views/store/category.php?category=${encodeURIComponent(genre)}`;  // Link to the category page
+        genreLink.textContent = genre;
+        genreLink.classList.add('genre-link');
+        genresContainer.appendChild(genreLink);
+        
+        // Optionally, add spacing between genre links
+        const separator = document.createElement('span');
+        separator.textContent = ' | ';
+        genresContainer.appendChild(separator);
+    });
 
     // Discount badge logic
     const discountBadge = document.getElementById('discount-badge');
@@ -401,6 +400,112 @@ function populateReviews(reviews, user, game) {
     document.getElementById('release-date').textContent = game.release_date || 'Unknown';
     document.getElementById('reviews-count').textContent = `${game.rating}/5⭐` || 'N/A'; // Add average rating
 }
+
+function setupThumbnails(thumbnails) {
+    const thumbnailsContainer = document.getElementById('thumbnails');
+    const mainDisplayImage = document.getElementById('imageDisplay');
+    const mainDisplayVideo = document.getElementById('mainDisplay');
+    const videoSource = document.getElementById('videoSource');
+
+    let currentIndex = 0;
+    let autoSlideTimeout;
+
+    // Populate thumbnails
+    thumbnails.forEach((thumbnail, index) => {
+        const thumbnailElement = document.createElement('div');
+        thumbnailElement.className = 'thumbnail';
+        thumbnailElement.dataset.index = index;
+
+        if (thumbnail.type === 'image') {
+            const img = document.createElement('img');
+            img.src = thumbnail.src;
+            thumbnailElement.appendChild(img);
+        } else if (thumbnail.type === 'video') {
+            const video = document.createElement('video');
+            video.src = thumbnail.src;
+            video.muted = true; // Mute to comply with autoplay policies
+            video.loop = false;
+            video.setAttribute('playsinline', 'true');
+            thumbnailElement.appendChild(video);
+        }
+
+        // Click event for thumbnails
+        thumbnailElement.addEventListener('click', () => {
+            currentIndex = index; // Update index for clicked thumbnail
+            clearTimeout(autoSlideTimeout); // Pause auto-slide
+            displayMedia(index, thumbnails, false);
+            startAutoSlide(); // Resume auto-slide after interaction
+        });
+
+        thumbnailsContainer.appendChild(thumbnailElement);
+    });
+
+    // Display selected media
+    function displayMedia(index, thumbnails, auto = false) {
+        const selectedThumbnail = thumbnails[index];
+
+        if (selectedThumbnail.type === 'image') {
+            mainDisplayVideo.style.display = 'none';
+            mainDisplayImage.style.display = 'block';
+            mainDisplayImage.src = selectedThumbnail.src;
+            if (auto) scheduleNextSlide(5000); // Wait 5 seconds for images
+        } else if (selectedThumbnail.type === 'video') {
+            mainDisplayImage.style.display = 'none';
+            mainDisplayVideo.style.display = 'block';
+            if (videoSource.src !== selectedThumbnail.src) {
+                videoSource.src = selectedThumbnail.src;
+                mainDisplayVideo.load();
+            }
+
+            // Ensure video is muted
+            mainDisplayVideo.muted = true;
+
+            // Attempt to play the video
+            mainDisplayVideo
+                .play()
+                .then(() => {
+                    if (auto) {
+                        mainDisplayVideo.onended = () => {
+                            scheduleNextSlide();
+                        };
+                    }
+                })
+                .catch((error) => {
+                    console.warn('Video playback failed:', error);
+
+                    // Add a fallback listener for user interaction
+                    document.addEventListener(
+                        'click',
+                        () => {
+                            mainDisplayVideo
+                                .play()
+                                .then(() => console.log('Video playback resumed after interaction'))
+                                .catch((err) => console.error('Playback still failed:', err));
+                        },
+                        { once: true }
+                    );
+                });
+        }
+    }
+
+    // Schedule the next slide
+    function scheduleNextSlide(delay = 0) {
+        clearTimeout(autoSlideTimeout);
+        autoSlideTimeout = setTimeout(() => {
+            currentIndex = (currentIndex + 1) % thumbnails.length;
+            displayMedia(currentIndex, thumbnails, true);
+        }, delay);
+    }
+
+    // Auto-slide function
+    function startAutoSlide() {
+        displayMedia(currentIndex, thumbnails, true);
+    }
+
+    // Start auto-slide
+    startAutoSlide();
+}
+
 
 // Handle Like/Dislike Logic
 function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {
@@ -674,44 +779,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-// Display stars based on the rating
-// function displayFractionalStars(rating) {
-//     const starsContainer = document.getElementById('average-rating-stars');
-//     starsContainer.innerHTML = ''; // Clear existing stars
-
-//     const fullStars = Math.floor(rating); // Number of full stars
-//     const hasHalfStar = rating % 1 >= 0.5; // Check if there's a half-star
-//     const emptyStars = 5 - Math.ceil(rating); // Remaining empty stars
-
-//     // Create full stars
-//     for (let i = 0; i < fullStars; i++) {
-//         const star = document.createElement('span');
-//         star.classList.add('star');
-//         star.innerHTML = '★';
-//         starsContainer.appendChild(star);
-//     }
-
-//     // Create half star if applicable
-//     if (hasHalfStar) {
-//         const halfStar = document.createElement('span');
-//         halfStar.classList.add('star', 'half'); // Apply `half` class
-//         halfStar.innerHTML = '★';
-//         starsContainer.appendChild(halfStar);
-//     }
-
-//     // Create empty stars
-//     for (let i = 0; i < emptyStars; i++) {
-//         const star = document.createElement('span');
-//         star.classList.add('star', 'dim');
-//         star.innerHTML = '★';
-//         starsContainer.appendChild(star);
-//     }
-// }
-
-// // Example usage: Update average rating
-// document.addEventListener('DOMContentLoaded', () => {
-//     const averageRating = 4.3; // Example value (replace with dynamic data)
-//     displayFractionalStars(averageRating);
-//     document.getElementById('reviews-count').textContent = `${averageRating.toFixed(1)} stars`;
-// });

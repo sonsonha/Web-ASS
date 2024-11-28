@@ -130,13 +130,34 @@ video {
 #mainDisplay {
     display: none;
 }
-
+/* Img detail responsive */
 .img-detail {
-    width: 300px;
-    height: 150px;
+    width: 100%; /* Make the image take the full width of its container */
+    max-width: 300px; /* Limit the maximum width */
+    height: auto; /* Maintain aspect ratio */
     cursor: pointer;
-    /* transition: transform 0.2s ease; */
+    transition: transform 0.2s ease;
 }
+
+/* Optional: Hover effect to zoom in */
+.img-detail:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .img-detail {
+        max-width: 80%; /* On smaller screens, take up 80% of the container width */
+        margin: 0 auto; /* Center the image */
+    }
+}
+
+@media (max-width: 480px) {
+    .img-detail {
+        max-width: 100%; /* On very small screens, take up the full container width */
+    }
+}
+/* Img details responsive */
 
 .tags .badge {
     margin-right: 5px;
@@ -265,29 +286,52 @@ section ul li {
     color: #ffc107; /* Yellow for selected or hovered stars */
 }
 
-/* Review stars */
-.rating-stars {
-    display: inline-flex;
-    align-items: center;
+/* Genres css */
+
+.genre-link {
+    color: #007bff;
+    text-decoration: none;
 }
 
-.rating-stars .star {
-    font-size: 24px;
-    color: #ffc107; /* Yellow for lit stars */
-    position: relative;
+.genre-link:hover {
+    text-decoration: underline;
 }
 
-.rating-stars .star.dim {
-    color: #ddd; /* Gray for unlit stars */
+/* For the popular article off right sidebar section */
+/* Right Sidebar */
+.popular-articles {
+    background-color: #2a475e; /* Same as sidebar background */
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
-.rating-stars .star.half::after {
-    content: '★'; /* Overlap with a half-lit star */
-    color: #ffc107;
-    position: absolute;
-    left: 0;
-    width: 50%; /* Only half of the star is lit */
-    overflow: hidden;
-    white-space: nowrap;
+.popular-articles h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
 }
 
+.popular-articles ul {
+    padding-left: 0;
+}
+
+.popular-articles li {
+    margin-bottom: 10px;
+}
+
+.popular-articles a {
+    color: #58a6ff; /* Lighter blue for the links */
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.popular-articles a:hover {
+    color: #fff; /* White on hover for better contrast */
+    text-decoration: underline;
+}
+
+.popular-articles a:active {
+    color: #58a6ff; /* Revert back to blue when clicked */
+}

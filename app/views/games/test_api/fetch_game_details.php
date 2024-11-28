@@ -19,7 +19,7 @@ $users = [
         'id' => '1',
         'username' => 'Gamer123',   
         'avatar' => '/public/assets/images/avatar1.jpg',
-        'role' => 'user',
+        'role' => 'guest',
         'game-own' => [1, 4, 5],
     ],
     [

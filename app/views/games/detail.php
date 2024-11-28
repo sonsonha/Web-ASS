@@ -32,6 +32,7 @@
 
         <div class="row">
             <!-- Left Content -->
+
             <div class="col-md-8">
                 <!-- Display Area -->
                 <!-- <div class="display-area">
@@ -136,20 +137,31 @@
             <div class="col-md-4">
                 <div class="bg-dark text-white p-4 rounded">
                     <img id="game-thumbnail" src="" alt="Game Thumbnail" class="img-detail">
-                    <!-- <p id="game-description">Game Introduction</p> -->
                     <p><strong>Release Date:</strong> <span id="release-date">Unknown</span></p>
-                    <!-- <p><strong>Reviews:</strong> <span id="reviews-count">Unknown</span></p> -->
                     <p><strong>Average Rating:</strong> <span id="reviews-count"></span></p>
-                    <!-- <div id="average-rating-stars" class="rating-stars"></div> -->
                     <p><strong>Price:</strong> <span class="text-success" id="game-price">Unknown</span></p>
                     <p><strong>Publisher:</strong> <span class="text-success" id="publisher">Unknown</span></p>
+                    
+                    <!-- Dynamically generate and display genres as clickable links -->
+                    <p><strong>Genres:</strong> 
+                        <span id="genres">
+                            <!-- Genres will be populated here -->
+                        </span>
+                    </p>
+                </div>
+
+                <div id="popular-articles" class="d-flex flex-wrap gap-3">
+                    <!-- Articles will be populated here -->
                 </div>
             </div>
+
+            <!-- Modal for editing the article -->
+
         </div>
 
         <!-- Customer Reviews -->
         <section class="bg-dark text-white p-4 rounded my-4" id="reviews-section">
-            <h2>Customer Reviews</h2>
+            <h2>Rev</h2>
             <div id="reviews-container">
                 <!-- Reviews populated dynamically -->
             </div>
@@ -176,7 +188,36 @@
             </form>
         </section>
 
-    </main> 
+    </main>
+    
+    <div class="modal fade" id="editArticleModal" tabindex="-1" aria-labelledby="editArticleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editArticleModalLabel">Edit Article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editArticleForm">
+                        <div class="mb-3">
+                            <label for="editImage" class="form-label">Image URL</label>
+                            <input type="text" class="form-control" id="editImage" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="editTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editDescription" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog">
