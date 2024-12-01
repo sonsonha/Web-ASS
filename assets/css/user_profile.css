@@ -1,0 +1,44 @@
+html, body {
+    background-color: #142943 !important; /* Dark background */
+    color: #e6e6e6 in !important; /* Default text color */
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    background-color: #061e3a;
+    margin-top: 50px;
+    padding: 20px;
+    color: white;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+}
+
+.card {
+    background-color: #061e3a !important; /* Darker background */
+    color: white;
+    border: none;
+}
+
+.card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.cart-item {
+    cursor: pointer;
+    background-color: #2a475e;
+    padding: 15px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.cart-item:hover {
+    background-color: #3b556d;
+}
+
+.select-item {
+    cursor: pointer;
+}

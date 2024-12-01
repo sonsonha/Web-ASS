@@ -1,5 +1,5 @@
 <?php
-$page = isset($_GET['page']) ? $_GET['page'] : 'home';
+$page = isset($_GET['page']) ? $_GET['page'] : 'store';
 
 // Define paths
 $base_path = "views/";
@@ -8,8 +8,8 @@ $directories = [
     "admin" => "admin/",
     "auth" => "auth/",
     "error" => "error/",
-    "home" => "home/",
     "store" => "store/",
+    "support" => "support/",
     "user" => "user/",
     "cart" => "cart/",
     "detail" => "detail/",
@@ -47,4 +47,3 @@ foreach ($directories as $dir) {
 if (!$file_found) {
     include($base_path . "error/404.php");
 }
-?>

@@ -152,23 +152,25 @@
 <script>
     // Mock Data - Danh sách tài khoản mẫu
     const mockUsers = [{
-            email: "admin@gmail.com",
+            email: "a",
             password: "1",
             profile: {
                 username: "testuser",
                 email: "test@example.com",
                 role: "admin",
                 phone_number: "0123456789",
+                avatar: {},
             },
         },
         {
-            email: "user@gmail.com",
+            email: "u",
             password: "1",
             profile: {
                 username: "user123",
                 email: "user@example.com",
                 role: "user",
                 phone_number: "0987654321",
+                avatar: {},
             },
         },
     ];
@@ -194,9 +196,9 @@
             localStorage.setItem('email', user.profile.email);
             localStorage.setItem('role', user.profile.role);
             localStorage.setItem('phone_number', user.profile.phone_number);
-
+            
             // Chuyển hướng sau khi đăng nhập thành công
-            window.location.href = 'home';
+            window.location.href = 'store';
         } else {
             alert('Invalid email or password!');
         }

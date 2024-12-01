@@ -1,0 +1,112 @@
+/* General Page Styles */
+html, body {
+    background-color: #142943 !important; /* Dark background */
+    color: #e6e6e6 !important; /* Default text color */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+h1, h3 {
+    color: #f7ef98; /* Soft yellow for headings */
+}
+
+/* Coins Section */
+.coins-section {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #1f2a38;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.coins-section h3 {
+    margin: 0;
+}
+
+/* Total Payment Section */
+.total-payment-section {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #1f2a38;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.total-payment-section h3 {
+    margin: 0;
+}
+
+/* Cart Items Section */
+.cart-item {
+    background-color: #2a475e;
+    padding: 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item:hover {
+    background-color: #3b556d;
+}
+
+.cart-item img {
+    border-radius: 10px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Button Styles */
+.btn-warning {
+    background-color: #ffcc00;
+    color: #000;
+    font-weight: bold;
+}
+
+.btn-warning:hover {
+    background-color: #e6b800;
+    color: #000;
+}
+
+.btn-primary {
+    background-color: #0066cc;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #0052a3;
+}
+
+.btn-danger {
+    background-color: #cc0000;
+    font-weight: bold;
+}
+
+.btn-danger:hover {
+    background-color: #a30000;
+}
+
+.btn-success {
+    background-color: #28a745;
+    font-weight: bold;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .coins-section, .total-payment-section {
+        text-align: center;
+    }
+
+    .coins-section .d-flex, .total-payment-section .d-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .cart-item {
+        text-align: center;
+    }
+}

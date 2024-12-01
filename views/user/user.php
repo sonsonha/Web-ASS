@@ -1,42 +1,53 @@
-<?php include(__DIR__ . '/../templates/header.php'); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/user_profile.css">
+</head>
+<body>
+    <!-- Include Header -->
+    <?php include __DIR__ . '/../templates/header.php'; ?> <!-- Updated -->
 
-<div class="container mt-5">
-    <h1>User Profile</h1>
-    <div class="row">
-        <!-- Avatar và thông tin người dùng -->
-        <div class="col-md-4">
-            <img src="avatar.jpg" class="img-thumbnail mb-3" alt="User Avatar">
-            <button class="btn btn-dark btn-block">Change Avatar</button>
+    <main class="container my-5">
+        <h1 class="text-center text-white mb-4">User Profile</h1>
+        <div class="row justify-content-center">
+            <!-- User Information -->
+            <div class="col-md-6 p-4 rounded" style="background-color: #1b2838;">
+                <div class="text-center mb-3">
+                    <img id="user-avatar" src="/assets/images/default-avatar.png" alt="User Avatar" class="rounded-circle" width="150">
+                    <button id="change-picture-btn" class="btn btn-outline-light btn-sm mt-3">Edit_profile</button>
+                </div>
+                <div class="text-center mb-3">
+                    <h3 id="user-name">User Name</h3>
+                </div>
+                <div class="text">
+                    <p><strong>Username:</strong> <span id="user-email">Jhondoe123</span></p>
+                </div>
+                <div class="mb-3 text">
+                    <p><strong>Email:</strong> <span id="user-email">example@example.com</span></p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-8">
-            <h3>Username: <span>player1</span></h3>
-            <p>In-game Name: PlayerOne</p>
-            <p>Reputation Points: 85</p>
-            <p>Total Points: 1200</p>
-        </div>
-    </div>
 
-    <!-- Danh sách game đã mua -->
-    <h3 class="mt-5">Purchased Games</h3>
-    <ul class="list-group mb-3">
-        <li class="list-group-item">Game Title 1</li>
-        <li class="list-group-item">Game Title 2</li>
-        <!-- Repeat for more games -->
-    </ul>
+        <!-- Games Owned Section -->
+        <section class="mt-5">
+            <h2 class="text-white mb-4">Games Owned</h2>
+            <div id="games-owned" class="row g-4">
+                <!-- Games will be dynamically populated -->
+            </div>
+        </section>
+    </main>
 
-    <!-- Giỏ hàng -->
-    <h3>Shopping Cart</h3>
-    <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            Game Title 3
-            <button class="btn btn-danger btn-sm">Remove</button>
-        </li>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            Game Title 4
-            <button class="btn btn-danger btn-sm">Remove</button>
-        </li>
-        <!-- Repeat for more items -->
-    </ul>
-</div>
+    <!-- Include Footer -->
+    <?php include __DIR__ . '/../templates/footer.php'; ?> <!-- Updated -->
 
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Profile JS -->
+    <script src="/assets/js/user_profile.js"></script>
+</body>
+</html>

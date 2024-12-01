@@ -249,7 +249,7 @@
             localStorage.setItem('lastname', lastname);
 
             alert('Registration successful!');
-            window.location.href = 'home';
+            window.location.href = 'login';
         });
         // document.getElementById('regitsterButton').addEventListener('click', async () => {
         //     const firstname = document.getElementById('firstname').value.trim();

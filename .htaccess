@@ -8,4 +8,4 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?page=$1 [L,QSA]
 
 # Nếu URL là rỗng ("/"), chuyển tới trang chủ
-RewriteRule ^$ index.php?page=home [L,QSA]
+RewriteRule ^$ index.php?page=store [L,QSA]
