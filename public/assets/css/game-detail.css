@@ -210,15 +210,172 @@ section ul li {
     margin-right: 10px;
 }
 
+/* Review container */
 .review {
-    background-color: #2a475e;
+    background-color: #2a475e; /* Dark background */
     padding: 15px;
     border-radius: 8px;
+    margin-bottom: 15px; /* Space between reviews */
 }
 
+/* Profile image styling */
 .review img {
-    border-radius: 50%;
+    border-radius: 50%; /* Round profile image */
+    object-fit: cover; /* Ensure the image fills the circle */
 }
+
+/* Layout for comment text and profile */
+.review .d-flex {
+    display: flex;
+    flex-direction: row; /* Default row layout */
+    align-items: flex-start; /* Align items to the top */
+}
+
+.review .review-username {
+    font-weight: bold;
+    color: #ffffff; /* White username */
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.review .review-message {
+    color: #e6e6e6; /* Light text color for the comment */
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Styling for like/dislike buttons */
+.review .like-btn,
+.review .dislike-btn {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: #3b4f63;
+    border: none;
+    color: #ffffff;
+}
+
+.review .like-btn.active,
+.review .dislike-btn.active {
+    background-color: #58a6ff; /* Highlight active buttons */
+}
+
+.review .like-count,
+.review .dislike-count {
+    margin-left: 5px;
+}
+
+/* Button style adjustments for reply, hide, unhide, and delete */
+.review .btn {
+    font-size: 0.9rem;
+}
+
+.ms-3 {
+    width: 100%;
+    /* background-color: #58a6ff;    */
+}
+
+/* Styling for reply input */
+.mb-3 textarea {
+    width: 100%;
+    resize: none; /* Disable resizing */
+}
+.reply-input-container textarea {
+    width: 100%;
+    resize: none; 
+}
+
+.review .btn {
+    margin-right: 10px; /* Space out the buttons */
+    margin-bottom: 10px;
+}
+
+.reply-btn, .like-btn, .dislike-btn {
+    margin-right: 15px; /* Additional margin between buttons */
+}
+
+.reply-input-container {
+    margin-top: 10px;
+}
+
+.reply-input-container .submit-reply-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+}
+
+/* Admin controls (Hide/Unhide, Delete buttons) */
+.review .toggle-visibility-btn,
+.review .delete-review-btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+}
+
+/* Mobile and Tablet Responsiveness */
+@media (max-width: 768px) {
+    .review {
+        padding: 10px;
+    }
+
+
+
+    .review img {
+        margin-bottom: 10px; /* Space between image and text */
+    }
+
+    .review .review-username {
+        font-size: 1rem; /* Adjust font size for smaller screens */
+    }
+
+    .review .review-message {
+        font-size: 0.9rem; /* Adjust font size for smaller screens */
+    }
+
+    /* .review .like-btn,
+    .review .dislike-btn {
+        font-size: 0.8rem;
+    } */
+
+    .reply-input-container textarea {
+        font-size: 0.9rem;
+    }
+
+    .reply-input-container .submit-reply-btn {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .review {
+        padding: 8px;
+    }
+
+    .review img {
+        width: 40px; /* Smaller profile image on very small screens */
+        height: 40px;
+    }
+
+    .review .review-username {
+        font-size: 0.9rem;
+    }
+
+    .review .review-message {
+        font-size: 0.8rem;
+    }
+
+    .review .like-btn,
+    .review .dislike-btn {
+        font-size: 0.7rem;
+    }
+
+    .reply-input-container textarea {
+        font-size: 0.8rem;
+    }
+
+    .reply-input-container .submit-reply-btn {
+        font-size: 0.7rem;
+    }
+}
+
 
 .comments .comment {
     background-color: #3b4f63;
@@ -300,7 +457,7 @@ section ul li {
 /* For the popular article off right sidebar section */
 /* Right Sidebar */
 .popular-articles {
-    background-color: #2a475e; /* Same as sidebar background */
+    background-color: #2a475e; /* Sidebar background */
     padding: 20px;
     border-radius: 10px;
     margin-top: 20px;
@@ -335,3 +492,194 @@ section ul li {
 .popular-articles a:active {
     color: #58a6ff; /* Revert back to blue when clicked */
 }
+
+/* Set the width of the card to be the same as the sidebar section */
+#popular-articles .card {
+    width: 100%; /* Make the card take up the full width of its container */
+    background-color: #2a475e; /* Ensure the background color matches */
+    border-radius: 8px;
+    color: #e6e6e6;
+    margin-bottom: 20px;
+    height: auto; /* Adjust the height based on content */
+}
+
+#popular-articles .card img {
+    width: 100%; /* Ensure image takes up the full width of the card */
+    height: 150px; /* Set a fixed height for the image */
+    object-fit: cover; /* Ensure the image covers the area without stretching */
+    border-radius: 8px;
+}
+
+#popular-articles .card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 0.9rem;
+}
+
+#popular-articles .card .btn {
+    background-color: #58a6ff;
+    color: white;
+}
+
+#popular-articles .card .btn:hover {
+    background-color: #007bff;
+}
+
+/* Img detail responsive */
+.img-detail {
+    width: 100%; /* Make the image take the full width of its container */
+    max-width: 300px; /* Limit the maximum width */
+    height: auto; /* Maintain aspect ratio */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.img-detail:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .img-detail {
+        max-width: 80%; /* On smaller screens, take up 80% of the container width */
+        margin: 0 auto; /* Center the image */
+    }
+
+    #popular-articles .card {
+        width: 100%; /* Ensure card takes full width on smaller screens */
+    }
+
+    #popular-articles .card img {
+        height: 120px; /* Adjust image height for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .img-detail {
+        max-width: 100%; /* On very small screens, take up the full container width */
+    }
+
+    #popular-articles .card img {
+        height: 100px; /* Adjust further for very small screens */
+    }
+}
+
+/* For the modal popular article off right sidebar section */
+/* Modal Styles */
+.modal-content {
+    background-color: #2a475e; /* Dark background for the modal */
+    color: #e6e6e6; /* Light text color for readability */
+    border-radius: 12px; /* Rounded corners for the modal */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    /* padding: 20px; */
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Light border for separation */
+    padding-bottom: 15px; /* Spacing between header and body */
+    background-color: #1e3541; /* Slightly darker background for header */
+    border-radius: 10px 10px 0 0; /* Rounded top corners */
+}
+
+.modal-title {
+    font-size: 1.5rem; /* Slightly larger font for the title */
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+}
+
+.modal-body {
+    padding-top: 20px;
+    background-color: #2a475e; /* Match modal background */
+}
+
+.modal-body label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #d0d0d0; /* Lighter text for labels */
+}
+
+.modal-body .form-control {
+    background-color: #1e3541; /* Dark input fields */
+    border: 1px solid #4a677d; /* Subtle border */
+    color: #e6e6e6; /* Light text color */
+    border-radius: 10px; /* Rounded input fields */
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.modal-body .form-control:focus {
+    border-color: #58a6ff; /* Blue border on focus */
+    box-shadow: 0 0 5px #58a6ff; /* Light glow effect on focus */
+    outline: none; /* Remove default outline */
+}
+
+.modal-body .form-control::placeholder {
+    color: #a1b2b8; /* Lighter placeholder text */
+}
+
+.modal-footer {
+    background-color: #1e3541;
+    border-top: 1px solid rgba(255, 255, 255, 0.2); /* Light top border */
+    padding-top: 15px;
+    border-radius: 0 0 10px 10px; /* Rounded bottom corners */
+}
+
+.modal-footer .btn {
+    background-color: #58a6ff; /* Primary button background color */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.modal-footer .btn:hover {
+    background-color: #007bff; /* Button hover color */
+}
+
+.modal-footer .btn:focus {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Button focus effect */
+}
+
+.modal-footer .btn-close {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+.modal-footer .btn-close:hover {
+    color: #58a6ff; /* Change color on hover */
+}
+
+/* Modal Backdrop */
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.7); /* Dark backdrop */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-dialog {
+        max-width: 90%;
+        margin: 30px auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-body .form-control {
+        padding: 10px;
+    }
+
+    .modal-footer .btn {
+        padding: 8px 16px;
+    }
+}
+

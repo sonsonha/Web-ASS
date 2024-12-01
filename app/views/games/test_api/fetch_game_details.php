@@ -18,15 +18,15 @@ $users = [
     [
         'id' => '1',
         'username' => 'Gamer123',   
-        'avatar' => '/public/assets/images/avatar1.jpg',
-        'role' => 'guest',
+        'avatar' => '/public/assets/images/game1.webp',
+        'role' => 'user',
         'game-own' => [1, 4, 5],
     ],
     [
         'id' => '2',
         'username' => 'PlayerXYZ',
         'avatar' => '/public/assets/images/avatar2.jpg',
-        'role' => 'user',
+        'role' => 'admin',
         'game-own' => [2, 3],
     ],
     [
@@ -56,7 +56,117 @@ $reviews = [
     1 => [
         [
             'username' => 'Gamer123',
-            'avatar' => '/public/assets/images/avatar1.jpg',
+            'avatar' => '/public/assets/images/game1.webp',
+            'rating' => 1,
+            'show' => true,
+            'likes' => 91,
+            'dislikes' => 5,
+            'message' => 'Bad!',
+            'replies' => [
+                [
+                    'username' => 'admin1',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I disagree, this game has potential!',
+                    'likes' => 5,
+                    'dislikes' => 0,
+                    'show' => true, // Admin can hide/unhide
+                    'id' => 1, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ2',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ3',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ4',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ5',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ6',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ7',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ6',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ7',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ6',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ7',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+            ]
+        ],
+        [
+            'username' => 'Gamer123',
+            'avatar' => '/public/assets/images/game1.webp',
             'rating' => 1,
             'show' => true,
             'likes' => 91,
@@ -64,20 +174,49 @@ $reviews = [
             'message' => 'Bad!',
         ],
         [
+            'username' => 'Gamer123',
+            'avatar' => '/public/assets/images/game1.webp',
+            'rating' => 1,
+            'show' => true,
+            'likes' => 91,
+            'dislikes' => 5,
+            'message' => 'Bad!',
+            'replies' => [
+                [
+                    'username' => 'admin',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I disagree, this game has potential!',
+                    'likes' => 5,
+                    'dislikes' => 0,
+                    'show' => true, // Admin can hide/unhide
+                    'id' => 1, // Unique ID for the reply
+                ],
+                [
+                    'username' => 'PlayerXYZ',
+                    'avatar' => '/public/assets/images/game1.webp',
+                    'message' => 'I think the game could improve with better graphics.',
+                    'likes' => 3,
+                    'dislikes' => 1,
+                    'show' => true,
+                    'id' => 2, // Unique ID for the reply
+                ],
+            ]
+        ],
+        [
             'username' => 'PlayerXYZ',
             'avatar' => '/public/assets/images/avatar2.jpg',
             'rating' => 4,
-            'show' => false,
+            'show' => true,
             'message' => 'Great game but could use more content.',
             'likes' => 5,
             'dislikes' => 1,
         ],
         [
             'username' => 'yasuo',
-            'avatar' => '/public/assets/images/avatar2.jpg',
+            'avatar' => '/public/assets/images/game1.webp',
             'rating' => 5,
             'show' => true,
-            'message' => 'Great game but could use more content.',
+            'message' => 'Great game but could use more content. Great game but could use more content.Great game but could use more content.Great game but could use more content.',
             'likes' => 5,
             'dislikes' => 1,
         ],
