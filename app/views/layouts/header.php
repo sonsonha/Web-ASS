@@ -5,16 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Store - Admin</title>
-    <link rel="stylesheet" href="/public/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 </head>
 
 <body>
+    <style>
+        .navavatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #ccc;
+            /* Màu nền khi không có ảnh */
+        }
+    </style>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: black;height: 4.5rem;">
-        <img src="/assets/img/ZeroStress.jpg" style="height: 50px;" href="home">
+        <img src="/assets/images/ZeroStress.jpg" style="height: 50px;" href="home">
         <!-- Nút mở/đóng khi trên màn hình nhỏ -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -22,19 +32,33 @@
         <!-- Các mục điều hướng -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav">
-                <a class="navlink" href="home">Home</a>
                 <a class="navlink" href="store">Store</a>
+                <a class="navlink" href="support" id="supportLink">Support</a>
                 <a class="navlink" href="about">About</a>
-                <a class="navlink" id="adminLink" href="admin">Admin</a>
-                <a class="navlink" id="userLink" href="user">User</a>
+                <!-- <a class="navlink" id="adminLink" href="admin">Admin</a>
+                <a class="navlink" id="userLink" href="user">User</a> -->
 
             </div>
             <div class="navbar-auth">
+
                 <a href="cart" id="cartLink" class="btn btn-link small" style="display: none;color:azure">
                     <i class="fas fa-shopping-cart"></i>
                 </a>
-                <a href="/app/views/auth/login.php" id="loginLink" class="btn btn-link small">Login</a>
-                <a href="logout" id="logoutLink" class="btn btn-link small" style="display: none;">Logout</a>
+                <a class="navlink" id="adminLink" href="admin" style="display: none">
+                    <img id="adminAvatar" src="" class="navavatar">
+                </a>
+                <a class="navlink" id="userLink" href="user" style="display: none">
+                    <img id="userAvatar" src="" class="navavatar">
+                </a>
+                <!-- <a href="login" id="loginLink" class="btn btn-link small">Login</a>
+                <a href="logout" id="logoutLink" class="btn btn-link small" style="display: none;">Logout</a> -->
+                <a href="login" id="loginLink" class="btn btn-link small">
+                    <i class="fas fa-sign-in-alt"> Login</i> <!-- Biểu tượng login -->
+                </a>
+                <a href="logout" id="logoutLink" class="btn btn-link small" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i> <!-- Biểu tượng logout -->
+                </a>
+
             </div>
 
             <script>
@@ -47,18 +71,22 @@
                     const loginLink = document.getElementById('loginLink');
                     const logoutLink = document.getElementById('logoutLink');
                     const cartLink = document.getElementById('cartLink'); // Nút giỏ hàng
-
+                    const supportLink = document.getElementById('supportLink');
                     // Hiển thị hoặc ẩn liên kết dựa trên vai trò
                     if (role === 'guest') {
                         adminLink.style.display = 'none';
                         userLink.style.display = 'none';
-                        cartLink.style.display = 'none'; // Ẩn giỏ hàng
+                        cartLink.style.display = 'none';
                     } else if (role === 'user') {
                         adminLink.style.display = 'none';
-                        cartLink.style.display = 'inline'; // Hiển thị giỏ hàng
+                        userLink.style.display = 'inline';
+                        cartLink.style.display = 'inline';
+                        supportLink.style.display = 'inline';
                     } else if (role === 'admin') {
                         userLink.style.display = 'none';
-                        cartLink.style.display = 'none'; // Ẩn giỏ hàng
+                        cartLink.style.display = 'none';
+                        adminLink.style.display = 'inline';
+                        supportLink.style.display = 'none';
                     }
 
                     // Quản lý trạng thái đăng nhập

@@ -182,7 +182,7 @@
                 <span>Confirm password</span>
             </label>
             <button class="submit" type="button" id="regitsterButton">Submit</button>
-            <p class="signin">Already have an acount ? <a href="/app/views/auth/login.php">Login</a> </p>
+            <p class="signin">Already have an acount ? <a href="login">Login</a> </p>
         </form>
 
     </div>
@@ -249,64 +249,64 @@
             localStorage.setItem('lastname', lastname);
 
             alert('Registration successful!');
-            window.location.href = 'home';
+            window.location.href = 'login';
         });
-        document.getElementById('regitsterButton').addEventListener('click', async () => {
-            const firstname = document.getElementById('firstname').value.trim();
-            const lastname = document.getElementById('lastname').value.trim();
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const confirmpassword = document.getElementById('confirmpassword').value.trim();
+        // document.getElementById('regitsterButton').addEventListener('click', async () => {
+        //     const firstname = document.getElementById('firstname').value.trim();
+        //     const lastname = document.getElementById('lastname').value.trim();
+        //     const username = document.getElementById('username').value.trim();
+        //     const email = document.getElementById('email').value.trim();
+        //     const password = document.getElementById('password').value.trim();
+        //     const confirmpassword = document.getElementById('confirmpassword').value.trim();
 
-            if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
-                alert('Please enter your information!');
-                return;
-            }
-            if (password !== confirmpassword) {
-                alert('Passwords do not match!');
-                return;
-            }
-            // console.log('Sending:', {
-            //     email,
-            //     password
-            // }); 
+        //     if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
+        //         alert('Please enter your information!');
+        //         return;
+        //     }
+        //     if (password !== confirmpassword) {
+        //         alert('Passwords do not match!');
+        //         return;
+        //     }
+        //     // console.log('Sending:', {
+        //     //     email,
+        //     //     password
+        //     // }); 
 
-            try {
-                const response = await fetch('http://localhost:8080/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        firstname,
-                        lastname,
-                        username,
-                        email,
-                        password,
-                    }),
-                });
+        //     try {
+        //         const response = await fetch('http://localhost:8080/register', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify({
+        //                 firstname,
+        //                 lastname,
+        //                 username,
+        //                 email,
+        //                 password,
+        //             }),
+        //         });
 
-                const data = await response.json();
+        //         const data = await response.json();
 
-                if (response.ok) {
-                    alert(data.message);
-                    localStorage.setItem('accessToken', data.accessToken);
-                    window.location.href = 'home';
-                } else if (data.error) {
-                    if (data.error.includes('username')) {
-                        alert('This username is already in use!');
-                    } else if (data.error.includes('email')) {
-                        alert('This email is already in use!');
-                    } else {
-                        alert(data.error || 'Registration Failed!');
-                    }
-                } else {
-                    alert('An unknown error occurred. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred, please try again!');
-            }
-        });
+        //         if (response.ok) {
+        //             alert(data.message);
+        //             localStorage.setItem('accessToken', data.accessToken);
+        //             window.location.href = 'home';
+        //         } else if (data.error) {
+        //             if (data.error.includes('username')) {
+        //                 alert('This username is already in use!');
+        //             } else if (data.error.includes('email')) {
+        //                 alert('This email is already in use!');
+        //             } else {
+        //                 alert(data.error || 'Registration Failed!');
+        //             }
+        //         } else {
+        //             alert('An unknown error occurred. Please try again.');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //         alert('An error occurred, please try again!');
+        //     }
+        // });
     </script>

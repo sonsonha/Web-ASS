@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch new releases from the backend
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_new_releases.php");
+        const response = await fetch("/app/views/store/test_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch new releases");
         newReleases = await response.json();
     } catch (error) {
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch trending games from the backend
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_trending_games.php");
+        const response = await fetch("/app/views/store/test_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch trending games");
         trendingGames = await response.json();
     } catch (error) {
@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch top-rated games from the backend
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_top_rate_games.php");
+        const response = await fetch("/app/views/store/test_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch top-rated games");
         topRateGames = await response.json();
     } catch (error) {

@@ -7,16 +7,15 @@
             data-bs-target="#navbarNav"
             aria-controls="navbarNav"
             aria-expanded="false"
-            aria-label="Toggle navigation"
-        >
+            aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/app/views/store/store.php">
-                    <i class="fa-solid fa-gamepad"></i> Home
+                    <a class="nav-link active" href="store">
+                        <i class="fa-solid fa-gamepad"></i> Home
                     </a>
                 </li>
                 <li class="nav-item dropdown">
@@ -26,8 +25,7 @@
                         id="categoriesDropdown"
                         role="button"
                         data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                    >
+                        aria-expanded="false">
                         Categories
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
@@ -45,8 +43,7 @@
                     type="search"
                     placeholder="Search games"
                     aria-label="Search"
-                    id="searchInput"
-                />
+                    id="searchInput" />
             </form>
         </div>
     </div>
@@ -61,31 +58,36 @@
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", async () => {
-    const categoriesDropdown = document.getElementById("categoriesDropdown");
-    const dropdownMenu = categoriesDropdown.nextElementSibling; // Get the corresponding dropdown menu
+    document.addEventListener("DOMContentLoaded", async () => {
+        const categoriesDropdown = document.getElementById("categoriesDropdown");
+        const dropdownMenu = categoriesDropdown.nextElementSibling; // Lấy phần tử dropdown-menu tương ứng
 
-    try {
-        // Fetch categories from the backend
-        const response = await fetch("test_api/fetch_categories.php");
-        if (!response.ok) throw new Error("Failed to fetch categories");
-        const categories = await response.json();
+        try {
+            // Lấy danh mục từ backend
+            const response = await fetch("/views/store/test_api/fetch_categories.php");
+            if (!response.ok) throw new Error("Failed to fetch categories");
+            const categories = await response.json();
 
-        // Clear existing dropdown items (if any)
-        dropdownMenu.innerHTML = "";
+            // Xóa các mục dropdown cũ (nếu có)
+            dropdownMenu.innerHTML = "";
+            console.log(categories); // Kiểm tra dữ liệu categories
 
-        // Populate dropdown with categories
-        categories.forEach((category) => {
-            const dropdownItem = document.createElement("li");
-            dropdownItem.innerHTML = `
-                <a class="dropdown-item" href="app/views/store/category.php?category=${category.slug}">
-                    ${category.name}
-                </a>`;
-            dropdownMenu.appendChild(dropdownItem);
-        });
+            // Kiểm tra nếu có danh mục
+            if (categories && categories.length > 0) {
+                categories.forEach((category) => {
+                    const dropdownItem = document.createElement("li");
+                    dropdownItem.innerHTML = `
+                    <a class="dropdown-item" href="category.php?category=${category.slug}">
+                        ${category.name}
+                    </a>`;
+                    dropdownMenu.appendChild(dropdownItem);
+                });
+            } else {
+                dropdownMenu.innerHTML = "<li>No categories available</li>";
+            }
 
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-    }
-});
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    });
 </script>

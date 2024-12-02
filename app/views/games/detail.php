@@ -52,7 +52,7 @@
 
                 <!-- Add to Cart Section -->
                 <section class="purchase-section bg-dark text-white p-4 rounded my-4">
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                         <div>
                             <h4 id="buy-game-title">Buy Game Name</h4>
                             <div class="d-flex align-items-center gap-3">
@@ -65,11 +65,12 @@
                                 </p>
                             </div>
                         </div>
-                        <button class="btn btn-success add-to-cart-btn" id="add-to-cart-btn">
+                        <button class="btn btn-success add-to-cart-btn mt-3 mt-md-0" id="add-to-cart-btn">
                             Add to Cart
                         </button>
                     </div>
                 </section>
+
 
                 <!-- Game Introduction -->
                 <section class="bg-dark text-white p-4 rounded my-4">

@@ -1,4 +1,4 @@
-<?php include(__DIR__ . '/../layouts/header.php'); ?>
+<?php include(__DIR__ . '/../templates/header.php'); ?>
 
 <style>
     body {

@@ -36,14 +36,37 @@ video {
     position: relative;
 }
 
-/* .thumbnail-carousel {
+/* Responsive righ sidebar */
+/* Parent container for carousel and sidebar */
+.row {
     display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    gap: 10px;
-    width: 100%;
-    margin-top: 20px;
-} */
+    flex-wrap: wrap;
+}
+
+/* Ensure the carousel and sidebar are side by side on larger screens */
+.col-md-8 {
+    flex: 0 0 66.6667%;  /* 8 columns width on large screens */
+}
+
+.col-md-4 {
+    flex: 0 0 33.3333%;  /* 4 columns width on large screens */
+}
+
+/* For smaller screens, stack the sidebar on top of the carousel */
+@media (max-width: 768px) {
+    .col-md-8, .col-md-4 {
+        flex: 0 0 100%;  /* Make both elements take full width */
+    }
+    
+    .card {
+        flex: 0 0 100%;
+    }
+
+    /* Optional: add some spacing between the sections when stacked */
+    .col-md-4 {
+        margin-top: 20px;  /* Adds space between the sidebar and the carousel */
+    }
+}
 
 
  /* abc1 */
@@ -175,6 +198,25 @@ video {
 
 
 /* Add to Cart Section */
+/* Ensuring the content is aligned properly on smaller screens */
+@media (max-width: 768px) {
+    .purchase-section .d-flex {
+        flex-direction: column; /* Stack vertically on smaller screens */
+        align-items: flex-start; /* Align items to the left */
+    }
+
+    .purchase-section .add-to-cart-btn {
+        width: 100%; /* Make the button full width on small screens */
+        margin-top: 15px; /* Add some spacing between button and text */
+    }
+
+    /* Adjust pricing section for mobile view */
+    .purchase-section .pricing-info {
+        text-align: left; /* Align prices to the left on small screens */
+    }
+}
+
+
 .purchase-section {
     background-color: #2a475e;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -501,6 +543,7 @@ section ul li {
     color: #e6e6e6;
     margin-bottom: 20px;
     height: auto; /* Adjust the height based on content */
+    flex: 0 0 100%;
 }
 
 #popular-articles .card img {
@@ -539,6 +582,7 @@ section ul li {
     height: auto; /* Maintain aspect ratio */
     cursor: pointer;
     transition: transform 0.2s ease;
+    flex: 0 0 100%;
 }
 
 .img-detail:hover {
@@ -548,7 +592,7 @@ section ul li {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .img-detail {
-        max-width: 80%; /* On smaller screens, take up 80% of the container width */
+        max-width: 100%; /* On smaller screens, take up 80% of the container width */
         margin: 0 auto; /* Center the image */
     }
 
