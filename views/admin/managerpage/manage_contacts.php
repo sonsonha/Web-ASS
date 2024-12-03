@@ -6,6 +6,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Game</th>
                 <th>Message</th>
                 <th>Date</th>
                 <th>Actions</th>
@@ -19,10 +20,30 @@
 
 <script>
     // Mock Data for Contacts
-    const mockContacts = [
-        { id: 1, name: 'John Doe', email: 'johndoe@example.com', message: 'Need help with my account.', date: '2024-11-21' },
-        { id: 2, name: 'Jane Smith', email: 'janesmith@example.com', message: 'I have a question about billing.', date: '2024-11-20' },
-        { id: 3, name: 'Alice Brown', email: 'alicebrown@example.com', message: 'Can you reset my password?', date: '2024-11-19' },
+    const mockContacts = [{
+            id: 1,
+            name: 'John Doe',
+            email: 'johndoe@example.com',
+            game: 'Valorant',
+            message: 'Need help with my account.',
+            date: '2024-11-21'
+        },
+        {
+            id: 2,
+            name: 'Jane Smith',
+            email: 'janesmith@example.com',
+            game: 'Valorant',
+            message: 'I have a question about billing.',
+            date: '2024-11-20'
+        },
+        {
+            id: 3,
+            name: 'Alice Brown',
+            email: 'alicebrown@example.com',
+            game: 'Valorant',
+            message: 'Can you reset my password?',
+            date: '2024-11-19'
+        },
     ];
 
     // Populate Contacts Table
@@ -36,10 +57,10 @@
                 <td>${contact.id}</td>
                 <td>${contact.name}</td>
                 <td>${contact.email}</td>
+                <td>${contact.game}</td>
                 <td>${contact.message}</td>
                 <td>${contact.date}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm" onclick="replyToContact(${contact.id})">Reply</button>
                     <button class="btn btn-danger btn-sm" onclick="deleteContact(${contact.id})">Delete</button>
                 </td>
             `;
@@ -47,18 +68,6 @@
         });
     }
 
-    // Handle "Reply" Button Click
-    function replyToContact(id) {
-        const contact = mockContacts.find((c) => c.id === id);
-        if (contact) {
-            const replyMessage = prompt(`Reply to ${contact.name} (${contact.email}):`, '');
-            if (replyMessage) {
-                alert(`Your reply to ${contact.name}: "${replyMessage}" has been sent.`);
-            }
-        } else {
-            alert('Contact not found!');
-        }
-    }
 
     // Handle "Delete" Button Click
     function deleteContact(id) {

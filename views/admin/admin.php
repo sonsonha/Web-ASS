@@ -31,14 +31,12 @@
     <div class="mt-0">
         <a href="#" class="nav-link text-light d-inline-block" onclick="showSection('manageUsers')">Manage Users</a>
         <a href="#" class="nav-link text-light d-inline-block" onclick="showSection('manageContacts')">Manage Contacts</a>
-        <a href="#" class="nav-link text-light d-inline-block" onclick="showSection('manageEvent')">Manage Event</a>
         <a href="#" class="nav-link text-light d-inline-block" onclick="showSection('manageProducts')">Manage Products</a>
     </div>
 
     <?php include(__DIR__ . '/managerpage/manage_users.php'); ?>
     
     <?php include(__DIR__ . '/managerpage/manage_contacts.php'); ?>
-    <?php include(__DIR__ . '/managerpage/manage_event.php'); ?>
     <?php include(__DIR__ . '/managerpage/manage_products.php'); ?>
 </div>
 
