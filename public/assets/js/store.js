@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch games from the backend
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_carousel_games.php");
+        const response = await fetch("http://localhost/test_api/store_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch game data");
         games = await response.json();
     } catch (error) {

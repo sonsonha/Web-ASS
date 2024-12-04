@@ -2,7 +2,8 @@
 $page = isset($_GET['page']) ? $_GET['page'] : 'store';
 
 // Define paths
-$base_path = "app/views/";
+$base_path = __DIR__ . "/../app/views/";
+
 $directories = [
     "about" => "about/",
     "admin" => "admin/",
