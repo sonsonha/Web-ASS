@@ -40,21 +40,21 @@ class AdminController {
                 'message' => 'No users found'
             ]);
         }
-    }
+    }   
 
-    // API 3: Ban tài khoản của user
-    public function banUser($username) {
-        $result = $this->adminModel->banUser($username);
+    // API 3: Ban/unBan tài khoản của user
+    public function toggleUserStatus($username) {
+        $result = $this->adminModel->toggleUserStatus($username);
 
         if ($result) {
             echo json_encode([
                 'status' => 'success',
-                'message' => 'User has been banned successfully'
+                'message' => 'User status has been toggled successfully'
             ]);
         } else {
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Failed to ban user'
+                'message' => 'Failed to toggle user status'
             ]);
         }
     }

@@ -31,12 +31,26 @@ class AdminModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function banUser($username){
-        $query = "UPDATE user SET status = 0 WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
+    public function toggleUserStatus($username) {
+        $query = "SELECT status FROM user WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":username", $username, PDO::PARAM_STR);
-        
-        return $stmt->execute();
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            $currentStatus = $stmt->fetchColumn();
+
+            $newStatus = ($currentStatus == 1) ? 0 : 1;
+
+            $updateQuery = "UPDATE user SET status = :newStatus WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
+            $updateStmt = $this->db->prepare($updateQuery);
+            $updateStmt->bindParam(":newStatus", $newStatus, PDO::PARAM_INT);
+            $updateStmt->bindParam(":username", $username, PDO::PARAM_STR);
+
+            return $updateStmt->execute();
+        } else {
+            return false; 
+        }
     }
 
     public function updateUsername($oldUsername, $newUsername) {
