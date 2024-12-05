@@ -49,7 +49,6 @@
 
 <script>
 // Function to fetch users from the API
-// Function to fetch users from the API
 async function fetchUsers() {
     try {
         const response = await fetch('/../api/get_all_users.php');
@@ -88,13 +87,43 @@ function populateUserTable(users) {
             <td>
                 <button class="btn btn-info btn-sm" onclick="viewUser(${user.id})">View</button>
                 <button class="btn btn-primary btn-sm" onclick="editUser(${user.id})">Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="banUser(${user.id})" ${!user.status ? 'disabled' : ''}>Ban</button>
+                <button class="btn btn-danger btn-sm" id="banBtn_${user.id}" onclick="toggleBanUser('${user.username}')">
+                    ${user.status ? 'Ban' : 'Unban'}
+                </button>
                 <button class="btn btn-secondary btn-sm" onclick="deleteUser(${user.id})">Delete</button>
             </td>
         `;
         tbody.appendChild(row);
     });
 }
+
+// Function to toggle ban/unban status of a user
+async function toggleBanUser(username) {
+    try {
+        const response = await fetch('/../api/toggle_status_user.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+            }),
+        });
+
+        const data = await response.json();
+        if (data.status === 'success') {
+            // Fetch the updated user list again after status toggle
+            fetchUsers(); // This will refresh the users list after status change
+            alert(`User status has been ${data.newStatus ? 'activated' : 'banned'}!`);
+        } else {
+            alert('Failed to toggle user status: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error toggling user status. Please check your connection.');
+    }
+}
+
 
 // Function to open the view modal
 function viewUser(id) {
@@ -124,18 +153,6 @@ function editUser(id) {
         };
 
         document.getElementById('editModal').style.display = 'block';
-    } else {
-        alert('User not found!');
-    }
-}
-
-// Function to ban a user
-function banUser(id) {
-    const user = mockUsers.find((u) => u.id === id);
-    if (user) {
-        user.status = false; // Mark as banned (inactive)
-        alert(`User "${user.username}" has been banned!`);
-        populateUserTable(mockUsers);
     } else {
         alert('User not found!');
     }

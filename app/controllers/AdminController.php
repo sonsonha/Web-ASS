@@ -12,6 +12,8 @@ class AdminController {
     public function getUserInfo($username) {
         $user = $this->adminModel->getUserInfo($username);
 
+        header('Content-Type: application/json'); // Đặt kiểu dữ liệu trả về là JSON
+
         if ($user) {
             echo json_encode([
                 'status' => 'success',
@@ -31,7 +33,7 @@ class AdminController {
 
         if ($users) {
             echo json_encode([
-                'status' => 'success',
+                'status' => 'success',  
                 'data' => $users
             ]);
         } else {
