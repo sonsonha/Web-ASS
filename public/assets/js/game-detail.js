@@ -1,7 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const userId = '1'; // Example user ID (replace with actual logic)
-    const urlParams = new URLSearchParams(window.location.search);
-    const gameId = urlParams.get('id'); // Retrieve the id from the query string
+
+    // const urlParams = new URLSearchParams(window.location.search);
+    // const gameId = urlParams.get('id'); // Retrieve the id from the query string
+
+    const pathParts = window.location.pathname.split('/');
+    const gameId = pathParts[pathParts.length - 2];
+
+    console.log('Game ID:', gameId);
 
     if (!gameId) {
         console.error('No game ID provided in the URL.');
@@ -14,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch game details and user information
-    fetch('/app/views/games/test_api/fetch_game_details.php', {
+    fetch('/../test_api/games_api/fetch_game_details.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -36,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function fetchPopularArticles (user) {
     // Fetch the articles data
-    fetch('/app/views/games/test_api/fetch_popular_articles.php')
+    fetch('/../test_api/games_api/fetch_popular_articles.php')
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -105,7 +111,7 @@ function openEditModal(article) {
         };
 
         // Send the updated data to the back-end
-        fetch('/app/views/games/test_api/update_article.php', {
+        fetch('/../test_api/games_api/update_article.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedArticle)
@@ -137,7 +143,7 @@ function populateGameDetails(game, user) {
     document.getElementById('game-title').textContent = game.title || 'Unknown';
     document.getElementById('buy-game-title').textContent = `Buy ${game.title}`;
 
-    document.getElementById('game-thumbnail').src = game.thumbnail || '/public/assets/images/game6.webp';
+    document.getElementById('game-thumbnail').src = game.background_image || '';
     document.getElementById('release-date').textContent = game.release_date || 'Unknown';
     document.getElementById('publisher').textContent = game.publisher || 'Unknown';
 
@@ -209,7 +215,7 @@ function populateGameDetails(game, user) {
 }
 
 function addToCart(userId, gameId) {
-    fetch('/app/views/games/test_api/add_to_cart.php', {
+    fetch('/../test_api/games_api/add_to_cart.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -242,7 +248,7 @@ function setupReviewSection(game, user) {
 
         // Handle comment toggle (placeholder logic)
         toggleButton.addEventListener('click', () => {
-            fetch('/app/views/games/test_api/toggle_comments.php', {
+            fetch('/../test_api/games_api/toggle_comments.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ game_id: game.id, enable_comments: !game.enable_comments})
@@ -671,7 +677,7 @@ function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {
     }
 
     // Call API
-    fetch('/app/views/games/test_api/update_like_dislike.php', {
+    fetch('/../test_api/games_api/update_like_dislike.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -693,7 +699,7 @@ function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {
 
 // Function to send the reply to the backend
 function sendReplyToBackend(gameId, reviewUsername, userId, replyMessage) {
-    fetch('/app/views/games/test_api/submit_reply.php', {
+    fetch('/../test_api/games_api/submit_reply.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -725,7 +731,7 @@ function setupAdminReviewButtons(game) {
             const newShow = !currentShow; // Toggle visibility status
 
             // Send toggle visibility request to the backend
-            fetch('/app/views/games/test_api/update_review_visibility.php', {
+            fetch('/../test_api/games_api/update_review_visibility.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -765,7 +771,7 @@ function setupAdminReviewButtons(game) {
             if (!confirm('Are you sure you want to delete this review?')) return;
 
             // Send delete request to the backend
-            fetch('/app/views/games/test_api/delete_review.php', {
+            fetch('/../test_api/games_api/test_api/delete_review.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -886,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const reviewMessage = message || defaultMessages[rating];
 
             // Send data to the backend
-            fetch('/app/views/games/test_api/submit_review.php', {
+            fetch('/../test_api/games_api/submit_review.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

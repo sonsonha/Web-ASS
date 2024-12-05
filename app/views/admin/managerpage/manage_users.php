@@ -6,10 +6,9 @@
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
-                <th>In-game Name</th>
                 <th>Reputation Points</th>
                 <th>Actions</th>
-                <th>Active</th>
+                <th>Manage</th>
             </tr>
         </thead>
         <tbody id="userTableBody">
@@ -49,142 +48,123 @@
 </div>
 
 <script>
-    // Mock Data
-    const mockUsers = [{
-            id: 1,
-            username: 'player1',
-            email: 'player1@example.com',
-            inGameName: 'PlayerOne',
-            reputation: 85,
-            isActive: true
-        },
-        {
-            id: 2,
-            username: 'player2',
-            email: 'player2@example.com',
-            inGameName: 'PlayerTwo',
-            reputation: 50,
-            isActive: true
-        },
-        {
-            id: 3,
-            username: 'player3',
-            email: 'player3@example.com',
-            inGameName: 'PlayerThree',
-            reputation: 120,
-            isActive: true
-        },
-        {
-            id: 4,
-            username: 'player4',
-            email: 'player4@example.com',
-            inGameName: 'PlayerThree',
-            reputation: 120,
-            isActive: true
-        },
-        {
-            id: 5,
-            username: 'player5',
-            email: 'player5@example.com',
-            inGameName: 'PlayerThree',
-            reputation: 120,
-            isActive: true
-        },
-    ];
+// Function to fetch users from the API
+// Function to fetch users from the API
+async function fetchUsers() {
+    try {
+        const response = await fetch('/../api/get_all_users.php');
 
-    // Function to populate the user table
-    function populateUserTable(users) {
-        const tbody = document.getElementById('userTableBody');
-        tbody.innerHTML = '';
-
-        users.forEach((user) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${user.id}</td>
-                <td>${user.username}</td>
-                <td>${user.email}</td>
-                <td>${user.inGameName}</td>
-                <td>${user.reputation}</td>
-                <td>${user.isActive? 'Active' : 'Banned'}</td>
-                <td>
-                    <button class="btn btn-info btn-sm" onclick="viewUser(${user.id})">View</button>
-                    <button class="btn btn-primary btn-sm" onclick="editUser(${user.id})">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="banUser(${user.id})" ${!user.isActive ? 'disabled' : ''}>Ban</button>
-                    <button class="btn btn-secondary btn-sm" onclick="deleteUser(${user.id})">Delete</button>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    // Function to open the view modal
-    function viewUser(id) {
-        const user = mockUsers.find((u) => u.id === id);
-        if (user) {
-            document.getElementById('viewUserDetails').innerText = `Username: ${user.username}\nEmail: ${user.email}\nIn-game Name: ${user.inGameName}\nReputation: ${user.reputation}\nActive:${user.isActive? 'Active' : 'Banned'}`;
-            document.getElementById('viewModal').style.display = 'block';
+        if (response.ok) {
+            // Try to parse the response as JSON
+            const data = await response.json();
+            
+            if (data.status === "success") {
+                populateUserTable(data.data);
+            } else {
+                alert('Error fetching users: ' + data.message);
+            }
         } else {
-            alert('User not found!');
+            alert('Failed to fetch users. Please try again later.');
         }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching users. Please check your connection.');
     }
+}
 
-    // Function to open the edit modal
-    function editUser(id) {
-        const user = mockUsers.find((u) => u.id === id);
-        if (user) {
-            document.getElementById('editUsername').value = user.username;
-            document.getElementById('editReputation').value = user.reputation;
+// Function to populate the user table
+function populateUserTable(users) {
+    const tbody = document.getElementById('userTableBody');
+    tbody.innerHTML = '';
 
-            // Handle form submission
-            document.getElementById('editUserForm').onsubmit = function(e) {
-                e.preventDefault();
-                user.username = document.getElementById('editUsername').value;
-                user.reputation = parseInt(document.getElementById('editReputation').value, 10);
-                populateUserTable(mockUsers);
-                closeModal('editModal');
-            };
-
-            document.getElementById('editModal').style.display = 'block';
-        } else {
-            alert('User not found!');
-        }
-    }
-
-    // Function to ban a user
-    function banUser(id) {
-        const user = mockUsers.find((u) => u.id === id);
-        if (user) {
-            user.isActive = false; // Mark as banned (inactive)
-            alert(`User "${user.username}" has been banned!`);
-            populateUserTable(mockUsers);
-        } else {
-            alert('User not found!');
-        }
-    }
-
-    // Function to delete a user
-    function deleteUser(id) {
-        const userIndex = mockUsers.findIndex((u) => u.id === id);
-        if (userIndex !== -1) {
-            mockUsers.splice(userIndex, 1);
-            alert('User has been deleted!');
-            populateUserTable(mockUsers);
-        } else {
-            alert('User not found!');
-        }
-    }
-
-    // Function to close modals
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-
-    // Mock data load
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            populateUserTable(mockUsers);
-        }, 500);
+    users.forEach((user) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.id}</td>
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.reputation_points}</td>
+            <td>${user.status ? 'Active' : 'Banned'}</td>
+            <td>
+                <button class="btn btn-info btn-sm" onclick="viewUser(${user.id})">View</button>
+                <button class="btn btn-primary btn-sm" onclick="editUser(${user.id})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="banUser(${user.id})" ${!user.status ? 'disabled' : ''}>Ban</button>
+                <button class="btn btn-secondary btn-sm" onclick="deleteUser(${user.id})">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(row);
     });
+}
+
+// Function to open the view modal
+function viewUser(id) {
+    const user = mockUsers.find((u) => u.id === id);
+    if (user) {
+        document.getElementById('viewUserDetails').innerText = `Username: ${user.username}\nEmail: ${user.email}\nReputation: ${user.reputation_points}\nActive: ${user.status ? 'Active' : 'Banned'}`;
+        document.getElementById('viewModal').style.display = 'block';
+    } else {
+        alert('User not found!');
+    }
+}
+
+// Function to open the edit modal
+function editUser(id) {
+    const user = mockUsers.find((u) => u.id === id);
+    if (user) {
+        document.getElementById('editUsername').value = user.username;
+        document.getElementById('editReputation').value = user.reputation_points;
+
+        // Handle form submission
+        document.getElementById('editUserForm').onsubmit = function (e) {
+            e.preventDefault();
+            user.username = document.getElementById('editUsername').value;
+            user.reputation_points = parseInt(document.getElementById('editReputation').value, 10);
+            populateUserTable(mockUsers);
+            closeModal('editModal');
+        };
+
+        document.getElementById('editModal').style.display = 'block';
+    } else {
+        alert('User not found!');
+    }
+}
+
+// Function to ban a user
+function banUser(id) {
+    const user = mockUsers.find((u) => u.id === id);
+    if (user) {
+        user.status = false; // Mark as banned (inactive)
+        alert(`User "${user.username}" has been banned!`);
+        populateUserTable(mockUsers);
+    } else {
+        alert('User not found!');
+    }
+}
+
+// Function to delete a user
+function deleteUser(id) {
+    const userIndex = mockUsers.findIndex((u) => u.id === id);
+    if (userIndex !== -1) {
+        mockUsers.splice(userIndex, 1);
+        alert('User has been deleted!');
+        populateUserTable(mockUsers);
+    } else {
+        alert('User not found!');
+    }
+}
+
+// Function to close modals
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Mock data load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        fetchUsers();
+    }, 500);
+});
+
 </script>
 
 <style>

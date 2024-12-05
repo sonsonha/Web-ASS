@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Fetch categories from the back-end
     let categories = [];
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_categories.php");
+        const response = await fetch("http://localhost/test_api/store_api/fetch_categories.php");
         if (!response.ok) throw new Error("Failed to fetch categories");
         categories = await response.json();
     } catch (error) {
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             carouselWrapper.appendChild(cardElement);   
 
             cardElement.querySelector('.category-card').addEventListener('click', () => {
-                window.location.href = `/app/views/store/category.php?category=${category.slug}`;
+                window.location.href = `/zerostress-game-store/category/${category.slug}`;
             });
         }
     };
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function addToCart(gameId) {
         try {
             const userId = 1; // Example user ID, replace with actual logic
-            const response = await fetch("/app/views/user/test_api/add_to_cart.php", {
+            const response = await fetch("http://localhost/test_api/store_api/add_to_cart.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function buyGame(gameId) {
         try {
             const userId = 1; // Example user ID, replace with actual logic
-            const response = await fetch("/app/views/user/test_api/buy_game.php", {
+            const response = await fetch("http://localhost/test_api/store_api/buy_game.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch new releases from the backend
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_carousel_games.php");
+        const response = await fetch("http://localhost/test_api/store_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch new releases");
         newReleases = await response.json();
     } catch (error) {
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch trending games from the backend
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_carousel_games.php");
+        const response = await fetch("http://localhost/test_api/store_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch trending games");
         trendingGames = await response.json();
     } catch (error) {
@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch top-rated games from the backend
     try {
-        const response = await fetch("/app/views/store/test_api/fetch_carousel_games.php");
+        const response = await fetch("/../test_api/store_api/fetch_carousel_games.php");
         if (!response.ok) throw new Error("Failed to fetch top-rated games");
         topRateGames = await response.json();
     } catch (error) {

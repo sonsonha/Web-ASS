@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epic Games Store - Home</title>
+    <title>Epic Games Store - Home abc</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/public/assets/css/store.css">
+    <link rel="stylesheet" href="/assets/css/store.css">
 
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -17,14 +18,15 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 </head>
+
 <body class="bg-dark">
-    <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
-    
-    
+    <?php include(__DIR__ . '/../layouts/header.php'); ?>
+
+
 
 
     <main class="container my-5 bg-dark">
-    <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
+        <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
 
         <div class="container text-center">
             <div class="row g-2">
@@ -65,7 +67,7 @@
             </div>
         </div>
 
-        
+
         <div class="container mt-5">
             <h2 class="text text-white">Trending Games</h2>
             <div class="card-carousel">
@@ -118,6 +120,7 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/assets/js/store.js"></script>
+    <script src="/assets/js/store.js"></script>
 </body>
+
 </html>

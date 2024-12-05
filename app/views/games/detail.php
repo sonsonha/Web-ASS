@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/public/assets/css/game-detail.css">
+    <link rel="stylesheet" href="/../assets/css/game-detail.css">
 </head>
 <body>
     <!-- Include Header -->
@@ -40,7 +40,7 @@
                         <source id="videoSource" src="" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <img id="imageDisplay" src="/public/assets/images/feature1.jpg" alt="Game Display">
+                    <img id="imageDisplay" src="assets/images/feature1.jpg" alt="Game Display">
                 </div>
 
                 <!-- Thumbnail Carousel -->
@@ -142,7 +142,7 @@
             <!-- Right Sidebar -->
             <div class="col-md-4">
                 <div class="bg-dark text-white p-4 rounded">
-                    <img id="game-thumbnail" src="" alt="Game Thumbnail" class="img-detail">
+                    <img id="game-thumbnail" src="https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp" alt="Game Thumbnail" class="img-detail">
                     <p><strong>Release Date:</strong> <span id="release-date">Unknown</span></p>
                     <p><strong>Average Rating:</strong> <span id="reviews-count"></span></p>
                     <p><strong>Price:</strong> <span class="text-success" id="game-price">Unknown</span></p>
@@ -273,6 +273,6 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
-    <script src="/public/assets/js/game-detail.js"></script>
+    <script src="/../assets/js/game-detail.js"></script>
 </body>
 </html>

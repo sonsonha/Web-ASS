@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get('category');
+    const pathParts = window.location.pathname.split('/');
+    const category = pathParts[pathParts.length - 1];
     if (!category) {
         console.error('Category not specified');
         return;
@@ -31,7 +31,7 @@ function fetchCategoryGames(category) {
         isLoading = true;
         showSpinner(gameCardsContainer);
 
-        fetch('test_api/fetch_category_games.php', {
+        fetch('/../test_api/store_api/fetch_category_games.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ category, page }),
@@ -87,13 +87,16 @@ function appendGameRows(games, container) {
                             game.discount
                                 ? `<div class="discount-label">${game.discount}</div>`
                                 : ''
-                        }
+                        }   
                     </div>
                 </div>
             `;
 
             col.querySelector('.game-card').addEventListener('click', () => {
-                window.location.href = `/app/views/games/detail.php?id=${game.id}`;
+                // /zerostress-game-store/category/${category.slug}
+                // window.location.href = `/../views/games/detail.php?id=${game.id}`;
+                window.location.href = `/zerostress-game-store/${game.genres[0]}/${game.id}/${encodeURIComponent(game.title.replace(/ /g, "_"))}`;
+
             });
 
             row.appendChild(col);
@@ -124,7 +127,7 @@ function populateTrendingGames(games, container) {
         `;
 
         col.querySelector('.game-card').addEventListener('click', () => {
-            window.location.href = `/app/views/games/detail.php?id=${game.id}`;
+            window.location.href = `/zerostress-game-store/${game.genres[0]}/${game.id}/${encodeURIComponent(game.title.replace(/ /g, "_"))}`;
         });
 
         container.appendChild(col);

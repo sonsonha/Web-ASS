@@ -64,7 +64,7 @@
 
         try {
             // Lấy danh mục từ backend
-            const response = await fetch("/views/store/test_api/fetch_categories.php");
+            const response = await fetch("http://localhost/test_api/store_api/fetch_categories.php");
             if (!response.ok) throw new Error("Failed to fetch categories");
             const categories = await response.json();
 

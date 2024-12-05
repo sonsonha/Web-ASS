@@ -17,19 +17,19 @@ $cart_items = [
         'id' => 1,
         'title' => 'Game 1',
         'price' => 49.99,
-        'thumbnail' => '/public/assets/images/game1.webp',
+        'thumbnail' => 'assets/images/game1.webp',
     ],
     [
         'id' => 2,
         'title' => 'Game 2',
         'price' => 29.99,
-        'thumbnail' => '/public/assets/images/game2.webp',
+        'thumbnail' => 'assets/images/game2.webp',
     ],
     [
         'id' => 3,
         'title' => 'Game 3',
         'price' => 59.99,
-        'thumbnail' => '/public/assets/images/game3.webp',
+        'thumbnail' => 'assets/images/game3.webp',
     ],
 ];
 

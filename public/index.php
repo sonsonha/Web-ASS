@@ -14,6 +14,8 @@ $directories = [
     "user" => "user/",
     "cart" => "cart/",
     "detail" => "detail/",
+    "category" => "cate/",
+    "detail" => "games/",
 ];
 
 // Search handling
@@ -31,7 +33,7 @@ if ($page === 'item' && isset($_GET['id'])) {
     require_once "controllers/DetailController.php";
     $controller = new DetailController();
     $controller->detail($id);
-    exit;
+    exit;       
 }
 
 // Include the requested page

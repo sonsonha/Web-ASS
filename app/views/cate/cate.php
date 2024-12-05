@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Games Name abcd</title> 
+    <title>Category Games Name abc</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/category.css">
+    <link rel="stylesheet" href="/../assets/css/category.css">
 </head>
 <body>
     <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
-
     <main>
         <!-- Trending Games Carousel -->
-        <section class="trending-carousel" id="trendingCarousel" style="background-image: url('assets/images/game9.webp'); background-size: cover; background-position: center;">
+        <section class="trending-carousel" id="trendingCarousel" style="background-image: url('/assets/images/game9.webp'); background-size: cover; background-position: center;">
                 <div class="carousel-header text-center text-white">
                     <h1>Category Game Name</h1>
                 </div>
@@ -54,7 +53,6 @@
             </div>
         </section>
 
-
         <!-- Game List Section -->
         <section class="game-cards container mt-5">
             <h2 id="category-title" class="text-white mb-4"></h2>
@@ -70,6 +68,6 @@
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
-    <script src="assets/js/category.js"></script>
+    <script src="/../assets/js/category.js"></script>
 </body>
 </html>

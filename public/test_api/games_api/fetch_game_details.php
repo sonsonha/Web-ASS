@@ -18,35 +18,35 @@ $users = [
     [
         'id' => '1',
         'username' => 'Gamer123',   
-        'avatar' => '/public/assets/images/game1.webp',
+        'avatar' => '/localhost/assets/images/game1.webp',
         'role' => 'user',
         'game-own' => [1, 4, 5],
     ],
     [
         'id' => '2',
         'username' => 'PlayerXYZ',
-        'avatar' => '/public/assets/images/avatar2.jpg',
+        'avatar' => '/localhost/assets/images/avatar2.jpg',
         'role' => 'admin',
         'game-own' => [2, 3],
     ],
     [
         'id' => '3',
         'username' => 'yasuo',
-        'avatar' => '/public/assets/images/avatar3.jpg',
+        'avatar' => '/localhost/assets/images/avatar3.jpg',
         'role' => 'user',
         'game-own' => [1, 2, 3, 4, 5],
     ],
     [
         'id' => '4',
         'username' => 'admin',
-        'avatar' => '/public/assets/images/avatar4.jpg',
+        'avatar' => '/localhost/assets/images/avatar4.jpg',
         'role' => 'admin',
         'game-own' => [],
     ],
     [
         'id' => '5',
         'username' => 'guest',
-        'avatar' => '/public/assets/images/avatar5.jpg',
+        'avatar' => '/localhost/assets/images/avatar5.jpg',
         'role' => 'guest',
         'game-own' => [],
     ],
@@ -56,7 +56,7 @@ $reviews = [
     1 => [
         [
             'username' => 'Gamer123',
-            'avatar' => '/public/assets/images/game1.webp',
+            'avatar' => '/localhost/assets/images/game1.webp',
             'rating' => 1,
             'show' => true,
             'likes' => 91,
@@ -65,7 +65,7 @@ $reviews = [
             'replies' => [
                 [
                     'username' => 'admin1',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I disagree, this game has potential!',
                     'likes' => 5,
                     'dislikes' => 0,
@@ -74,7 +74,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ2',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -83,7 +83,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ3',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -92,7 +92,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ4',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -101,7 +101,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ5',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -110,7 +110,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ6',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -119,7 +119,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ7',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -128,7 +128,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ6',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -137,7 +137,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ7',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -146,7 +146,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ6',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -155,7 +155,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ7',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -166,7 +166,7 @@ $reviews = [
         ],
         [
             'username' => 'Gamer123',
-            'avatar' => '/public/assets/images/game1.webp',
+            'avatar' => '/localhost/assets/images/game1.webp',
             'rating' => 1,
             'show' => true,
             'likes' => 91,
@@ -175,7 +175,7 @@ $reviews = [
         ],
         [
             'username' => 'Gamer123',
-            'avatar' => '/public/assets/images/game1.webp',
+            'avatar' => '/localhost/assets/images/game1.webp',
             'rating' => 1,
             'show' => true,
             'likes' => 91,
@@ -184,7 +184,7 @@ $reviews = [
             'replies' => [
                 [
                     'username' => 'admin',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I disagree, this game has potential!',
                     'likes' => 5,
                     'dislikes' => 0,
@@ -193,7 +193,7 @@ $reviews = [
                 ],
                 [
                     'username' => 'PlayerXYZ',
-                    'avatar' => '/public/assets/images/game1.webp',
+                    'avatar' => '/localhost/assets/images/game1.webp',
                     'message' => 'I think the game could improve with better graphics.',
                     'likes' => 3,
                     'dislikes' => 1,
@@ -204,7 +204,7 @@ $reviews = [
         ],
         [
             'username' => 'PlayerXYZ',
-            'avatar' => '/public/assets/images/avatar2.jpg',
+            'avatar' => '/localhost/assets/images/avatar2.jpg',
             'rating' => 4,
             'show' => true,
             'message' => 'Great game but could use more content.',
@@ -213,7 +213,7 @@ $reviews = [
         ],
         [
             'username' => 'yasuo',
-            'avatar' => '/public/assets/images/game1.webp',
+            'avatar' => '/localhost/assets/images/game1.webp',
             'rating' => 5,
             'show' => true,
             'message' => 'Great game but could use more content. Great game but could use more content.Great game but could use more content.Great game but could use more content.',
@@ -224,14 +224,14 @@ $reviews = [
     2 => [
         [
             'username' => 'Panda',
-            'avatar' => '/public/assets/images/avatar1.jpg',
+            'avatar' => '/localhost/assets/images/avatar1.jpg',
             'rating' => 1,
             'show' => true,
             'message' => 'Bad!',
         ],
         [
             'username' => 'Mens',
-            'avatar' => '/public/assets/images/avatar2.jpg',
+            'avatar' => '/localhost/assets/images/avatar2.jpg',
             'rating' => 4,
             'show' => false,
             'message' => 'Great game but could use more content.',
@@ -242,7 +242,7 @@ $reviews = [
     3 => [
         [
             'username' => 'poes',
-            'avatar' => '/public/assets/images/avatar1.jpg',
+            'avatar' => '/localhost/assets/images/avatar1.jpg',
             'rating' => 1,
             'show' => true,
             'message' => 'Bad!',
@@ -260,7 +260,7 @@ $games = [
         'trending' => false,
         'reviews' => 3,
         'rating' => 4.5,
-        'background_image' => '/public/assets/images/aom-bg.jpg',
+        'background_image' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp',
         'description' => 'From the creators of the award-winning Age of Empires franchise...',
         'price' => '360',
         'original_price' => '450',
@@ -268,15 +268,15 @@ $games = [
         'developer' => 'World\'s Edge, Forgotten Empires',
         'publisher' => 'Xbox Game Studios',
         'genres' => ['Strategy', 'RTS', 'Mythology', 'Action RTS', 'Fantasy'],
-        'background' => '/public/assets/images/aom-bg.jpg',
+        'background' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp',
         'thumbnails' => [
-            ['type' => 'image', 'src' => '/public/assets/images/game1.webp'],
-            ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
-            ['type' => 'image', 'src' => '/public/assets/images/game3.webp'],
-            ['type' => 'video', 'src' => '/public/assets/videos/video1.mp4'],
-            ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
-            ['type' => 'video', 'src' => '/public/assets/videos/game2.mp4'],
-            ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
+            ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'video', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'video', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
         ],
         'introduction' => 'Age of Mythology: Retold is a modern reimagining of the classic RTS game that blends historical elements with mythology.',
         'about' => 'Step into a world of gods, monsters, and legendary heroes. Play through campaigns inspired by ancient mythology or battle with friends in multiplayer modes.',
@@ -306,7 +306,7 @@ $games = [
         'release_date' => 'September 30, 2024',
         'trending' => false,
         'reviews' => 5,
-        'background_image' => '/public/assets/images/aom-bg.jpg',
+        'background_image' => '/localhost/assets/images/aom-bg.jpg',
         'description' => 'From the creators of the award-winning Age of Empires franchise...',
         'price' => '8000,000đ',
         'original_price' => '450,0000đ',
@@ -314,13 +314,13 @@ $games = [
         'developer' => 'World\'s Edge, Forgotten Empires',
         'publisher' => 'Xbox Game Studios',
         'genres' => ['Strategy', 'RTS', 'Mythology', 'Fantasy'],
-        'background' => '/public/assets/images/aom-bg.jpg',
+        'background' => '/localhost/assets/images/aom-bg.jpg',
         'thumbnails' => [
-            ['type' => 'image', 'src' => '/public/assets/images/game1.webp'],
-            ['type' => 'image', 'src' => '/public/assets/images/game2.webp'],
-            ['type' => 'image', 'src' => '/public/assets/images/game3.webp'],
-            ['type' => 'video', 'src' => '/public/assets/videos/game1.mp4'],
-            ['type' => 'video', 'src' => '/public/assets/videos/game2.mp4']
+            ['type' => 'image', 'src' => '/localhost/assets/images/game1.webp'],
+            ['type' => 'image', 'src' => '/localhost/assets/images/game2.webp'],
+            ['type' => 'image', 'src' => '/localhost/assets/images/game3.webp'],
+            ['type' => 'video', 'src' => '/localhost/assets/videos/game1.mp4'],
+            ['type' => 'video', 'src' => '/localhost/assets/videos/game2.mp4']
         ],
         'introduction' => 'Leage of Legends: Retold is a modern reimagining of the classic RTS game that blends historical elements with mythology.',
         'about' => 'Step into a world of gods, monsters, and legendary heroes. Play through campaigns inspired by ancient mythology or battle with friends in multiplayer modes.',

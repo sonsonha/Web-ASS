@@ -6,7 +6,7 @@ $games = [
     [
         'id' => 1,
         'title' => 'Age of Empires IKKKV',
-        'image' => '/public/assets/images/game1.webp',
+        'image' => 'assets/images/game1.webp',
         'price' => '450,000đ',
         'trending' => false,
         'new_release' => true,
@@ -18,7 +18,7 @@ $games = [
     [
         'id' => 2,
         'title' => 'Civilization VI',
-        'image' => '/public/assets/images/game2.webp',
+        'image' => 'assets/images/game2.webp',
         'price' => 'Free',
         'trending' => true,
         'new_release' => true,
@@ -30,7 +30,7 @@ $games = [
     [   
         'id' => 3,
         'title' => 'The Witcher 3',
-        'image' => '/public/assets/images/game3.webp',
+        'image' => 'assets/images/game3.webp',
         'price' => '600,000đ',
         'trending' => false,
         'new_release' => true,
@@ -42,7 +42,7 @@ $games = [
     [
         'id' => 4,
         'title' => 'Red Dead Redemption 2',
-        'image' => '/public/assets/images/game4.webp',
+        'image' => 'assets/images/game4.webp',
         'price' => '1,000,000đ',
         'trending' => true,
         'new_release' => true,
@@ -54,7 +54,7 @@ $games = [
     [
         'id' => 5,
         'title' => 'Valorant',
-        'image' => '/public/assets/images/game5.webp',
+        'image' => 'assets/images/game5.webp',
         'price' => 'Free',
         'trending' => true,
         'new_release' => true,
@@ -66,7 +66,7 @@ $games = [
     [
         'id' => 3,
         'title' => 'The Witcher 3',
-        'image' => '/public/assets/images/game3.webp',
+        'image' => 'assets/images/game3.webp',
         'price' => '600,000đ',
         'trending' => false,
         'new_release' => true,
@@ -78,7 +78,7 @@ $games = [
     [
         'id' => 4,
         'title' => 'Red Dead Redemption 2',
-        'image' => '/public/assets/images/game4.webp',
+        'image' => 'assets/images/game4.webp',
         'price' => '1,000,000đ',
         'trending' => true,
         'new_release' => true,
@@ -90,7 +90,7 @@ $games = [
     [
         'id' => 5,
         'title' => 'Valorant',
-        'image' => '/public/assets/images/game5.webp',
+        'image' => 'assets/images/game5.webp',
         'price' => 'Free',
         'trending' => false,
         'new_release' => true,

@@ -1,11 +1,25 @@
 RewriteEngine On
 
-# Nếu không phải là tệp hoặc thư mục thực tế
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+# Redirect root (localhost/) to /zerostress-game-store
+RewriteRule ^$ /zerostress-game-store [R=301,L]
+
+# Rewrite the URL from /zerostress-game-store to /store
+RewriteRule ^zerostress-game-store/?$ index.php?page=store [L,QSA]
 
 # Viết lại URL từ /page thành index.php?page=page
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$ index.php?page=$1/$2 [L,QSA]
 RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?page=$1 [L,QSA]
 
-# Nếu URL là rỗng ("/"), chuyển tới trang chủ
+# Fetch the corresponds game by its ID
+RewriteRule ^zerostress-game-store/([a-zA-Z0-9_-]+)/([0-9]+)/([a-zA-Z0-9_-]+)$ index.php?page=detail [L,QSA]
+
+# Redirect /category/category-name to index.php with the category query parameter
+RewriteRule ^zerostress-game-store/category/([a-zA-Z0-9_-]+)$ index.php?page=cate&category=$1 [L,QSA]
+
+# Redirect /category/category-name to index.php with the category query parameter
+RewriteRule ^zerostress-game-store/category/([a-zA-Z0-9_-]+)$ index.php?page=cate&category=$1 [L,QSA]
+
+# If not an actual file or directory, rewrite it to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^$ index.php?page=store [L,QSA]
