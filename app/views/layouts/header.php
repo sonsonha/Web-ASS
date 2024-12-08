@@ -47,7 +47,7 @@
                 <a class="navlink" id="adminLink" href="admin" style="display: none">
                     <img id="adminAvatar" src="" class="navavatar">
                 </a>
-                <a class="navlink" id="userLink" href="user" style="display: none">
+                <a class="navlink" id="userLink" href="profile" style="display: none">
                     <img id="userAvatar" src="" class="navavatar">
                 </a>
                 <!-- <a href="login" id="loginLink" class="btn btn-link small">Login</a>

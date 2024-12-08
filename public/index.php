@@ -16,6 +16,7 @@ $directories = [
     "detail" => "detail/",
     "category" => "cate/",
     "detail" => "games/",
+    "user" => "user/",
 ];
 
 // Search handling

@@ -9,11 +9,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const userData = await fetchData('/app/views/user/test_api/fetch_user_profile.php', { user_id: userId });
+        const userData = await fetchData('http://localhost/test_api/user_api/fetch_user_profile.php', { user_id: userId });
         populateUserProfile(userData);
 
         if (userData['game-own'] && userData['game-own'].length > 0) {
-            const gamesData = await fetchData('/app/views/user/test_api/fetch_games.php', { game_ids: userData['game-own'] });
+            const gamesData = await fetchData('http://localhost/test_api/user_api/fetch_games.php', { game_ids: userData['game-own'] });
             populateGamesOwned(gamesData);
         } else {
             document.getElementById('games-owned').innerHTML = '<p class="text-center text-muted">No games purchased yet.</p>';
