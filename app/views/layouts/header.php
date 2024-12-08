@@ -41,7 +41,7 @@
             </div>
             <div class="navbar-auth">
 
-                <a href="cart" id="cartLink" class="btn btn-link small" style="display: none;color:azure">
+                <a href="my_cart" id="cartLink" class="btn btn-link small" style="display: none;color:azure">
                     <i class="fas fa-shopping-cart"></i>
                 </a>
                 <a class="navlink" id="adminLink" href="admin" style="display: none">

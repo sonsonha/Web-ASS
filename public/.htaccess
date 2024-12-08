@@ -22,6 +22,9 @@ RewriteRule ^zerostress-game-store/category/([a-zA-Z0-9_-]+)$ index.php?page=cat
 # Redirect /category/category-name 
 RewriteRule ^Edit_profile$ index.php?page=Edit_profile [L,QSA]
 
+# Redirect /category/category-name 
+RewriteRule ^my_cart$ index.php?page=my_cart [L,QSA]
+
 # If not an actual file or directory, rewrite it to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

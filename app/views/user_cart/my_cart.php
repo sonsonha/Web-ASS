@@ -6,7 +6,7 @@
     <title>My Cart</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/../assets/css/cart.css">
+    <link rel="stylesheet" href="/public/assets/css/cart.css">
 </head>
 <body>
     <!-- Include Header -->
@@ -49,6 +49,6 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Cart JS -->
-    <script src="/../assets/js/my_cart.js"></script>
+    <script src="/public/assets/js/my_cart.js"></script>
 </body>
 </html>

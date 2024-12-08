@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function fetchUserProfile() {
         try {
-            const response = await fetch('/app/views/user/test_api/fetch_user_profile.php', {
+            const response = await fetch('http://localhost/test_api/user_api/fetch_user_profile.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId }),
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function fetchCartItems() {
         try {
-            const response = await fetch('/app/views/user/test_api/fetch_cart.php', {
+            const response = await fetch('http://localhost/test_api/user_api/fetch_cart.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId }),
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const newCoins = userCoins - total;
             const selectedGameIds = selectedGames.map((game) => game.id);
 
-            fetch('/app/views/user/test_api/confirm_purchase.php', {
+            fetch('http://localhost/test_api/user_api/confirm_purchase.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     addCoinsButton.addEventListener('click', () => {
-        window.location.href = '/app/views/user/add_coins.php'; // Navigate to Add Coins page
+        window.location.href = 'add_coins'; // Navigate to Add Coins page
     });
 
     function toggleSelection(checkbox) {
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function removeItemFromCart(userId, gameId) {
         try {
-            const response = await fetch('/app/views/user/test_api/remove_from_cart.php', {
+            const response = await fetch('http://localhost/test_api/user_api/remove_from_cart.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId, game_id: gameId }),

@@ -13,7 +13,7 @@
     <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
     <main class="container my-5">
-        <h1 class="text-center text-white mb-4">User Profile</h1>
+        <h1 class="text-center text-white mb-4">Users Profile</h1>
         <div class="row justify-content-center">
             <!-- User Information -->
             <div class="col-md-6 p-4 rounded" style="background-color: #1b2838;">
