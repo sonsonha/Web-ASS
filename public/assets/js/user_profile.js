@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Redirect to specific pages for changes
     EditProfile.addEventListener('click', () => {
-        window.location.href = '/app/views/user/Edit_profile.php';
+        window.location.href = '/Edit_profile';
     });
 });
 

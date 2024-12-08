@@ -67,12 +67,14 @@
                             <small id="username-feedback" class="text-danger d-none">Username cannot be the same as the old one</small>
                         </div>
 
+                        <!-- Email Section -->
                         <div class="mb-3">
                             <label for="email" class="form-label">New email</label>
                             <input type="email" id="email" class="form-control" placeholder="Enter new email">
                             <small id="email-feedback" class="text-danger d-none">Email cannot be the same as the old one</small>
                         </div>
 
+                        <!-- Save Changes Button -->
                         <button type="submit" class="btn btn-success">Save Changes</button>
                         <small id="general-feedback" class="text-danger d-none">Please make at least one change</small>
                     </form>

@@ -10,6 +10,7 @@ $directories = [
     "auth" => "auth/",
     "error" => "error/",
     "store" => "store/",
+    "user" => "user/",
     "support" => "support/",
     "user" => "user/",
     "cart" => "cart/",
