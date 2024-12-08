@@ -10,7 +10,7 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/assets/css/store.css">
+    <link rel="stylesheet" href="/../assets/css/store.css">
 
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -21,9 +21,6 @@
 
 <body class="bg-dark">
     <?php include(__DIR__ . '/../layouts/header.php'); ?>
-
-
-
 
     <main class="container my-5 bg-dark">
         <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
@@ -120,7 +117,7 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/js/store.js"></script>
+    <script src="/../assets/js/store.js"></script>
 </body>
 
 </html>

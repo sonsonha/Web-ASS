@@ -60,19 +60,19 @@
                             <img id="preview-image" class="img-fluid mt-3" src="/public/assets/images/default-avatar.png" alt="Profile Picture" style="display: none; max-width: 200px;">
                         </div>
 
-                        <!-- Username Section -->
-                        <div class="mb-3">
+                      
+                        <!-- <div class="mb-3">
                             <label for="username" class="form-label">New username</label>
                             <input type="text" id="username" class="form-control" placeholder="Enter new username">
                             <small id="username-feedback" class="text-danger d-none">Username cannot be the same as the old one</small>
                         </div>
 
-                        <!-- Email Section -->
+                    
                         <div class="mb-3">
                             <label for="email" class="form-label">New email</label>
                             <input type="email" id="email" class="form-control" placeholder="Enter new email">
                             <small id="email-feedback" class="text-danger d-none">Email cannot be the same as the old one</small>
-                        </div>
+                        </div> -->
 
                         <!-- Save Changes Button -->
                         <button type="submit" class="btn btn-success">Save Changes</button>

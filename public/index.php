@@ -10,14 +10,13 @@ $directories = [
     "auth" => "auth/",
     "error" => "error/",
     "store" => "store/",
-    "user" => "user/",
     "support" => "support/",
     "user" => "user/",
     "cart" => "user_cart/",
     "detail" => "detail/",
     "category" => "cate/",
     "detail" => "games/",
-    "user" => "user/",
+    // "user" => "user/",
 ];
 
 // Search handling

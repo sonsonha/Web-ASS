@@ -16,10 +16,7 @@ RewriteRule ^zerostress-game-store/([a-zA-Z0-9_-]+)/([0-9]+)/([a-zA-Z0-9_-]+)$ i
 # Redirect /category/category-name to index.php with the category query parameter
 RewriteRule ^zerostress-game-store/category/([a-zA-Z0-9_-]+)$ index.php?page=cate&category=$1 [L,QSA]
 
-# Redirect /category/category-name to index.php with the category query parameter
-RewriteRule ^zerostress-game-store/category/([a-zA-Z0-9_-]+)$ index.php?page=cate&category=$1 [L,QSA]
-
-# Redirect /category/category-name 
+# Redirect /category/category-name
 RewriteRule ^Edit_profile$ index.php?page=Edit_profile [L,QSA]
 
 # Redirect /category/category-name 
