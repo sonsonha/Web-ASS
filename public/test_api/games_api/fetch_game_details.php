@@ -19,7 +19,7 @@ $users = [
         'id' => '1',
         'username' => 'Gamer123',   
         'avatar' => '/localhost/assets/images/game1.webp',
-        'role' => 'user',
+        'role' => 'admin',
         'game-own' => [1, 4, 5],
     ],
     [
@@ -271,11 +271,11 @@ $games = [
         'background' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp',
         'thumbnails' => [
             ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'image', 'src' => 'https://i.ytimg.com/vi/cD5FrDNx9QU/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCuBxpSFHQMM6-3ARnVsNy8bG1wUg'],
             ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'video', 'src' => 'https://www.youtube.com/watch?v=H91Ggw9XrRQ'],
             ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
-            ['type' => 'video', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
-            ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
-            ['type' => 'video', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
+            ['type' => 'video', 'src' => 'https://www.youtube.com/watch?v=H91Ggw9XrRQ'],
             ['type' => 'image', 'src' => 'https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp'],
         ],
         'introduction' => 'Age of Mythology: Retold is a modern reimagining of the classic RTS game that blends historical elements with mythology.',

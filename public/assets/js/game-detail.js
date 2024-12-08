@@ -34,10 +34,154 @@ document.addEventListener('DOMContentLoaded', () => {
             populateGameDetails(game, user);
             populateReviews(reviews, user, game);
             setupReviewSection(game, user);
-            setupThumbnails(game.thumbnails);
+            setupThumbnails(gameID);
             fetchPopularArticles(user);
         })
         .catch((error) => console.error('Error fetching game details:', error));
+    
+        // Function to fetch and display the thumbnails
+        function setupThumbnails(gameId) {
+
+            // Fetch the thumbnails data
+            fetch('/../api/get_thumbnails.php', {
+                method: 'POST',
+                headers: { 'content-Type': 'application/json' },
+                body: JSON.stringify({ game_id: gameId })
+            })
+            .then((response) => {
+                if (!response.ok) throw new Error('Failed to fetch thumbnails');
+                return response.json();
+            })
+            .then((data) => {
+                if (data.status === 'success' && data.data) {
+                    const thumbnailsContainer = document.getElementById('thumbnails');
+                }
+            })
+            const thumbnailsContainer = document.getElementById('thumbnails');
+            const mainDisplayImage = document.getElementById('imageDisplay');
+            const iframeContainer = document.getElementById('videoIframeContainer'); // Container for YouTube iframe
+        
+            let currentIndex = 0;
+            let autoSlideTimeout;
+            let videoPlaying = false; // To track if the video is playing
+            let videoIframe = null; // To store the iframe element
+        
+            // Populate thumbnails
+            thumbnails.forEach((thumbnail, index) => {
+                const thumbnailElement = document.createElement('div');
+                thumbnailElement.className = 'thumbnail';
+                thumbnailElement.dataset.index = index;
+        
+                if (thumbnail.type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = thumbnail.src;
+                    thumbnailElement.appendChild(img);
+                } else if (thumbnail.type === 'video') {
+                    // YouTube video thumbnail (use the thumbnail image for YouTube)
+                    const img = document.createElement('img');
+                    img.src = `https://img.youtube.com/vi/${getYouTubeVideoId(thumbnail.src)}/0.jpg`;
+                    thumbnailElement.appendChild(img);
+                }
+        
+                // Click event for thumbnails
+                thumbnailElement.addEventListener('click', () => {
+                    currentIndex = index; // Update index for clicked thumbnail
+                    clearTimeout(autoSlideTimeout); // Pause auto-slide
+                    displayMedia(index, thumbnails, false);
+                    startAutoSlide(); // Resume auto-slide after interaction
+                });
+        
+                thumbnailsContainer.appendChild(thumbnailElement);
+            });
+        
+            // Display selected media
+            function displayMedia(index, thumbnails, auto = false) {
+                const selectedThumbnail = thumbnails[index];
+        
+                if (selectedThumbnail.type === 'image') {
+                    // Hide video and show image
+                    iframeContainer.style.display = 'none';
+                    mainDisplayImage.style.display = 'block';
+                    mainDisplayImage.src = selectedThumbnail.src;
+                    if (auto) scheduleNextSlide(5000); // Wait 5 seconds for images
+                } else if (selectedThumbnail.type === 'video') {
+                    // Hide image and show YouTube video iframe
+                    mainDisplayImage.style.display = 'none';
+                    iframeContainer.style.display = 'block';
+        
+                    const youtubeId = getYouTubeVideoId(selectedThumbnail.src);
+                    videoIframe = document.createElement('iframe');
+                    videoIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=0&mute=1`; // Mute initially to comply with autoplay policies
+                    videoIframe.frameBorder = "0";
+                    videoIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    videoIframe.allowFullscreen = true;
+        
+                    iframeContainer.innerHTML = ''; // Clear any previous iframe
+                    iframeContainer.appendChild(videoIframe);
+        
+                    // Handle video play/pause behavior
+                    videoIframe.addEventListener('click', () => {
+                        if (!videoPlaying) {
+                            videoIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`; // Play video on click
+                            videoPlaying = true;
+                            pauseAutoSlide(); // Pause auto-slide when video is playing
+                        } else {
+                            videoIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=0`; // Pause video on click
+                            videoPlaying = false;
+                            resumeAutoSlide(); // Resume auto-slide when video is paused
+                        }
+                    });
+        
+                    // Ensure auto-slide waits for video to finish or pause
+                    videoIframe.onload = function() {
+                        // Watch for video end or pause
+                        videoIframe.contentWindow.addEventListener('pause', () => {
+                            videoPlaying = false;
+                            resumeAutoSlide(); // Resume auto-slide when paused
+                        });
+        
+                        videoIframe.contentWindow.addEventListener('ended', () => {
+                            videoPlaying = false;
+                            resumeAutoSlide(); // Resume auto-slide when video ends
+                        });
+                    };
+                }
+            }
+        
+            // Pause auto-slide
+            function pauseAutoSlide() {
+                clearTimeout(autoSlideTimeout); // Stop the auto-slide
+            }
+        
+            // Resume auto-slide
+            function resumeAutoSlide() {
+                scheduleNextSlide(5000); // Continue with auto-slide
+            }
+        
+            // Schedule the next slide
+            function scheduleNextSlide(delay = 0) {
+                clearTimeout(autoSlideTimeout);
+                autoSlideTimeout = setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % thumbnails.length;
+                    displayMedia(currentIndex, thumbnails, true);
+                }, delay);
+            }
+        
+            // Auto-slide function
+            function startAutoSlide() {
+                displayMedia(currentIndex, thumbnails, true);
+            }
+        
+            // Start auto-slide
+            startAutoSlide();
+        
+            // Utility function to extract YouTube video ID from the URL
+            function getYouTubeVideoId(url) {
+                const regExp = /^https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
+                const match = url.match(regExp);
+                return match && match[1];
+            }
+        }
 });
 
 function fetchPopularArticles (user) {
@@ -534,113 +678,6 @@ function populateReviews(reviews, user, game) {
     document.getElementById('release-date').textContent = game.release_date || 'Unknown';
     document.getElementById('reviews-count').textContent = `${game.rating}/5⭐` || 'N/A'; // Add average rating
 }
-
-
-function setupThumbnails(thumbnails) {
-    const thumbnailsContainer = document.getElementById('thumbnails');
-    const mainDisplayImage = document.getElementById('imageDisplay');
-    const mainDisplayVideo = document.getElementById('mainDisplay');
-    const videoSource = document.getElementById('videoSource');
-
-    let currentIndex = 0;
-    let autoSlideTimeout;
-
-    // Populate thumbnails
-    thumbnails.forEach((thumbnail, index) => {
-        const thumbnailElement = document.createElement('div');
-        thumbnailElement.className = 'thumbnail';
-        thumbnailElement.dataset.index = index;
-
-        if (thumbnail.type === 'image') {
-            const img = document.createElement('img');
-            img.src = thumbnail.src;
-            thumbnailElement.appendChild(img);
-        } else if (thumbnail.type === 'video') {
-            const video = document.createElement('video');
-            video.src = thumbnail.src;
-            video.muted = true; // Mute to comply with autoplay policies
-            video.loop = false;
-            video.setAttribute('playsinline', 'true');
-            thumbnailElement.appendChild(video);
-        }
-
-        // Click event for thumbnails
-        thumbnailElement.addEventListener('click', () => {
-            currentIndex = index; // Update index for clicked thumbnail
-            clearTimeout(autoSlideTimeout); // Pause auto-slide
-            displayMedia(index, thumbnails, false);
-            startAutoSlide(); // Resume auto-slide after interaction
-        });
-
-        thumbnailsContainer.appendChild(thumbnailElement);
-    });
-
-    // Display selected media
-    function displayMedia(index, thumbnails, auto = false) {
-        const selectedThumbnail = thumbnails[index];
-
-        if (selectedThumbnail.type === 'image') {
-            mainDisplayVideo.style.display = 'none';
-            mainDisplayImage.style.display = 'block';
-            mainDisplayImage.src = selectedThumbnail.src;
-            if (auto) scheduleNextSlide(5000); // Wait 5 seconds for images
-        } else if (selectedThumbnail.type === 'video') {
-            mainDisplayImage.style.display = 'none';
-            mainDisplayVideo.style.display = 'block';
-            if (videoSource.src !== selectedThumbnail.src) {
-                videoSource.src = selectedThumbnail.src;
-                mainDisplayVideo.load();
-            }
-
-            // Ensure video is muted
-            mainDisplayVideo.muted = true;
-
-            // Attempt to play the video
-            mainDisplayVideo
-                .play()
-                .then(() => {
-                    if (auto) {
-                        mainDisplayVideo.onended = () => {
-                            scheduleNextSlide();
-                        };
-                    }
-                })
-                .catch((error) => {
-                    console.warn('Video playback failed:', error);
-
-                    // Add a fallback listener for user interaction
-                    document.addEventListener(
-                        'click',
-                        () => {
-                            mainDisplayVideo
-                                .play()
-                                .then(() => console.log('Video playback resumed after interaction'))
-                                .catch((err) => console.error('Playback still failed:', err));
-                        },
-                        { once: true }
-                    );
-                });
-        }
-    }
-
-    // Schedule the next slide
-    function scheduleNextSlide(delay = 0) {
-        clearTimeout(autoSlideTimeout);
-        autoSlideTimeout = setTimeout(() => {
-            currentIndex = (currentIndex + 1) % thumbnails.length;
-            displayMedia(currentIndex, thumbnails, true);
-        }, delay);
-    }
-
-    // Auto-slide function
-    function startAutoSlide() {
-        displayMedia(currentIndex, thumbnails, true);
-    }
-
-    // Start auto-slide
-    startAutoSlide();
-}
-
 
 // Handle Like/Dislike Logic
 function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {

@@ -36,12 +36,16 @@
             <div class="col-md-8">
                 <!-- Display Area -->
                 <div class="display-area">
-                    <video id="mainDisplay" controls>
+                    <video id="mainDisplay" controls style="display: none;">
                         <source id="videoSource" src="" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                     <img id="imageDisplay" src="assets/images/feature1.jpg" alt="Game Display">
+                    <div id="videoIframeContainer" style="display: none;">
+                        <!-- YouTube iframe will be dynamically added here -->
+                    </div>
                 </div>
+
 
                 <!-- Thumbnail Carousel -->
                 <div class="thumbnail-carousel-container">
