@@ -8,7 +8,7 @@ $id = isset($_GET['id']) ? $_GET['id'] : null;
 
 if ($id) {
     $userController = new UserController($db);
-    $userController->getUserInfo($id);
+    $userController->getShopingCart($id);
 } else {
     echo json_encode([
         'status' => 'error',

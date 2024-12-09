@@ -1,0 +1,164 @@
+<?php
+class UserModel {
+    private $db;
+
+    public function __construct($db) {
+        $this->db = $db;
+    }
+    public function getUserInfo($id) {
+        $query = "
+            SELECT u.id, t.username, t.email, t.phone_number,t.full_name, t.avatar, t.date_of_birth, u.coins,
+                   g.id AS game_id, g.game_name, g.price, g.avt
+            FROM user u
+            JOIN tai_khoan t ON u.id = t.id
+            LEFT JOIN don_hang dh ON dh.user_id = u.id
+            LEFT JOIN chi_tiet_don_hang ctdh ON dh.id = ctdh.order_id
+            LEFT JOIN game g ON ctdh.game_id = g.id
+            WHERE t.id = :id AND dh.status = 'Paid'" ;
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$results) {
+            return null;
+        }
+
+        $userInfo = [
+            'id' => $results[0]['id'],
+            'username' => $results[0]['username'],
+            'email' => $results[0]['email'],
+            'phone_number'=> $results[0]['phone_number'],
+            'full_name' => $results[0]['full_name'],
+            'avatar' => $results[0]['avatar'],
+            'date_of_birth' => $results[0]['date_of_birth'],
+            'coins' => $results[0]['coins'],
+            'games' => []
+        ];
+
+        foreach ($results as $game) {
+            if (isset($game['game_id']) && $game['game_id']) {
+                $userInfo['games'][] = [
+                    'game_id' => $game['game_id'],
+                    'game_name' => $game['game_name'],
+                    'price' => $game['price'],
+                    'avt' => $game['avt']
+                ];
+            }
+        }
+
+        return $userInfo;
+    }
+
+
+    public function getShopingCart($id) {
+        $query = "
+            SELECT u.id, t.username, t.email, t.phone_number,t.full_name, t.avatar, t.date_of_birth, u.coins,
+                   g.id AS game_id, g.game_name, g.price, g.avt
+            FROM user u
+            JOIN tai_khoan t ON u.id = t.id
+            LEFT JOIN don_hang dh ON dh.user_id = u.id
+            LEFT JOIN chi_tiet_don_hang ctdh ON dh.id = ctdh.order_id
+            LEFT JOIN game g ON ctdh.game_id = g.id
+            WHERE t.id = :id AND dh.status = 'Pending'" ;
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$results) {
+            return null;
+        }
+
+        $userInfo = [
+            'id' => $results[0]['id'],
+            'username' => $results[0]['username'],
+            'email' => $results[0]['email'],
+            'phone_number'=> $results[0]['phone_number'],
+            'full_name' => $results[0]['full_name'],
+            'avatar' => $results[0]['avatar'],
+            'date_of_birth' => $results[0]['date_of_birth'],
+            'coins' => $results[0]['coins'],
+            'games' => []
+        ];
+
+        foreach ($results as $game) {
+            if (isset($game['game_id']) && $game['game_id']) {
+                $userInfo['games'][] = [
+                    'game_id' => $game['game_id'],
+                    'game_name' => $game['game_name'],
+                    'price' => $game['price'],
+                    'avt' => $game['avt']
+                ];
+            }
+        }
+
+        return $userInfo;
+    }
+
+    public function deleteShoppingCart($userId, $gameId) {
+        try {
+            $this->db->beginTransaction();
+
+            $getOrderQuery = "
+                SELECT dh.id FROM don_hang dh
+                JOIN chi_tiet_don_hang ctdh ON dh.id = ctdh.order_id
+                WHERE dh.user_id = :user_id AND dh.status = 'Pending' AND ctdh.game_id = :game_id
+                LIMIT 1";
+
+            $stmt = $this->db->prepare($getOrderQuery);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':game_id', $gameId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($order) {
+                $orderId = $order['id'];
+
+                // Xóa chi tiết đơn hàng
+                $deleteOrderDetailsQuery = "
+                    DELETE FROM chi_tiet_don_hang
+                    WHERE order_id = :order_id AND game_id = :game_id";
+
+                $stmt = $this->db->prepare($deleteOrderDetailsQuery);
+                $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+                $stmt->bindParam(':game_id', $gameId, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $checkOrderDetailsQuery = "
+                    SELECT COUNT(*) AS count FROM chi_tiet_don_hang
+                    WHERE order_id = :order_id";
+
+                $stmt = $this->db->prepare($checkOrderDetailsQuery);
+                $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $countResult = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($countResult['count'] == 0) {
+                    // Cập nhật trạng thái đơn hàng nếu không còn chi tiết
+                    $updateOrderStatusQuery = "
+                        UPDATE don_hang
+                        SET status = 'Canceled'
+                        WHERE id = :order_id";
+
+                    $stmt = $this->db->prepare($updateOrderStatusQuery);
+                    $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+            }
+
+            $this->db->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
+}
