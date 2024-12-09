@@ -153,157 +153,69 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-
 document.addEventListener("DOMContentLoaded", async () => {
-    const swiperWrapper = document.getElementById("swiperWrapper");
-    const thumbnails = document.getElementById("thumbnails");
+    const cardsPerPage = 4; // Number of cards to show at a time
+    let currentIndex = 0; // Start index for the current view
 
-    let games = [];
+    const carouselWrapper = document.getElementById("carouselWrapper");
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
 
-    // Fetch games from the backend
+    // Fetch categories from the back-end
+    let categories = [];
     try {
-        const response = await fetch("http://localhost/test_api/store_api/fetch_carousel_games.php");
-        if (!response.ok) throw new Error("Failed to fetch game data");
-        games = await response.json();
+        const response = await fetch("http://localhost/test_api/store_api/fetch_categories.php");
+        if (!response.ok) throw new Error("Failed to fetch categories");
+        categories = await response.json();
     } catch (error) {
-        console.error("Error fetching game data:", error);
-        return;
+        console.error("Error fetching categories:", error);
+        return; // Stop execution if there's an error
     }
 
-    // Sort games by rating in descending order and pick the top 5
-    const topRatedGames = games.sort((a, b) => b.rating - a.rating).slice(0, 5);
+    // Function to render cards
+    const renderCards = () => {
+        // Clear the current cards
+        carouselWrapper.innerHTML = "";
 
-    // Function to render the carousel
-    const renderCarousel = () => {
-        swiperWrapper.innerHTML = ""; // Clear existing slides
-        thumbnails.innerHTML = ""; // Clear existing thumbnails
+        // Determine which cards to display
+        for (let i = 0; i < cardsPerPage; i++) {
+            const cardIndex = (currentIndex + i) % categories.length; // Loop around if we exceed the array length
+            const category = categories[cardIndex];
 
-        topRatedGames.forEach((game, index) => {
-            // Swiper slide
-            const slide = document.createElement("div");
-            slide.className = "swiper-slide";
-            slide.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">
-                <div class="carousel-caption gradient-bg p-3 rounded">
-                    <h5 class="text-white">${game.title}</h5>
-                    <p class="text-light">Rating: ${game.rating} | ${game.discount || "No Discount"} | <span class="text-white">${game.final_price}</span></p>
-                    ${
-                        game.is_free
-                            ? `<button class="btn btn-info play-free" data-id="${game.id}">Play for Free</button>`
-                            : `<button class="btn btn-info buy-now" data-id="${game.id}">Buy Now</button>`
-                    }
-                    <button class="btn btn-outline-light add-to-cart" data-id="${game.id}">Add to Cart</button>
+            // Create card element
+            const cardElement = document.createElement("div");
+            cardElement.className = "col-md-3"; // 3 columns per card
+            cardElement.innerHTML = `
+                <div class="card h-100 category-card" data-category="${category.slug}">
+                    <img src="${category.image}" class="card-img-top" alt="${category.name}">
+                    <div class="card-body text-center bg-dark">
+                        <h5 class="card-title">${category.name}</h5>
+                    </div>
                 </div>
-            `;
-            swiperWrapper.appendChild(slide);
+                `;
+            carouselWrapper.appendChild(cardElement);   
 
-            // Click event for the slide (navigate to game detail)
-            slide.addEventListener("click", () => {
-                window.location.href = `/zerostress-game-store/${game.genres[0]}/${game.id}/${encodeURIComponent(game.title.replace(/ /g, "_"))}`;
+            cardElement.querySelector('.category-card').addEventListener('click', () => {
+                window.location.href = `/zerostress-game-store/category/${category.slug}`;
             });
-
-            // Thumbnail
-            const thumbnail = document.createElement("div");
-            thumbnail.className = "thumbnail d-flex align-items-center gap-2";
-            thumbnail.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">
-                <p class="text-white mb-0">${game.title}</p>
-            `;
-            thumbnails.appendChild(thumbnail);
-
-            // Thumbnail click event
-            thumbnail.addEventListener("click", () => {
-                swiper.slideTo(index); // Navigate to the corresponding slide
-            });
-        });
-
-        // Initialize Swiper
-        const swiper = new Swiper("#gameSwiper", {
-            loop: true,
-            spaceBetween: 10,
-            slidesPerView: 1,
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            autoplay: {
-                delay: 5000,
-            },
-        });
-
-        // Add event listeners for buttons inside slides
-        document.querySelectorAll(".add-to-cart").forEach((button) => {
-            button.addEventListener("click", async (e) => {
-                e.stopPropagation(); // Prevent slide click event
-                const gameId = button.getAttribute("data-id");
-                await addToCart(gameId);
-            });
-        });
-
-        document.querySelectorAll(".buy-now").forEach((button) => {
-            button.addEventListener("click", async (e) => {
-                e.stopPropagation(); // Prevent slide click event
-                const gameId = button.getAttribute("data-id");
-                await buyGame(gameId);
-            });
-        });
-
-        document.querySelectorAll(".play-free").forEach((button) => {
-            button.addEventListener("click", (e) => {
-                e.stopPropagation(); // Prevent slide click event
-                const gameId = button.getAttribute("data-id");
-                window.location.href = `/app/views/games/detail.php?id=${gameId}`;
-            });
-        });
+        }
     };
 
-    // Render the carousel
-    renderCarousel();
+    // Event listeners for navigation buttons
+    prevButton.addEventListener("click", () => {
+        // Move backwards by the number of cards per page
+        currentIndex = (currentIndex - cardsPerPage + categories.length) % categories.length;
+        renderCards();
+    });
 
-    // Function to add a game to the cart
-    async function addToCart(gameId) {
-        try {
-            const userId = 1; // Example user ID, replace with actual logic
-            const response = await fetch("http://localhost/test_api/store_api/add_to_cart.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId, game_id: gameId }),
-            });
-            const data = await response.json();
-            if (data.success) {
-                alert("Game added to cart successfully!");
-            } else {
-                alert("Failed to add game to cart.");
-            }
-        } catch (error) {
-            console.error("Error adding game to cart:", error);
-        }
-    }
+    nextButton.addEventListener("click", () => {
+        // Move forward by the number of cards per page
+        currentIndex = (currentIndex + cardsPerPage) % categories.length;
+        renderCards();
+    });
 
-    // Function to buy a game
-    async function buyGame(gameId) {
-        try {
-            const userId = 1; // Example user ID, replace with actual logic
-            const response = await fetch("http://localhost/test_api/store_api/buy_game.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId, game_id: gameId }),
-            });
-            const data = await response.json();
-            if (data.success) {
-                alert("Game purchased successfully!");
-                window.location.reload(); // Refresh the page after purchase
-            } else {
-                alert("Failed to purchase the game.");
-            }
-        } catch (error) {
-            console.error("Error purchasing game:", error);
-        }
-    }
+    // Initial render
+    renderCards();
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
