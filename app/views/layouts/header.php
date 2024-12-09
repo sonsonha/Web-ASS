@@ -47,6 +47,16 @@
                 <a class="navlink" id="adminLink" href="admin" style="display: none">
                     <img id="adminAvatar" src="" class="navavatar">
                 </a>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Username
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="change_password">Change passowrd</a></li>
+                        <li><a class="dropdown-item" href="logout">Log out</a></li>
+                    </ul>
+                </div>
                 <a class="navlink" id="userLink" href="profile" style="display: none">
                     <img id="userAvatar" src="" class="navavatar">
                 </a>
