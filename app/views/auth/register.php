@@ -1,3 +1,4 @@
+
 <div>
         <style>
             body {
@@ -150,163 +151,116 @@
                 }
             }
         </style>
-        <form class="form">
-            <p class="title">Sign up</p>
-            <p class="message">Signup now and get full access to our web. </p>
-            <div class="flex">
-                <label>
-                    <input class="input" type="text" id="firstname">
-                    <span>Firstname</span>
-                </label>
-
-                <label>
-                    <input class="input" type="text" id="lastname">
-                    <span>Lastname</span>
-                </label>
-            </div>
+<div>
+    <style>
+        /* Your existing styles... */
+    </style>
+    <form class="form">
+        <p class="title">Sign up</p>
+        <p class="message">Signup now and get full access to our web. </p>
+        <div class="flex">
             <label>
-                <input class="input" type="text" id="username">
-                <span>Username</span>
+                <input class="input" type="text" id="firstname">
+                <span>Firstname</span>
             </label>
             <label>
-                <input class="input" type="text" id="email">
-                <span>Email</span>
+                <input class="input" type="text" id="lastname">
+                <span>Lastname</span>
             </label>
+        </div>
+        <label>
+            <input class="input" type="text" id="username">
+            <span>Username</span>
+        </label>
+        <label>
+            <input class="input" type="text" id="email">
+            <span>Email</span>
+        </label>
+        <label>
+            <input class="input" type="password" id="password">
+            <span>Password</span>
+        </label>
+        <label>
+            <input class="input" type="password" id="confirmpassword">
+            <span>Confirm password</span>
+        </label>
+        <button class="submit" type="button" id="registerButton">Submit</button>
+        <p class="signin">Already have an account? <a href="login">Login</a></p>
+    </form>
+</div>
 
-            <label>
-                <input class="input" type="password" id="password">
-                <span>Password</span>
-            </label>
-            <label>
-                <input class="input" type="password" id="confirmpassword">
-                <span>Confirm password</span>
-            </label>
-            <button class="submit" type="button" id="regitsterButton">Submit</button>
-            <p class="signin">Already have an acount ? <a href="login">Login</a> </p>
-        </form>
+<script>
 
-    </div>
+document.getElementById('registerButton').addEventListener('click', async () => {
+    const firstname = document.getElementById('firstname').value.trim();
+    const lastname = document.getElementById('lastname').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmpassword = document.getElementById('confirmpassword').value.trim();
 
-    <script>
-        const mockUsers = [{
-                username: "testuser",
-                email: "test@example.com"
+    // Check for empty fields
+    if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
+        alert('Please enter all the information!');
+        return;
+    }
+
+    // Check if passwords match
+    if (password !== confirmpassword) {
+        alert('Passwords do not match!');
+        return;
+    }
+
+    // Optional: Email format validation
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailPattern.test(email)) {
+        alert('Please enter a valid email address!');
+        return;
+    }
+
+    // Prepare the data for the API
+    const userData = {
+        firstName: firstname,
+        lastName: lastname,
+        username: username,
+        email: email,
+        password: password,
+    };
+
+    try {
+        const response = await fetch('/../api/create_user.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            {
-                username: "johndoe",
-                email: "johndoe@example.com"
-            },
-        ];
-
-        document.getElementById('regitsterButton').addEventListener('click', () => {
-            const firstname = document.getElementById('firstname').value.trim();
-            const lastname = document.getElementById('lastname').value.trim();
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const confirmpassword = document.getElementById('confirmpassword').value.trim();
-
-            // Kiểm tra các trường trống
-            if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
-                alert('Please enter all the information!');
-                return;
-            }
-
-            // Kiểm tra mật khẩu có khớp không
-            if (password !== confirmpassword) {
-                alert('Passwords do not match!');
-                return;
-            }
-
-            // Kiểm tra xem email hoặc username đã tồn tại trong mockUsers chưa
-            const isEmailTaken = mockUsers.some((user) => user.email === email);
-            const isUsernameTaken = mockUsers.some((user) => user.username === username);
-
-            if (isEmailTaken) {
-                alert('This email is already in use!');
-                return;
-            }
-
-            if (isUsernameTaken) {
-                alert('This username is already in use!');
-                return;
-            }
-
-            // Nếu mọi thứ hợp lệ, thêm người dùng mới vào danh sách mockUsers
-            const newUser = {
-                firstname,
-                lastname,
-                username,
-                email,
-                password,
-            };
-            mockUsers.push(newUser);
-
-            // Lưu thông tin vào localStorage
-            localStorage.setItem('username', username);
-            localStorage.setItem('email', email);
-            localStorage.setItem('firstname', firstname);
-            localStorage.setItem('lastname', lastname);
-
-            alert('Registration successful!');
-            window.location.href = 'login';
+            body: JSON.stringify(userData),
         });
-        // document.getElementById('regitsterButton').addEventListener('click', async () => {
-        //     const firstname = document.getElementById('firstname').value.trim();
-        //     const lastname = document.getElementById('lastname').value.trim();
-        //     const username = document.getElementById('username').value.trim();
-        //     const email = document.getElementById('email').value.trim();
-        //     const password = document.getElementById('password').value.trim();
-        //     const confirmpassword = document.getElementById('confirmpassword').value.trim();
 
-        //     if (!firstname || !lastname || !username || !email || !password || !confirmpassword) {
-        //         alert('Please enter your information!');
-        //         return;
-        //     }
-        //     if (password !== confirmpassword) {
-        //         alert('Passwords do not match!');
-        //         return;
-        //     }
-        //     // console.log('Sending:', {
-        //     //     email,
-        //     //     password
-        //     // });
+        // Log the raw response to inspect what it contains
+        const text = await response.text();
+        console.log('Server Response:', text);
 
-        //     try {
-        //         const response = await fetch('http://localhost:8080/register', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify({
-        //                 firstname,
-        //                 lastname,
-        //                 username,
-        //                 email,
-        //                 password,
-        //             }),
-        //         });
+        let data;
+        try {
+            data = JSON.parse(text); // Parse the JSON response
+        } catch (error) {
+            console.error('Response is not valid JSON:', error);
+            alert('The server returned an unexpected response. Please try again.');
+            return;
+        }
 
-        //         const data = await response.json();j
+        if (response.ok) {
+            // If successful, handle the response data
+            alert(data.message || 'Registration successful!');
+            window.location.href = 'login'; // Redirect to login page
+        } else {
+            // Handle error messages returned by the API
+            alert(data.message || 'Registration failed. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred, please try again!');
+    }
+});
 
-        //         if (response.ok) {
-        //             alert(data.message);
-        //             localStorage.setItem('accessToken', data.accessToken);
-        //             window.location.href = 'home';
-        //         } else if (data.error) {
-        //             if (data.error.includes('username')) {
-        //                 alert('This username is already in use!');
-        //             } else if (data.error.includes('email')) {
-        //                 alert('This email is already in use!');
-        //             } else {
-        //                 alert(data.error || 'Registration Failed!');
-        //             }
-        //         } else {
-        //             alert('An unknown error occurred. Please try again.');
-        //         }
-        //     } catch (error) {
-        //         console.error('Error:', error);
-        //         alert('An error occurred, please try again!');
-        //     }
-        // });
-    </script>
+</script>
