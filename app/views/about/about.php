@@ -8,13 +8,13 @@
 
 <div class="container mt-5">
     <h1>About Game Store</h1>
-    <p>Welcome to the <strong>Game Store</strong>, your one-stop destination for the best gaming experiences! We provide a wide selection of games for all types of players, from action-packed adventures to relaxing puzzle games. Whether you're a seasoned gamer or just getting started, we have something for you.</p>
+    <p class="pgrap">Welcome to the <strong>Game Store</strong>, your one-stop destination for the best gaming experiences! We provide a wide selection of games for all types of players, from action-packed adventures to relaxing puzzle games. Whether you're a seasoned gamer or just getting started, we have something for you.</p>
 
     <h2>Our Mission</h2>
-    <p>Our mission is simple: to offer players the best games with great quality, diverse gameplay, and engaging experiences. We aim to foster a community where gamers can connect, share their experiences, and enjoy their favorite games.</p>
+    <p class="pgrap">Our mission is simple: to offer players the best games with great quality, diverse gameplay, and engaging experiences. We aim to foster a community where gamers can connect, share their experiences, and enjoy their favorite games.</p>
 
     <h2>What We Offer</h2>
-    <ul>
+    <ul class="ulist">
         <li><strong>Wide Game Selection:</strong> Choose from a variety of genres including action, RPG, strategy, sports, and more.</li>
         <li><strong>Exclusive Deals:</strong> Take advantage of our frequent sales, discounts, and exclusive game bundles.</li>
         <li><strong>Easy Access:</strong> Download or stream your favorite games directly from our platform without any hassle.</li>
@@ -22,14 +22,14 @@
     </ul>
 
     <h2>Our Team</h2>
-    <p>Our dedicated team of game enthusiasts, developers, and customer support staff work hard to provide you with the best experience possible. We value your feedback and are constantly striving to improve and evolve our platform.</p>
+    <p class="pgrap">Our dedicated team of game enthusiasts, developers, and customer support staff work hard to provide you with the best experience possible. We value your feedback and are constantly striving to improve and evolve our platform.</p>
 
     <h2>Stay Connected</h2>
-    <p>Follow us on social media to stay up to date with new releases, sales, and community events:</p>
-    <ul>
-        <li>Facebook: <a href="https://www.facebook.com/gamestore" target="_blank">facebook.com/gamestore</a></li>
-        <li>Twitter: <a href="https://www.twitter.com/gamestore" target="_blank">twitter.com/gamestore</a></li>
-        <li>Instagram: <a href="https://www.instagram.com/gamestore" target="_blank">instagram.com/gamestore</a></li>
+    <p class="pgrap">Follow us on social media to stay up to date with new releases, sales, and community events:</p>
+    <ul class="ulist">
+        <li>Facebook: <a class="alink" href="https://www.facebook.com/gamestore" target="_blank">facebook.com/gamestore</a></li>
+        <li>Twitter: <a class="alink" href="https://www.twitter.com/gamestore" target="_blank">twitter.com/gamestore</a></li>
+        <li>Instagram: <a class="alink" href="https://www.instagram.com/gamestore" target="_blank">instagram.com/gamestore</a></li>
     </ul>
 </div>
 <style>
@@ -69,7 +69,7 @@
         padding-bottom: 0.5rem;
     }
 
-    p {
+    .pgrap {
         font-size: 1.1rem;
         color: #ccc;
         /* Chữ xám sáng cho đoạn văn */
@@ -77,34 +77,34 @@
         margin-bottom: 1.5rem;
     }
 
-    ul {
+    .ulist {
         list-style-type: none;
         padding-left: 0;
     }
 
-    ul li {
+    .ulist li {
         font-size: 1.1rem;
         color: #ccc;
         /* Chữ xám sáng cho danh sách */
         margin-bottom: 0.8rem;
     }
 
-    a {
+    .alink {
         color: #1e90ff;
         /* Màu xanh cho liên kết */
         text-decoration: none;
     }
 
-    a:hover {
+    .alink:hover {
         text-decoration: underline;
     }
 
-    ul li a {
+    ul li .alink {
         color: #fff;
         /* Liên kết có màu trắng */
     }
 
-    ul li a:hover {
+    ul li .alink:hover {
         color: #1e90ff;
         /* Màu xanh khi hover */
     }

@@ -163,6 +163,7 @@
                 };
                 reader.readAsDataURL(file);
             }
+        });
 
             // Save profile changes
         document.addEventListener('DOMContentLoaded', () => {

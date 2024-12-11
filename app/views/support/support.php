@@ -1,5 +1,9 @@
 <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <div class="container mt-5">
     <h1 class="text-center text-white">Support</h1>
     <p class="text-center text-white">How can we help you? Please find below some common issues or contact us directly.</p>
@@ -53,11 +57,11 @@
         <form action="/../api/send_support_request.php" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label text-white">Your Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                <input type="text" class="form-controler" id="name" name="name" placeholder="Enter your name" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label text-white">Your Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                <input type="email" class="form-controler" id="email" name="email" placeholder="Enter your email" required>
             </div>
             <div class="mb-3">
                 <label for="issue" class="form-label text-white">Issue</label>
@@ -71,9 +75,9 @@
             </div>
             <div class="mb-3">
                 <label for="message" class="form-label text-white">Message</label>
-                <textarea class="form-control" id="message" name="message" rows="5" placeholder="Describe your issue in detail" required></textarea>
+                <textarea class="form-controler" id="message" name="message" rows="5" placeholder="Describe your issue in detail" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary btn-custom">Submit</button>
         </form>
     </div>
 </div>
@@ -103,26 +107,26 @@
         color: white;
     }
 
-    .form-control,
+    .form-controler,
     .form-select {
         background-color: #343a40;
         color: white;
         border: 1px solid #495057;
     }
 
-    .form-control:focus,
+    .form-controlerfocus,
     .form-select:focus {
         background-color: #495057;
         border-color: #007bff;
         color: white;
     }
 
-    .btn-primary {
+    .btn-custom {
         background-color: #007bff;
         border: none;
     }
 
-    .btn-primary:hover {
+    .btn-custom:hover {
         background-color: #0056b3;
     }
 </style>

@@ -19,10 +19,10 @@
 
 </head>
 
-<body class="bg-dark">
+<body class="set-bg-color">
     <?php include(__DIR__ . '/../layouts/header.php'); ?>
 
-    <main class="container my-5 bg-dark">
+    <main class="container my-5 bg-main-color">
 
         <div class="container text-center">
             <div class="row g-2">
