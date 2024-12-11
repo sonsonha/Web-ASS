@@ -47,12 +47,10 @@ class UserController {
             return;
         }
 
-        $userId = $this->userModel->authenticate($data['email'], $data['password']);
+        $user = $this->userModel->authenticate($data['email'], $data['password']);
 
-        if ($userId !== null) {
-            session_start();
-            $_SESSION['user_id'] = $userId;
-            echo json_encode(['status' => 'success', 'message' => 'Login successful!', 'user_id' => $userId]);
+        if ($user !== null) {
+            echo json_encode(['status' => 'success', 'message' => 'Login successful!', 'user' => $user]);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
         }

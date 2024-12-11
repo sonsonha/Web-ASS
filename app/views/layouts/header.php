@@ -73,6 +73,27 @@
             text-overflow: ellipsis;
         }
 
+        #userMenu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #userMenu img {
+        width: 30px;
+        height: 30px;
+    }
+
+    #userMenu #username {
+        margin-bottom: 0;
+    }
+
+    #role-check {
+        font-size: 0.9em; /* Điều chỉnh kích thước chữ nếu cần */
+        color: #e9e93a; /* Tông màu nhẹ hơn */
+        margin-top: 5px;
+    }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .custom-avatar {
@@ -100,7 +121,7 @@
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center" href="zerostress-game-store">
             <img src="/assets/images/ZeroStress.jpg" alt="Logo" class="me-2" style="height: 40px;">
-            <span>ZeroStress Store</span>
+            <span>ZeroStress</span>
         </a>
 
         <!-- Toggler for small screens -->
@@ -138,22 +159,34 @@
             <!-- User and Cart Section -->
             <div class="d-flex align-items-center">
                 <!-- Cart -->
-                <a href="my_cart" class="btn btn-link text-light me-3">
+                <a href="my_cart" class="btn btn-link text-light me-3 cart-btn">
                     <i class="fas fa-shopping-cart"></i>
                 </a>
 
                 <!-- User Avatar and Dropdown -->
-                <div class="dropdown">
-                    <button class="btn text-light d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                        <img src="/assets/images/default-avatar.jpg" alt="User Avatar" class="rounded-circle me-2" style="width: 30px; height: 30px;">
-                        <span id="username">Username</span>
+                <div class="dropdown user-dropdown">
+                    <button class="btn text-light d-flex align-items-center flex-column" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                        <div class="d-flex align-items-center">
+                            <img src="/assets/images/default-avatar.jpg" alt="User Avatar" class="rounded-circle me-2" style="width: 30px; height: 30px;">
+                            <span id="username">Username</span>
+                        </div>
+                        <div>
+                            <span id="role-check">Guest</span>
+                        </div>
                     </button>
+
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item admin-role" href="admin">Manage</a></li>
                         <li><a class="dropdown-item" href="profile">Profile</a></li>
                         <li><a class="dropdown-item" href="change_password">Change Password</a></li>
-                        <li><a class="dropdown-item" id="loginLink" href="logout">Logout</a></li>
+                        <li><a class="dropdown-item" id="logoutLink" href="logout">Logout</a></li>
                     </ul>
                 </div>
+
+                <a href="login" id="loginLink" class="btn btn-link small">
+                    <i class="fas fa-sign-in-alt"> Login</i> <!-- Biểu tượng login -->
+                </a>
+
             </div>
         </div>
     </div>
@@ -186,8 +219,44 @@
         }
 
         // Set username dynamically
+
+        const cartButton = document.querySelector('.cart-btn');
+
         const usernameElement = document.getElementById("username");
-        usernameElement.textContent = localStorage.getItem("username") || "Guest";
+
+        usernameElement.textContent = localStorage.getItem("username") || "Gamer";  
+
+        const role = localStorage.getItem("role") ? localStorage.getItem("role") : "Guest";
+
+        console.log(role);   
+
+        if (role === "Admin" || role === "Guest") {
+            cartButton.style.display = "none";
+        }
+
+        if (role === "User") {
+            document.querySelector('.admin-role').style.display = "none";
+        }
+
+        console.log(localStorage.getItem("id"));
+
+        // if (role === "Admin" || role === "user") {
+        //     document.getElementById("loginLink").style.display = "none";
+        // }
+
+        if (role === "Admin") {
+            document.getElementById("role-check").textContent = "Admin";
+        } else {
+            document.getElementById("role-check").textContent = "User";
+        }
+
+
+        if (role === "Guest") {
+            document.getElementById("loginLink").style.display = "block";
+            document.querySelector('.user-dropdown').style.display = "none";
+        } else {
+            document.getElementById("loginLink").style.display = "none";
+        }
 
         // Handle logout
         const logoutLink = document.querySelector('.dropdown-item[href="logout"]'); // Adjust selector to match logout link
@@ -201,13 +270,6 @@
         }
     });
 </script>
-
-
-
-
-
-
-
 
 </body>
 </html>

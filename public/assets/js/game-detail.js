@@ -215,8 +215,8 @@ function fetchPopularArticles (user) {
 
                 // Add the card to the container
                 articlesContainer.appendChild(articleCard);
-                // Add click event for the edit button (only for admin)
-                if (user.role === 'admin') {
+                // Add click event for the edit button (only for Admin)
+                if (user.role === 'Admin') {
                     const toggleButton = document.createElement('button');
                     toggleButton.className = `btn btn-outline-info edit-article-btn`;
                     toggleButton.textContent = 'Edit Article';
@@ -382,7 +382,7 @@ function setupReviewSection(game, user) {
     // const noReviewsMessage = document.getElementById('no-reviews-message');
 
     // Admin Role
-    if (user.role === 'admin') {
+    if (user.role === 'Admin') {
         reviewFormSection.style.display = 'none'; // Hide review form
         const toggleButton = document.createElement('button');
         const hiddenClass = game.enable_comments ? 'btn-danger' : 'btn-success';
@@ -488,7 +488,7 @@ function populateReviews(reviews, user, game) {
             showMoreButton = `<button class="btn btn-link btn-sm show-more-replies" data-review-index="${index}">${contentButton}</button>`;
         }
 
-        const reviewHTML = user.role === 'admin' || review.show ? `
+        const reviewHTML = user.role === 'Admin' || review.show ? `
             <div class="review mb-4 ${hiddenClass}">
                 <div class="d-flex align-items-start">
                     <img src="${review.avatar}" alt="${review.username}" class="rounded-circle me-3" width="50">
@@ -539,7 +539,7 @@ function populateReviews(reviews, user, game) {
                                             </div>
 
                                             <!-- Admin controls on replies -->
-                                            ${user.role === 'admin' ? `
+                                            ${user.role === 'Admin' ? `
                                                 <div class="d-flex gap-2 mt-2">
                                                     <button class="btn btn-sm btn-outline-primary toggle-reply-visibility-btn" data-reply-id="${topReply.id}" data-show="${topReply.show}">
                                                         ${topReply.show ? 'Hide' : 'Unhide'}
@@ -572,7 +572,7 @@ function populateReviews(reviews, user, game) {
                                             </div>
 
                                             <!-- Admin controls on replies -->
-                                            ${user.role === 'admin' ? `
+                                            ${user.role === 'Admin' ? `
                                                 <div class="d-flex gap-2 mt-2">
                                                     <button class="btn btn-sm btn-outline-primary toggle-reply-visibility-btn" data-reply-id="${reply.id}" data-show="${reply.show}">
                                                         ${reply.show ? 'Hide' : 'Unhide'}
@@ -591,7 +591,7 @@ function populateReviews(reviews, user, game) {
                         <!-- Show More button -->
                         ${showMoreButton}
 
-                        ${user.role === 'admin' ? `
+                        ${user.role === 'Admin' ? `
                         <div class="d-flex mt-2">
                             <button class="btn btn-sm btn-outline-primary toggle-visibility-btn" data-id="${review.id}" data-show="${review.show}">${review.show ? 'Hide' : 'Unhide'}</button>
                             <button class="btn btn-sm btn-outline-danger delete-review-btn" data-id="${review.id}">Delete</button>
@@ -649,7 +649,7 @@ function populateReviews(reviews, user, game) {
         }
 
         // Reply button event listener
-        if (user.role !== 'admin') {
+        if (user.role !== 'Admin') {
             const replyBtn = reviewElement.querySelector('.reply-btn');
             const replyContainer = reviewElement.querySelector('.reply-input-container');
             const replyInput = reviewElement.querySelector('.reply-input');

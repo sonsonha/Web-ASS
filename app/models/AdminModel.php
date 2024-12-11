@@ -22,7 +22,7 @@ class AdminModel {
 
     // Lấy danh sách tất cả user
     public function getAllUsers() {
-        $query = "SELECT u.id, t.username, t.email, u.reputation_points ,u.status
+        $query = "SELECT u.id, t.username, t.email, u.coins ,u.status
             FROM user u
             JOIN tai_khoan t ON u.id = t.id";
         $stmt = $this->db->prepare($query);
