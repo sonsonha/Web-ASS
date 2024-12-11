@@ -79,7 +79,7 @@ function populateUserTable(users) {
     users.forEach((user) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${user.id}</td>
+            <td>${user.id}</td> 
             <td>${user.username}</td>
             <td>${user.email}</td>
             <td>${user.reputation_points}</td>
@@ -229,4 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
         text-decoration: none;
         cursor: pointer;
     }
+
+    /* CSS để đảm bảo nút Ban/Unban có cùng kích thước */
+    .btn-sm {
+        width: 80px; /* Đặt chiều rộng cố định */
+        text-align: center; /* Canh giữa nội dung */
+    }
+
 </style>

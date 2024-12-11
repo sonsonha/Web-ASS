@@ -133,6 +133,7 @@
 </style>
 
 <div class="container">
+
     <form class="form" id="loginForm">
         <p class="title">Login</p>
         <p class="message">Welcome! Please login to your account.</p>
@@ -144,9 +145,13 @@
             <input class="input" type="password" id="password">
             <span>Password</span>
         </label>
+        <label> 
+            <input type="checkbox" id="rememberMe" style="margin-right: 10px;"> Remember me
+        </label>
         <button class="submit" type="button" id="loginButton">Login</button>
         <p class="signin">Don't have an account? <a href="register">Sign up</a></p>
     </form>
+
 </div>
 
 <script>
@@ -175,10 +180,13 @@
         },
     ];
 
+
     // Xử lý sự kiện login
     document.getElementById('loginButton').addEventListener('click', () => {
+        console.log("Login button clicked"); 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
+        const rememberMe = document.getElementById('rememberMe').checked; // Kiểm tra "Remember me"
 
         if (!email || !password) {
             alert('Please enter your email and password!');
@@ -196,13 +204,50 @@
             localStorage.setItem('email', user.profile.email);
             localStorage.setItem('role', user.profile.role);
             localStorage.setItem('phone_number', user.profile.phone_number);
-            
+
+            // console.log("Role after login: " + localStorage.getItem('role'));
+
+            // Lưu thông tin vào cookies nếu "Remember me" được chọn
+            if (rememberMe) {
+                document.cookie = `email=${email}; max-age=604800; path=/`; // Lưu email trong cookie 1 tuần
+                document.cookie = `password=${password}; max-age=604800; path=/`; // Lưu mật khẩu trong cookie 1 tuần
+            } else {
+                // Xóa cookie nếu "Remember me" không được chọn
+                document.cookie = `email=; max-age=0; path=/`;
+                document.cookie = `password=; max-age=0; path=/`;
+            }
+
             // Chuyển hướng sau khi đăng nhập thành công
             window.location.href = 'store';
         } else {
             alert('Invalid email or password!');
         }
     });
+
+    // Hàm lấy giá trị của cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+
+
+    // Kiểm tra cookies khi người dùng quay lại trang
+    window.onload = function() {
+        const email = getCookie('email');
+        const password = getCookie('password');
+        
+        // Kiểm tra nếu có email và mật khẩu trong cookies
+        if (email && password) {
+            // Tự động điền vào form đăng nhập
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+            document.getElementById('rememberMe').checked = true; // Tích chọn "Remember me"
+        }
+    };
+
 
     // try {
     //     const response = await fetch('http://localhost:8080/login', {

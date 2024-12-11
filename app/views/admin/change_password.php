@@ -48,40 +48,11 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <h3 class="text-center">Edit Profile</h3>
-                    <form id="edit-profile-form">
-                        <!-- Profile Picture Section -->
-                        <div class="mb-3">
-                            <h5>Choose New Profile Picture</h5>
-                            <div class="drag-area" id="drag-area">
-                                <p>Drag and drop an image or click to upload</p>
-                                <input type="file" id="profile-picture" class="form-control d-none">
-                            </div>
-                            <img id="preview-image" class="img-fluid mt-3" src="/public/assets/images/default-avatar.png" alt="Profile Picture" style="display: none; max-width: 200px;">
-                        </div>
-
-                      
-                        <!-- <div class="mb-3">
-                            <label for="username" class="form-label">New username</label>
-                            <input type="text" id="username" class="form-control" placeholder="Enter new username">
-                            <small id="username-feedback" class="text-danger d-none">Username cannot be the same as the old one</small>
-                        </div>
-
-                    
-                        <div class="mb-3">
-                            <label for="email" class="form-label">New email</label>
-                            <input type="email" id="email" class="form-control" placeholder="Enter new email">
-                            <small id="email-feedback" class="text-danger d-none">Email cannot be the same as the old one</small>
-                        </div> -->
-
-                        <!-- Save Changes Button -->
-                        <button type="submit" class="btn btn-success">Save Changes</button>
-                        <small id="general-feedback" class="text-danger d-none">Please make at least one change</small>
-                    </form>
+                    <h3 class="text-center">Change password</h3>
 
                     <!-- Change Password Section -->
                     <hr class="my-4">
-                    <h5>Change Password</h5>
+
                     <form id="change-password-form">
                         <div class="mb-3">
                             <label for="old-password" class="form-label">Old Password</label>

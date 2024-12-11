@@ -1,5 +1,11 @@
-<?php include(__DIR__ . '/../templates/header.php'); ?>
+<?php include(__DIR__ . '/../layouts/header.php'); ?>
 <!-- Navbar giống file home.html -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
 <div class="container mt-5">
     <h1>About Game Store</h1>
     <p>Welcome to the <strong>Game Store</strong>, your one-stop destination for the best gaming experiences! We provide a wide selection of games for all types of players, from action-packed adventures to relaxing puzzle games. Whether you're a seasoned gamer or just getting started, we have something for you.</p>
@@ -112,4 +118,4 @@
         /* Chữ footer xám */
     }
 </style>
-<?php include(__DIR__ . '/../templates/footer.php'); ?>
+<?php include(__DIR__ . '/../layouts/footer.php'); ?>

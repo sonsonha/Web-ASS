@@ -11,10 +11,10 @@ $directories = [
     "error" => "error/",
     "store" => "store/",
     "support" => "support/",
-    "user" => "user/",
+    // "user" => "user/",
     "cart" => "user_cart/",
     "detail" => "detail/",
-    "category" => "cate/",
+    "category" => "cate/",  
     "detail" => "games/",
     // "user" => "user/",
 ];
