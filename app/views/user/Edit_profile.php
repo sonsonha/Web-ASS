@@ -163,7 +163,7 @@
                 };
                 reader.readAsDataURL(file);
             }
-
+        });
             // Save profile changes
         document.addEventListener('DOMContentLoaded', () => {
             const editProfileBtn = document.getElementById('change-picture-btn');

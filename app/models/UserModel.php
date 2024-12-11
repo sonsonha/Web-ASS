@@ -5,6 +5,60 @@ class UserModel {
     public function __construct($db) {
         $this->db = $db;
     }
+
+    public function createUser($firstName, $lastName, $username, $email, $password) {
+        try {
+
+            $query = "SELECT COUNT(*) FROM tai_khoan WHERE username = :username OR email = :email";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            if ($stmt->fetchColumn() > 0) {
+                return "Username or Email already exists.";
+            }
+
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+            $query = "
+                INSERT INTO tai_khoan (firstName, lastName, username, email, password,         registration_date, role)
+                VALUES (:firstName, :lastName, :username, :email, :password, CURDATE(), 'User')
+            ";
+
+            $stmt = $this->db->prepare($query);
+
+            $stmt->bindParam(':firstName', $firstName);
+            $stmt->bindParam(':lastName', $lastName);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $hashedPassword);
+
+            if ($stmt->execute()) {
+                return "Account created successfully!";
+            } else {
+                return "Error creating account.";
+            }
+        } catch (Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
+    }
+
+    public function authenticate($email, $password) {
+        $query = "SELECT id, password FROM tai_khoan WHERE email = :email";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC); 
+
+        if ($user && password_verify($password, $user['password'])) {
+            return $user['id'];
+        }
+
+        return null;
+    }
+
     public function getUserInfo($id) {
         $query = "
             SELECT u.id, t.username, t.email, t.phone_number,t.full_name, t.avatar, t.date_of_birth, u.coins,
@@ -160,5 +214,25 @@ class UserModel {
             $this->db->rollBack();
             return false;
         }
+    }
+
+    public function updateProfile($user_id, $username, $phone, $url_link, $birth) {
+        // Câu lệnh SQL để cập nhật thông tin người dùng
+        $query = "
+            UPDATE tai_khoan
+            SET username = :username, phone_number = :phone, avatar = :url_link, date_of_birth = :birth
+            WHERE id = :user_id
+        ";
+
+        $stmt = $this->db->prepare($query);
+
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+        $stmt->bindParam(':url_link', $url_link, PDO::PARAM_STR);
+        $stmt->bindParam(':birth', $birth, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
