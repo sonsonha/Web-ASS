@@ -23,7 +23,6 @@
     <?php include(__DIR__ . '/../layouts/header.php'); ?>
 
     <main class="container my-5 bg-dark">
-        <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
 
         <div class="container text-center">
             <div class="row g-2">

@@ -1,63 +1,107 @@
+        /* Header Navbar */
+        .custom-navbar {
+            padding: 0.5rem 1rem;
+            background-color: #212121 !important; /* Màu tối hơn */
+        }
 
-/* General navbar styling */
-body {
-    background-color: black;    
-}
-#navbarNav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .custom-logo {
+            height: 40px; /* Giảm chiều cao logo */
+        }
 
-/* Left side links */
-.navbar-nav {
-    margin-left: 20px;
-    display: flex;
-    gap: 10px;
-}
-.navbar-nav .navlink, 
-.navbar-auth a {
-    font-family: Inter, sans-serif;
-    font-size: 16px; /* Điều chỉnh kích thước chữ nếu cần */
-    font-weight: normal; /* Đặt độ đậm của chữ */
-}
+        .custom-nav-link {
+            color: #f8f9fa;
+        }
 
-/* Styling for nav links */
-.navlink {
-    color: rgb(255, 255, 255); /* Default color for links */
-    text-decoration: none;
-    padding: 5px 10px; /* Add some spacing */
-    border-radius: 5px; /* Rounded edges */
-}
+        .custom-nav-link:hover {
+            color: #007bff;
+        }
 
-.navlink:hover {
-    text-decoration: none; 
-    color: rgb(160, 160, 160); /* Dark gray on hover */
-}
+        .custom-dropdown-menu {
+            background-color: #212121 !important; /* Màu nền trùng với header */
+            border: none !important; /* Loại bỏ đường viền */
+            box-shadow: none !important; /* Loại bỏ bóng đổ */
+            color: #f8f9fa !important; /* Đảm bảo màu chữ phù hợp */
+        }
 
-/* Right side (Login & Logout) */
-.navbar-auth {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
+        .custom-dropdown-menu .custom-dropdown-item {
+            color: #f8f9fa !important; /* Màu chữ phù hợp */
+        }
 
-/* Styling for Login */
-#loginLink {
-    color: white;
-    text-decoration: none;
-}
+        .custom-dropdown-menu .custom-dropdown-item:hover {
+            background-color: #343a40 !important; /* Màu nền khi hover */
+            color: #fff !important; /* Màu chữ khi hover */
+        }
 
-#loginLink:hover {
-    color: rgb(0, 183, 255);
-}
 
-/* Styling for Logout */
-#logoutLink {
-    color: red;
-    text-decoration: none;
-}
+        .custom-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
 
-#logoutLink:hover {
-    color: darkred;
-}
+        .custom-dropdown-toggle {
+            background-color: transparent !important; /* Xóa màu nền */
+            border: none !important; /* Xóa đường viền */
+            color: #f8f9fa !important; /* Màu chữ đồng nhất */
+            padding: 0 !important; /* Loại bỏ khoảng cách thừa */
+            margin: 0 !important; /* Loại bỏ khoảng cách thừa */
+            display: flex; /* Đảm bảo hình ảnh và văn bản canh giữa */
+            align-items: center;
+        }
+
+        .custom-dropdown-toggle:hover,
+        .custom-dropdown-toggle:focus {
+            background-color: transparent !important; /* Đảm bảo không đổi màu khi hover */
+            box-shadow: none !important; /* Xóa hiệu ứng khi focus */
+        }
+
+        .custom-avatar {
+            margin-right: 8px; /* Khoảng cách giữa avatar và tên */
+        }
+
+        .custom-navbar {
+            background-color: #212121 !important; /* Màu header */
+        }
+
+
+        #username {
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .custom-avatar {
+                width: 25px;
+                height: 25px;
+            }
+
+            #username {
+                display: none;
+            }
+        }
+
+        /* Style riêng cho trang admin */
+        /* body {
+            background-color: black;
+            color: white;
+        } */
+
+        /* .btn-nav {
+            margin-right: 10px;
+            margin-top: 10px;
+        } */
+
+        /* .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        } */
+
+        .table-dark th,
+        .table-dark td {
+            color: white;
+        }

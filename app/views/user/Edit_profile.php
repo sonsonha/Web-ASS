@@ -165,9 +165,18 @@
             }
 
             // Save profile changes
-            editProfileForm.addEventListener('submit', (e) => {
-                e.preventDefault();
+        document.addEventListener('DOMContentLoaded', () => {
+            const editProfileBtn = document.getElementById('change-picture-btn');
+            const editProfileForm = document.getElementById('edit-profile-form');
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const usernameFeedback = document.getElementById('username-feedback');
+            const emailFeedback = document.getElementById('email-feedback');
+            const generalFeedback = document.getElementById('general-feedback');
 
+            // Ngừng hành động mặc định khi form được submit
+            editProfileForm.addEventListener('submit', (e) => {
+                e.preventDefault();  // Ngừng hành động mặc định của form
                 const newUsername = usernameInput.value.trim();
                 const newEmail = emailInput.value.trim();
 
@@ -217,39 +226,10 @@
                 .catch((error) => console.error('Error updating profile:', error));
             });
 
-            // Update password
-            updatePasswordBtn.addEventListener('click', () => {
-                const oldPassword = document.getElementById('old-password').value;
-                const newPassword = document.getElementById('new-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-
-                if (newPassword !== confirmPassword) {
-                    passwordFeedback.textContent = "Passwords do not match!";
-                    passwordFeedback.classList.remove('d-none');
-                    return;
-                }
-
-                fetch('/change_password.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: localStorage.getItem('user_id'),
-                        old_password: oldPassword,
-                        new_password: newPassword,
-                    }),
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        alert('Password changed successfully!');
-                        passwordFeedback.classList.add('d-none');
-                        changePasswordForm.reset();
-                    } else {
-                        passwordFeedback.textContent = data.message || 'Failed to change password.';
-                        passwordFeedback.classList.remove('d-none');
-                    }
-                })
-                .catch((error) => console.error('Error updating password:', error));
+            // Đảm bảo sự kiện "Edit Profile" chỉ hiển thị form mà không chuyển hướng trang
+            editProfileBtn.addEventListener('click', (e) => {
+                // e.preventDefault();  // Ngừng hành động mặc định của button nếu có
+                document.getElementById('edit-profile-form').classList.remove('d-none');
             });
         });
     </script>

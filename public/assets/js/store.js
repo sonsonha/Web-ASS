@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const slide = document.createElement("div");
             slide.className = "swiper-slide";
             slide.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">
+                <img src="${game.image}" alt="${game.title}">   
                 <div class="carousel-caption gradient-bg p-3 rounded">
                     <h5 class="text-white">${game.title}</h5>
                     <p class="text-light">Rating: ${game.rating} | ${game.discount || "No Discount"} | <span class="text-white">${game.final_price}</span></p>

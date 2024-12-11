@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Redirect to specific pages for changes
-    EditProfile.addEventListener('click', () => {
-        window.location.href = '/Edit_profile';
-    });
+    // EditProfile.addEventListener('click', () => {
+    //     window.location.href = '/Edit_profile';
+    // });
 });
 
 // Utility function to make POST requests
@@ -45,7 +45,7 @@ async function fetchData(url, payload) {
 
 // Populate user profile details
 function populateUserProfile(user) {
-    document.getElementById('user-avatar').src = user.avatar || '/public/assets/images/default-avatar.png';
+    document.getElementById('user-avatar').src = user.avatar || 'https://www.freepik.com/vectors/gaming-profile-pic';
     document.getElementById('user-name').textContent = user.name || 'Unknown';
     document.getElementById('user-email').textContent = user.email || 'Unknown';
 }
