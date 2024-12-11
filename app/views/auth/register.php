@@ -270,7 +270,7 @@
         //     // console.log('Sending:', {
         //     //     email,
         //     //     password
-        //     // }); 
+        //     // });
 
         //     try {
         //         const response = await fetch('http://localhost:8080/register', {
@@ -287,7 +287,7 @@
         //             }),
         //         });
 
-        //         const data = await response.json();
+        //         const data = await response.json();j
 
         //         if (response.ok) {
         //             alert(data.message);
