@@ -96,23 +96,23 @@ class AdminController {
         }
     }
 
-    // API 6: Thay đổi reputation points của user
-    public function updateReputationPoints($username, $newReputationPoints) {
-        header('Content-Type: application/json');
-        $result = $this->adminModel->updateReputationPoints($username, $newReputationPoints);
+    // // API 6: Thay đổi reputation points của user
+    // public function updateReputationPoints($username, $newReputationPoints) {
+    //     header('Content-Type: application/json');
+    //     $result = $this->adminModel->updateReputationPoints($username, $newReputationPoints);
     
-        if ($result) {
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Reputation points updated successfully'
-            ]);
-        } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Failed to update reputation points'
-            ]);
-        }
-    }
+    //     if ($result) {
+    //         echo json_encode([
+    //             'status' => 'success',
+    //             'message' => 'Reputation points updated successfully'
+    //         ]);
+    //     } else {
+    //         echo json_encode([
+    //             'status' => 'error',
+    //             'message' => 'Failed to update reputation points'
+    //         ]);
+    //     }
+    // }
     // API 7: Báo lỗi game (phía user tạo mới báo lỗi)
     public function reportError($user_id, $game_id, $error_description) {
         header('Content-Type: application/json');
@@ -131,13 +131,10 @@ class AdminController {
     }
     // API 8: Xóa lỗi (admin)
     public function deleteErrorReport() {
-        // Lấy dữ liệu báo lỗi từ body của yêu cầu POST
         header('Content-Type: application/json');
         $error_data = json_decode(file_get_contents("php://input"), true);
     
-        // Kiểm tra xem dữ liệu có hợp lệ không (bao gồm id)
         if (isset($error_data['id'])) {
-            // Gọi phương thức deleteErrorReport từ BaoLoiModel
             if ($this->adminModel->deleteErrorReport($error_data['id'])) {
                 echo json_encode([
                     'status' => 'success',

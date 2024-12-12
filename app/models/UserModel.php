@@ -45,7 +45,10 @@ class UserModel {
     }
 
     public function authenticate($email, $password) {
-        $query = "SELECT id, username, email,role, phone_number, password FROM tai_khoan WHERE email = :email";
+        $query = "SELECT id, username, email, role, phone_number, password
+                  FROM tai_khoan
+                  WHERE email = :email";
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
@@ -54,8 +57,19 @@ class UserModel {
 
         if ($user && password_verify($password, $user['password'])) {
             unset($user['password']);
+
+            if ($user['role'] === 'User') {
+                $query = "SELECT u.status FROM user u WHERE u.account_id = :id";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':id', $user['id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                $status = $stmt->fetch(PDO::FETCH_ASSOC);
+                $user['status'] = $status['status'];
+            }
             return $user;
         }
+
         return null;
     }
 

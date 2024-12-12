@@ -213,8 +213,7 @@
                 alert(data.error || 'Login Failed!');
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred, please try again!');
+            alert('Invalid email or password!');
         }
     });
 

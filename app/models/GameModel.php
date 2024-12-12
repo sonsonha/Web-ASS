@@ -188,7 +188,7 @@ class GameModel {
             return false;
         }
     }
-    
+
     public function getGameInfo($id) {
         $query = "SELECT * FROM game WHERE id = :id";
         $stmt = $this->db->prepare($query);
@@ -203,6 +203,27 @@ class GameModel {
         }
     }
 
+    public function checkGameExists($id) {
+        $sql = "SELECT COUNT(*) FROM game WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        return $count > 0; 
+    }
+    
+    public function getAllCategories() {
+        $query = "SELECT DISTINCT genre FROM game";
+
+        $stmt = $this->db->prepare($query);
+
+        $stmt->execute();
+
+        // Trả về tất cả thể loại dưới dạng mảng kết hợp
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 
     
 }

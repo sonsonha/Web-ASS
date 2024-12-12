@@ -9,7 +9,7 @@ class AdminModel {
 
     // Lấy thông tin của một user theo username
     public function getUserInfo($username) {
-        $query = "SELECT u.id, t.username, t.email, u.reputation_points
+        $query = "SELECT u.account_id, u.coins, t.username, t.email, u.status
             FROM user u
             JOIN tai_khoan t ON u.id = t.id
             WHERE t.username = :username";
@@ -22,14 +22,18 @@ class AdminModel {
 
     // Lấy danh sách tất cả user
     public function getAllUsers() {
-        $query = "SELECT u.id, t.username, t.email, u.coins ,u.status
-            FROM user u
-            JOIN tai_khoan t ON u.id = t.id";
+        $query = "SELECT u.account_id, u.coins, t.username, t.email, u.status
+                  FROM user u
+                  JOIN tai_khoan t ON u.account_id = t.id
+                  WHERE t.role = 'User'";
+    
         $stmt = $this->db->prepare($query);
+        
         $stmt->execute();
-
+    
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     
     public function toggleUserStatus($username) {
         $query = "SELECT status FROM user WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
@@ -105,44 +109,44 @@ class AdminModel {
         }
     }
 
-    public function updateReputationPoints($username, $newReputationPoints) {
-        $this->db->beginTransaction();
+    // public function updateReputationPoints($username, $newReputationPoints) {
+    //     $this->db->beginTransaction();
     
-        try {
-            $query1 = "SELECT id FROM tai_khoan WHERE username = :username";
-            $stmt1 = $this->db->prepare($query1);
-            $stmt1->bindParam(":username", $username, PDO::PARAM_STR);
-            $stmt1->execute();
+    //     try {
+    //         $query1 = "SELECT id FROM tai_khoan WHERE username = :username";
+    //         $stmt1 = $this->db->prepare($query1);
+    //         $stmt1->bindParam(":username", $username, PDO::PARAM_STR);
+    //         $stmt1->execute();
     
-            $user = $stmt1->fetch(PDO::FETCH_ASSOC);
+    //         $user = $stmt1->fetch(PDO::FETCH_ASSOC);
     
-            if (!$user) {
-                throw new Exception("User not found");
-            }
+    //         if (!$user) {
+    //             throw new Exception("User not found");
+    //         }
     
-            $userId = $user['id'];
+    //         $userId = $user['id'];
     
-            $query2 = "UPDATE user SET reputation_points = :reputation_points WHERE id = :id";
-            $stmt2 = $this->db->prepare($query2);
-            $stmt2->bindParam(":reputation_points", $newReputationPoints, PDO::PARAM_INT);
-            $stmt2->bindParam(":id", $userId, PDO::PARAM_INT);
-            $stmt2->execute();
+    //         $query2 = "UPDATE user SET reputation_points = :reputation_points WHERE id = :id";
+    //         $stmt2 = $this->db->prepare($query2);
+    //         $stmt2->bindParam(":reputation_points", $newReputationPoints, PDO::PARAM_INT);
+    //         $stmt2->bindParam(":id", $userId, PDO::PARAM_INT);
+    //         $stmt2->execute();
     
-            if ($stmt2->rowCount() === 0) {
-                throw new Exception("No rows affected in user table");
-            }
+    //         if ($stmt2->rowCount() === 0) {
+    //             throw new Exception("No rows affected in user table");
+    //         }
     
-            $this->db->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Failed to update reputation points: ' . $e->getMessage()
-            ]);
-            return false;
-        }
-    }
+    //         $this->db->commit();
+    //         return true;
+    //     } catch (Exception $e) {
+    //         $this->db->rollBack();
+    //         echo json_encode([
+    //             'status' => 'error',
+    //             'message' => 'Failed to update reputation points: ' . $e->getMessage()
+    //         ]);
+    //         return false;
+    //     }
+    // }
 
     public function reportError($user_id, $game_id, $error_description) {
         $query = "INSERT INTO bao_loi (user_id, game_id, error_description) 

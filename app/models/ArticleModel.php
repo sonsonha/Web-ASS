@@ -60,5 +60,28 @@ class ArticleModel {
             return false;
         }
     }
+
+    public function checkArticleExists($article_id) {
+        $sql = "SELECT COUNT(*) FROM bai_bao WHERE id = :article_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':article_id', $article_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        return $count > 0; 
+    }
+
+    public function getAllArticles() {
+        $query = "SELECT id, description, image_url, title 
+                  FROM bai_bao";
+
+        $stmt = $this->db->prepare($query);
+        
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    
 }
 ?>

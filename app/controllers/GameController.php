@@ -27,50 +27,42 @@ class GameController {
         }
     }
 
-    public function getGameInfo($id) {
-        header('Content-Type: application/json');
-    
-        $game = $this->gameModel->getGameInfo($id);
-    
-        if ($game) {
-            echo json_encode([
-                'status' => 'success',
-                'data' => $game
-            ]);
-        } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Game not found'
-            ]);
-        }
-    }
-    
-
     public function updateGame() {
-    header('Content-Type: application/json');
-    $game_data = json_decode(file_get_contents("php://input"), true);
-
-    if (!empty($game_data['game_id']) && !empty($game_data['game_name']) && !empty($game_data['publisher']) && !empty($game_data['genre']) && isset($game_data['price'])) {
-        $result = $this->gameModel->editGame($game_data['game_id'], $game_data);
-
-        if ($result) {
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Game updated successfully'
-            ]);
+        header('Content-Type: application/json');
+        $game_data = json_decode(file_get_contents("php://input"), true);
+    
+        if (!empty($game_data['game_id']) && !empty($game_data['game_name']) && !empty($game_data['publisher']) && !empty($game_data['genre']) && isset($game_data['price'])) {
+    
+            $game_exists = $this->gameModel->checkGameExists($game_data['game_id']);
+    
+            if (!$game_exists) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Game ID does not exist.'
+                ]);
+                return;
+            }
+    
+            $result = $this->gameModel->editGame($game_data['game_id'], $game_data);
+    
+            if ($result) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Game updated successfully'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Failed to update game'
+                ]);
+            }
         } else {
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Failed to update game'
+                'message' => 'Invalid input data. Please provide required fields.'
             ]);
         }
-    } else {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Invalid input data. Please provide required fields.'
-        ]);
     }
-}
 
 
     public function deleteGame() {
@@ -162,9 +154,41 @@ class GameController {
         }
     }
     
+    public function getGameInfo($id) {
+        header('Content-Type: application/json');
     
+        $game = $this->gameModel->getGameInfo($id);
     
+        if ($game) {
+            echo json_encode([
+                'status' => 'success',
+                'data' => $game
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Game not found'
+            ]);
+        }
+    }
     
+    public function getAllCategories() {
+        header('Content-Type: application/json');
+
+        $categories = $this->gameModel->getAllCategories();
+
+        if (empty($categories)) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'No categories found'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'success',
+                'data' => $categories
+            ]);
+        }
+    }
 }
 
 
