@@ -38,7 +38,7 @@
                 <div class="col">
                 </div>
                 <div class="col-12">
-                <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
+                    
                 </div>
                 <div class="col">
                 </div>

@@ -6,8 +6,8 @@
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
-                <th>Reputation Points</th>
-                <th>Actions</th>
+                <th>Coins</th>
+                <th>Status</th>
                 <th>Manage</th>
             </tr>
         </thead>
@@ -23,27 +23,6 @@
         <span class="close" onclick="closeModal('viewModal')">&times;</span>
         <h2>View User</h2>
         <p id="viewUserDetails"></p>
-    </div>
-</div>
-
-<!-- Edit Modal -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('editModal')">&times;</span>
-        <h2>Edit User</h2>
-        <form id="editUserForm">
-            <div class="form-group">
-                <label for="editUsername">Username:</label>
-                <input type="text" id="editUsername" name="username" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="editReputation">Reputation Points:</label>
-                <input type="number" id="editReputation" name="reputation" class="form-control">
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-        </form>
     </div>
 </div>
 
@@ -86,7 +65,6 @@ function populateUserTable(users) {
             <td>${user.status ? 'Active' : 'Banned'}</td>
             <td>
                 <button class="btn btn-info btn-sm" onclick="viewUser(${user.id})">View</button>
-                <button class="btn btn-primary btn-sm" onclick="editUser(${user.id})">Edit</button>
                 <button class="btn btn-danger btn-sm" id="banBtn_${user.id}" onclick="toggleBanUser('${user.username}')">
                     ${user.status ? 'Ban' : 'Unban'}
                 </button>
@@ -131,28 +109,6 @@ function viewUser(id) {
     if (user) {
         document.getElementById('viewUserDetails').innerText = `Username: ${user.username}\nEmail: ${user.email}\nReputation: ${user.reputation_points}\nActive: ${user.status ? 'Active' : 'Banned'}`;
         document.getElementById('viewModal').style.display = 'block';
-    } else {
-        alert('User not found!');
-    }
-}
-
-// Function to open the edit modal
-function editUser(id) {
-    const user = mockUsers.find((u) => u.id === id);
-    if (user) {
-        document.getElementById('editUsername').value = user.username;
-        document.getElementById('editReputation').value = user.reputation_points;
-
-        // Handle form submission
-        document.getElementById('editUserForm').onsubmit = function (e) {
-            e.preventDefault();
-            user.username = document.getElementById('editUsername').value;
-            user.reputation_points = parseInt(document.getElementById('editReputation').value, 10);
-            populateUserTable(mockUsers);
-            closeModal('editModal');
-        };
-
-        document.getElementById('editModal').style.display = 'block';
     } else {
         alert('User not found!');
     }
