@@ -174,9 +174,9 @@ class GameController {
     
     public function getAllCategories() {
         header('Content-Type: application/json');
-
-        $categories = $this->gameModel->getAllCategories();
-
+        
+        $categories = $this->gameModel->getAllCategoriesWithThumbnail();
+        
         if (empty($categories)) {
             echo json_encode([
                 'status' => 'error',
@@ -189,8 +189,34 @@ class GameController {
             ]);
         }
     }
+    
+
+    public function addThumbnail($game_id, $thumbnail_data) {
+        header('Content-Type: application/json');
+
+        if (empty($game_id) || empty($thumbnail_data['url']) || empty($thumbnail_data['type'])) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Invalid data, please provide game_id, url, and type'
+            ]);
+            return;
+        }
+
+        $result = $this->gameModel->addThumbnail($game_id, $thumbnail_data);
+
+        if ($result) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Thumbnail added successfully'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to add thumbnail'
+            ]);
+        }
+    }
+
 }
-
-
 
 ?>

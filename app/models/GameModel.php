@@ -224,7 +224,5 @@ class GameModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-
-    
 }
 ?>
