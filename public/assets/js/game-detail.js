@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // const urlParams = new URLSearchParams(window.location.search);
     // const gameId = urlParams.get('id'); // Retrieve the id from the query string
 
-    const pathParts = window.location.pathname.split('/');
-    const gameId = pathParts[pathParts.length - 2];
+    // const pathParts = window.location.pathname.split('/');
+    // const gameId = pathParts[pathParts.length - 2];
 
     console.log('Game ID:', gameId);
 
@@ -464,30 +464,6 @@ function populateReviews(reviews, user, game) {
     reviews.forEach((review, index) => {
         const hiddenClass = !review.show ? 'blurred' : ''; 
 
-        // Ensure 'replies' is an array (fallback to empty array if undefined)
-        const replies = Array.isArray(review.replies) ? review.replies : [];
-
-        // Sort replies by most likes (and by date for tie-breaking)
-        replies.sort((a, b) => {
-            if (b.likes !== a.likes) return b.likes - a.likes; // Sort by likes (descending)
-            return new Date(b.timestamp) - new Date(a.timestamp); // If likes are equal, sort by date (descending)
-        });
-
-        // Get the top reply (first in sorted array)
-        const topReply = replies[0] || null;
-        const hiddenReplies = replies.slice(1); // All other replies after the top one
-        let showMoreButton = '';
-
-        // Only show "Show More" button if there are hidden replies
-
-        numHiddenReplies = hiddenReplies.length;
-
-        let contentButton = `Show More (${numHiddenReplies})`;
-
-        if (hiddenReplies.length > 0) {
-            showMoreButton = `<button class="btn btn-link btn-sm show-more-replies" data-review-index="${index}">${contentButton}</button>`;
-        }
-
         const reviewHTML = user.role === 'Admin' || review.show ? `
             <div class="review mb-4 ${hiddenClass}">
                 <div class="d-flex align-items-start">
@@ -506,96 +482,12 @@ function populateReviews(reviews, user, game) {
                             </button>
                         </div>
 
-                        <button class="btn btn-sm btn-outline-primary reply-btn gap-3" data-review-index="${index}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-reply-fill" viewBox="0 0 16 16">
-                                <path d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/>
-                            </svg>
-                        </button>
-                        <div class="reply-input-container d-none mt-3" data-review-index="${index}">
-                            <textarea class="form-control reply-input" rows="2" placeholder="Write your reply..."></textarea>
-                            <button class="btn btn-info btn-sm mt-2 submit-reply-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <!-- Display top reply -->
-                        <div class="replies-container mt-3">
-                            ${topReply ? `
-                                <div class="reply mb-3 ${!topReply.show ? 'blurred' : ''}">
-                                    <div class="d-flex align-items-start">
-                                        <img src="${topReply.avatar}" alt="${topReply.username}" class="rounded-circle me-3" width="40">
-                                        <div class="ms-3">
-                                            <strong>${topReply.username}</strong>
-                                            <p>${topReply.message}</p>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm like-btn ${topReply.userLiked ? 'active' : ''}" data-reply-id="${topReply.id}" data-action="like">
-                                                    👍 <span class="like-count text-white">${topReply.likes || 0}</span>
-                                                </button>
-                                                <button class="btn btn-sm dislike-btn ${topReply.userDisliked ? 'active' : ''}" data-reply-id="${topReply.id}" data-action="dislike">
-                                                    👎 <span class="dislike-count text-white">${topReply.dislikes || 0}</span>
-                                                </button>
-                                            </div>
-
-                                            <!-- Admin controls on replies -->
-                                            ${user.role === 'Admin' ? `
-                                                <div class="d-flex gap-2 mt-2">
-                                                    <button class="btn btn-sm btn-outline-primary toggle-reply-visibility-btn" data-reply-id="${topReply.id}" data-show="${topReply.show}">
-                                                        ${topReply.show ? 'Hide' : 'Unhide'}
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger delete-reply-btn" data-reply-id="${topReply.id}">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            ` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                            <!-- Hidden replies (to be shown on click) -->
-                            ${hiddenReplies.map(reply => `
-                                <div class="reply d-none mb-3 ${!reply.show ? 'blurred' : ''}">
-                                    <div class="d-flex align-items-start">
-                                        <img src="${reply.avatar}" alt="${reply.username}" class="rounded-circle me-3" width="40">
-                                        <div class="ms-3">
-                                            <strong>${reply.username}</strong>
-                                            <p>${reply.message}</p>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm like-btn ${reply.userLiked ? 'active' : ''}" data-reply-id="${reply.id}" data-action="like">
-                                                    👍 <span class="like-count text-white">${reply.likes || 0}</span>
-                                                </button>
-                                                <button class="btn btn-sm dislike-btn ${reply.userDisliked ? 'active' : ''}" data-reply-id="${reply.id}" data-action="dislike">
-                                                    👎 <span class="dislike-count text-white">${reply.dislikes || 0}</span>
-                                                </button>
-                                            </div>
-
-                                            <!-- Admin controls on replies -->
-                                            ${user.role === 'Admin' ? `
-                                                <div class="d-flex gap-2 mt-2">
-                                                    <button class="btn btn-sm btn-outline-primary toggle-reply-visibility-btn" data-reply-id="${reply.id}" data-show="${reply.show}">
-                                                        ${reply.show ? 'Hide' : 'Unhide'}
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger delete-reply-btn" data-reply-id="${reply.id}">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            ` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <!-- Show More button -->
-                        ${showMoreButton}
-
+                        <!-- Admin controls on reviews -->
                         ${user.role === 'Admin' ? `
                         <div class="d-flex mt-2">
                             <button class="btn btn-sm btn-outline-primary toggle-visibility-btn" data-id="${review.id}" data-show="${review.show}">${review.show ? 'Hide' : 'Unhide'}</button>
                             <button class="btn btn-sm btn-outline-danger delete-review-btn" data-id="${review.id}">Delete</button>
-                        </div>` : ` `}
+                        </div>` : ``}
                     </div>
                 </div>
             </div>
@@ -615,63 +507,6 @@ function populateReviews(reviews, user, game) {
         if (dislikeBtn) {
             dislikeBtn.addEventListener('click', () => handleLikeDislike(user, game.id, review, 'dislike', likeBtn, dislikeBtn));
         }
-
-        // Event listener for Show More button (to show additional replies)
-        const showMoreBtn = reviewElement.querySelector('.show-more-replies');
-        if (showMoreBtn) {
-            showMoreBtn.addEventListener('click', () => {
-                // const reviewIndex = e.target.dataset.reviewIndex;
-                const repliesContainer = reviewElement.querySelector('.replies-container');
-                const hiddenReplies = repliesContainer.querySelectorAll('.reply.d-none');
-                let showedReplies = repliesContainer.querySelectorAll('.reply:not(.d-none)');
-                console.log('Hidden Replies:', hiddenReplies.length);
-
-                // const showedReplies = repliesContainer.querySelectorAll('.reply:not(.d-none)');
-                if (showMoreBtn.innerHTML.includes('Show More')) {
-                    // Show the next 3 hidden replies
-                    const nextReplies = Array.from(hiddenReplies).slice(0, 3);
-                    nextReplies.forEach(reply => reply.classList.remove('d-none'));
-        
-                    // If there are no more hidden replies, change button text to 'Show Less'
-                    const numHiddenRepliesLeft = hiddenReplies.length > 3 ? hiddenReplies.length - 3 : hiddenReplies.length;
-                    showMoreBtn.innerHTML = 'Show More (' + (numHiddenRepliesLeft) + ')';
-                    if (hiddenReplies.length < 3) {
-                        showMoreBtn.innerHTML = 'Show Less';
-                    }
-                } else {
-                    // If "Show Less" is clicked, hide all replies again
-                    showedReplies.forEach(reply => reply.classList.add('d-none'));
-        
-                    // Update button text back to 'Show More'
-                    showMoreBtn.innerHTML = 'Show More (' + (showedReplies.length) + ')';
-                }
-            });
-        }
-
-        // Reply button event listener
-        if (user.role !== 'Admin') {
-            const replyBtn = reviewElement.querySelector('.reply-btn');
-            const replyContainer = reviewElement.querySelector('.reply-input-container');
-            const replyInput = reviewElement.querySelector('.reply-input');
-            const submitReplyBtn = reviewElement.querySelector('.submit-reply-btn');
-
-            replyBtn?.addEventListener('click', () => {
-                if (user.role === 'guest') {
-                    showLoginAlert('reply');
-                } else {
-                    replyContainer.classList.toggle('d-none');
-                }
-            });
-
-            submitReplyBtn?.addEventListener('click', () => {
-                const replyMessage = replyInput.value.trim();
-                if (replyMessage) {
-                    sendReplyToBackend(game.id, review.username, user.id, replyMessage);
-                } else {
-                    alert('Reply cannot be empty.');
-                }
-            });
-        }
     });
 
     document.getElementById('game-price').textContent = game.price || 'Unknown';
@@ -682,7 +517,7 @@ function populateReviews(reviews, user, game) {
 // Handle Like/Dislike Logic
 function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {
     if (user.role === 'guest') {
-        showLoginAlert(reply);
+        showLoginAlert('like');
         return;
     }
 
@@ -733,30 +568,6 @@ function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {
         .catch((error) => console.error('Error updating like/dislike:', error));
 }
 
-
-// Function to send the reply to the backend
-function sendReplyToBackend(gameId, reviewUsername, userId, replyMessage) {
-    fetch('/../test_api/games_api/submit_reply.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            game_id: gameId,
-            review_username: reviewUsername,
-            user_id: userId,
-            reply_message: replyMessage,
-        }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                alert('Reply submitted successfully.');
-                location.reload(); // Reload to display the new reply
-            } else {
-                alert('Failed to submit reply.');
-            }
-        })
-        .catch((error) => console.error('Error submitting reply:', error));
-}
 
 function setupAdminReviewButtons(game) {
     // Toggle visibility
@@ -844,11 +655,7 @@ function showLoginAlert(action) {
     } else if (action === 'review') {
         modalTitle.textContent = 'Sign In Required';
         modalBody.innerHTML = '<p>Please sign in to leave a review.</p>';
-    } else if (action === 'reply') {
-        modalTitle.textContent = 'Sign In Required';
-        modalBody.innerHTML = '<p>Please sign in to leave a reply on the comments.</p>';
-    }
-    
+    } 
     // Show the modal
     const modal = new bootstrap.Modal(document.getElementById('loginModal'));
     modal.show();

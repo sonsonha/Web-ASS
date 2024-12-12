@@ -8,7 +8,7 @@
     <style>
         body {
             background-color: #1b2838 !important;
-            color: white;
+            color: white !important;
         }
 
         .card {
@@ -17,18 +17,7 @@
             border: none;
             border-radius: 10px;
             padding: 20px;
-        }
-
-        .drag-area {
-            border: 2px dashed #fff;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .drag-area.drag-over {
-            background-color: #3b556d;
+            color: white !important;
         }
 
         .btn {
@@ -79,152 +68,59 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dragArea = document.getElementById('drag-area');
-            const profilePictureInput = document.getElementById('profile-picture');
-            const previewImage = document.getElementById('preview-image');
-            const editProfileForm = document.getElementById('edit-profile-form');
-            const changePasswordForm = document.getElementById('change-password-form');
-            const usernameInput = document.getElementById('username');
-            const emailInput = document.getElementById('email');
-            const usernameFeedback = document.getElementById('username-feedback');
-            const emailFeedback = document.getElementById('email-feedback');
-            const generalFeedback = document.getElementById('general-feedback');
-            const passwordFeedback = document.getElementById('password-feedback');
-            const updatePasswordBtn = document.getElementById('update-password-btn');
+document.addEventListener('DOMContentLoaded', () => {
+    const changePasswordForm = document.getElementById('change-password-form');
+    const passwordFeedback = document.getElementById('password-feedback');
+    const updatePasswordBtn = document.getElementById('update-password-btn');
 
-            // Mock current user data from local storage
-            const currentUsername = localStorage.getItem('username') || 'current_user';
-            const currentEmail = localStorage.getItem('email') || 'current@example.com';
+    // Update password
+    updatePasswordBtn.addEventListener('click', async () => {
+        const email = localStorage.getItem('email'); // Lấy email từ localStorage hoặc thay đổi nếu bạn sử dụng cách khác để lấy email
+        const oldPassword = document.getElementById('old-password').value.trim();
+        const newPassword = document.getElementById('new-password').value.trim();
+        const confirmPassword = document.getElementById('confirm-password').value.trim();
 
-            // Drag and Drop functionality
-            dragArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dragArea.classList.add('drag-over');
+        if (!email) {
+            alert('Email không tồn tại, vui lòng kiểm tra lại!');
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            passwordFeedback.textContent = "Passwords do not match!";
+            passwordFeedback.classList.remove('d-none');
+            return;
+        }
+
+        passwordFeedback.classList.add('d-none'); // Ẩn thông báo lỗi
+
+        try {
+            const response = await fetch('/../api/changed_password.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    current_password: oldPassword,
+                    new_password: newPassword,
+                }),
             });
 
-            dragArea.addEventListener('dragleave', () => {
-                dragArea.classList.remove('drag-over');
-            });
+            const result = await response.json();
 
-            dragArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dragArea.classList.remove('drag-over');
-                const file = e.dataTransfer.files[0];
-                if (file) {
-                    profilePictureInput.files = e.dataTransfer.files;
-                    displayImage(file);
-                }
-            });
-
-            dragArea.addEventListener('click', () => {
-                profilePictureInput.click();
-            });
-
-            profilePictureInput.addEventListener('change', () => {
-                const file = profilePictureInput.files[0];
-                if (file) {
-                    displayImage(file);
-                }
-            });
-
-            function displayImage(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImage.src = e.target.result;
-                    previewImage.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+            if (response.ok && result.status === 'success') {
+                alert('Password changed successfully!');
+                changePasswordForm.reset(); // Reset form sau khi đổi mật khẩu thành công
+            } else {
+                passwordFeedback.textContent = result.message || 'Failed to change password.';
+                passwordFeedback.classList.remove('d-none');
             }
+        } catch (error) {
+            console.error('Error updating password:', error);
+            passwordFeedback.textContent = 'An unexpected error occurred. Please try again.';
+            passwordFeedback.classList.remove('d-none');
+        }
+    });
+});
 
-            // Save profile changes
-            editProfileForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                const newUsername = usernameInput.value.trim();
-                const newEmail = emailInput.value.trim();
-
-                let hasChanges = false;
-
-                usernameFeedback.classList.add('d-none');
-                emailFeedback.classList.add('d-none');
-                generalFeedback.classList.add('d-none');
-
-                if (newUsername && newUsername !== currentUsername) {
-                    hasChanges = true;
-                } else if (newUsername === currentUsername) {
-                    hasChanges = true;
-                    usernameFeedback.classList.remove('d-none');
-                }
-
-                if (newEmail && newEmail !== currentEmail) {
-                    hasChanges = true;
-                } else if (newEmail === currentEmail) {
-                    emailFeedback.classList.remove('d-none');
-                }
-
-                if (!hasChanges && !profilePictureInput.files.length) {
-                    generalFeedback.textContent = 'Please make at least one change';
-                    generalFeedback.classList.remove('d-none');
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('user_id', localStorage.getItem('user_id'));
-                if (newUsername && newUsername !== currentUsername) formData.append('username', newUsername);
-                if (newEmail && newEmail !== currentEmail) formData.append('email', newEmail);
-                if (profilePictureInput.files[0]) formData.append('avatar', profilePictureInput.files[0]);
-
-                fetch('test_api/update_profile.php', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        alert('Profile updated successfully!');
-                    } else {
-                        alert('Failed to update profile.');
-                    }
-                })
-                .catch((error) => console.error('Error updating profile:', error));
-            });
-
-            // Update password
-            updatePasswordBtn.addEventListener('click', () => {
-                const oldPassword = document.getElementById('old-password').value;
-                const newPassword = document.getElementById('new-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-
-                if (newPassword !== confirmPassword) {
-                    passwordFeedback.textContent = "Passwords do not match!";
-                    passwordFeedback.classList.remove('d-none');
-                    return;
-                }
-
-                fetch('/change_password.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: localStorage.getItem('user_id'),
-                        old_password: oldPassword,
-                        new_password: newPassword,
-                    }),
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        alert('Password changed successfully!');
-                        passwordFeedback.classList.add('d-none');
-                        changePasswordForm.reset();
-                    } else {
-                        passwordFeedback.textContent = data.message || 'Failed to change password.';
-                        passwordFeedback.classList.remove('d-none');
-                    }
-                })
-                .catch((error) => console.error('Error updating password:', error));
-            });
-        });
     </script>
 </body>
 </html>

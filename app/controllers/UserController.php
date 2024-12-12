@@ -123,20 +123,20 @@ class UserController {
         }
     }
 
-    public function updateProfile($user_id, $username, $phone, $url_link, $birth){
+    public function updateProfile($user_id, $fullName, $phone, $url_link, $birth){
         header('Content-Type: application/json');
-        $result = $this->userModel->updateProfile($user_id, $username, $phone, $url_link, $birth);
+        $result = $this->userModel->updateProfile($user_id, $fullName, $phone, $url_link, $birth);
 
 
         if ($result) {
             echo json_encode([
                 'status' => 'success',
-                'data' => $result
+                'data' => "Updated profile successfully!"
             ]);
         } else {
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Update profile failed'
+                'message' => 'Update profile failed!'
             ]);
         }
     }
@@ -154,6 +154,26 @@ class UserController {
             echo json_encode(['status' => 'success', 'message' => 'Coins added successfully.']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Failed to add coins.']);
+        }
+    }
+
+    public function changePassword($data) {
+        if (!isset($data['email']) || !isset($data['current_password']) || !isset($data['new_password'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input.']);
+            return;
+        }
+
+        $user = $this->userModel->authenticate($data['email'], $data['current_password']);
+
+        if ($user === null) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email or current password.']);
+            return;
+        }
+
+        if ($this->userModel->updatePassword($user['id'], $data['new_password'])) {
+            echo json_encode(['status' => 'success', 'message' => 'Password updated successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update password.']);
         }
     }
 

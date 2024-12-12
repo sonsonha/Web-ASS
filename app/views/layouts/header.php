@@ -182,82 +182,91 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        // Fetch and populate categories dynamically
-        const categoriesDropdown = document.getElementById("categoriesDropdown").nextElementSibling;
-        try {
-            const response = await fetch("http://localhost/test_api/store_api/fetch_categories.php");
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+document.addEventListener("DOMContentLoaded", async () => {
+    // Fetch and populate categories dynamically
+    const categoriesDropdown = document.getElementById("categoriesDropdown").nextElementSibling;
+    try {
+        const response = await fetch("http://localhost/test_api/store_api/fetch_categories.php");
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-            const categories = await response.json();
-            categoriesDropdown.innerHTML = "";
+        const categories = await response.json();
+        categoriesDropdown.innerHTML = "";
 
-            if (categories.length > 0) {
-                categories.forEach((category) => {
-                    const li = document.createElement("li");
-                    li.innerHTML = `<a class="dropdown-item" href="category.php?category=${category.slug}">${category.name}</a>`;
-                    categoriesDropdown.appendChild(li);
-                });
-            } else {
-                categoriesDropdown.innerHTML = `<li><span class="dropdown-item">No categories available</span></li>`;
-            }
-        } catch (error) {
-            console.error("Error fetching categories: ", error);
-            categoriesDropdown.innerHTML = `<li><span class="dropdown-item text-danger">Error loading categories</span></li>`;
-        }
-
-        // Set username dynamically
-
-        const cartButton = document.querySelector('.cart-btn');
-
-        const usernameElement = document.getElementById("username");
-
-        usernameElement.textContent = localStorage.getItem("username") || "Gamer";  
-
-        const role = localStorage.getItem("role") ? localStorage.getItem("role") : "Guest";
-
-        console.log(role);   
-
-        if (role === "Admin" || role === "Guest") {
-            cartButton.style.display = "none";
-        }
-
-        if (role === "User") {
-            document.querySelector('.admin-role').style.display = "none";
-        }
-
-        console.log(localStorage.getItem("id"));
-
-        // if (role === "Admin" || role === "user") {
-        //     document.getElementById("loginLink").style.display = "none";
-        // }
-
-        if (role === "Admin") {
-            document.getElementById("role-check").textContent = "Admin";
-        } else {
-            document.getElementById("role-check").textContent = "User";
-        }
-
-
-        if (role === "Guest") {
-            document.getElementById("loginLink").style.display = "block";
-            document.querySelector('.user-dropdown').style.display = "none";
-        } else {
-            document.getElementById("loginLink").style.display = "none";
-        }
-
-        // Handle logout
-        const logoutLink = document.querySelector('.dropdown-item[href="logout"]'); // Adjust selector to match logout link
-        if (logoutLink) {
-            logoutLink.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent default link behavior
-                localStorage.clear(); // Clear localStorage
-                alert('Logout successful!');
-                window.location.href = 'login'; // Redirect to login page
+        if (categories.length > 0) {
+            categories.forEach((category) => {
+                const li = document.createElement("li");
+                li.innerHTML = `<a class="dropdown-item" href="category.php?category=${category.slug}">${category.name}</a>`;
+                categoriesDropdown.appendChild(li);
             });
+        } else {
+            categoriesDropdown.innerHTML = `<li><span class="dropdown-item">No categories available</span></li>`;
         }
-    });
+    } catch (error) {
+        console.error("Error fetching categories: ", error);
+        categoriesDropdown.innerHTML = `<li><span class="dropdown-item text-danger">Error loading categories</span></li>`;
+    }
+
+    // Fetch user info (avatar and username) from the API
+    const userId = 17; // Example user ID
+    const cartButton = document.querySelector('.cart-btn');
+    const usernameElement = document.getElementById("username");
+    const avatarElement = document.querySelector('.custom-avatar');
+    const roleElement = document.getElementById("role-check");
+
+    try {
+        const userResponse = await fetch(`/../api/get_shoping_cart.php?id=${userId}`);
+        const userData = await userResponse.json();
+
+        if (userData.status === 'success') {
+            const user = userData.data;
+            usernameElement.textContent = user.username;
+            avatarElement.src = user.avatar || "/assets/images/default-avatar.jpg"; // Default avatar if none provided
+            roleElement.textContent = user.role || "User"; // Assuming you have a role in the API response, or you can use localStorage or other logic for this
+        } else {
+            console.error("Error fetching user data:", userData.message);
+        }
+    } catch (error) {
+        console.error("Error fetching user info:", error);
+        usernameElement.textContent = "Guest"; // Fallback to Guest
+        avatarElement.src = "/assets/images/default-avatar.jpg"; // Default avatar in case of error
+        roleElement.textContent = "Guest"; // Fallback role
+    }
+
+    const role = localStorage.getItem("role") ? localStorage.getItem("role") : "Guest";
+    console.log(role);
+
+    if (role === "Admin" || role === "Guest") {
+        cartButton.style.display = "none";
+    }
+
+    if (role === "User") {
+        document.querySelector('.admin-role').style.display = "none";
+    }
+
+    // Handle login/logout visibility based on role
+    if (role === "Guest") {
+        document.getElementById("loginLink").style.display = "block";
+        document.querySelector('.user-dropdown').style.display = "none";
+    } else {
+        document.getElementById("loginLink").style.display = "none";
+    }
+
+    // Handle logout
+    const logoutLink = document.querySelector('.dropdown-item[href="logout"]');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            localStorage.clear(); // Clear localStorage
+            alert('Logout successful!');
+            window.location.href = 'login'; // Redirect to login page
+        });
+    }
+});
+
 </script>
+
+
+
 
 </body>
 </html>

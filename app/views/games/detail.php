@@ -16,18 +16,6 @@
 
     <main class="container my-5">
 
-        <?php include __DIR__ . '/../layouts/nav_bar.php'; ?> <!-- Updated -->
-        
-        <!-- Breadcrumb Navigation -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb bg-dark text-white p-3 rounded">
-                <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                <li class="breadcrumb-item"><a href="/store/store.php">Store</a></li>
-                <li class="breadcrumb-item"><a href="/categories/strategy.php">Strategy</a></li>
-                <li class="breadcrumb-item active" aria-current="page" id="game-breadcrumb">Game Name</li>
-            </ol>
-        </nav>
-
         <!-- Main Title -->
         <h1 class="text-white" id="game-title">Game Name</h1>
 
@@ -36,7 +24,7 @@
             <div class="col-md-8">
                 <!-- Display Area -->
                 <div class="display-area">
-                    <video id="mainDisplay" controls style="display: none;">
+                    <video id="mainDisplay" controls style="display: noneav;">
                         <source id="videoSource" src="" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>

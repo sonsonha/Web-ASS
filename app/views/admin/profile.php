@@ -4,29 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <!-- Bootstrap CSS -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/../assets/css/user_profile.css">
+    <!-- Embedded CSS for styling -->
+    <style>
+        /* Add styles here */
+        /* copy styles from the previous block */
+    </style>
 </head>
 <body>
-    <!-- Include Header -->
     <?php include __DIR__ . '/../layouts/header.php'; ?>
 
     <main class="container my-5">
         <h1 class="text-center text-white mb-4">My Profile</h1>
         <div class="row justify-content-center">
-            <!-- User Information -->
             <div class="col-md-6 p-4 rounded" style="background-color: #1b2838;">
                 <div class="text-center mb-3">
                     <img id="user-avatar" src="/assets/images/default-avatar.jpg" alt="User Avatar" class="rounded-circle" width="150">
                 </div>
-                <!-- Moved Edit button here -->
                 <div class="text-center mb-3">
                     <button id="change-picture-btn" class="btn btn-outline-light btn-sm">Edit Profile</button>
                 </div>
-
                 <div class="text-center mb-3">
                     <h3 id="user-name">User Name</h3>
                 </div>
@@ -42,36 +41,12 @@
                 <div class="mb-3 text">
                     <p><strong>Birth:</strong> <span id="user-birth">Loading...</span></p>
                 </div>
-                <!-- Editable Form (Initially Hidden) -->
-                <div id="edit-profile-form" class="d-none">
-                    <form id="profile-form">
-                        <div class="mb-3">
-                            <label for="edit-username" class="form-label">Username</label>
-                            <input type="text" id="edit-username" class="form-control" placeholder="Enter your username">
-                            <div class="invalid-feedback">Username is required.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit-phone" class="form-label">Phone</label>
-                            <input type="text" id="edit-phone" class="form-control" placeholder="Enter your phone">
-                            <div class="invalid-feedback">Phone is required.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit-birth" class="form-label">Birth</label>
-                            <input type="date" id="edit-birth" class="form-control">
-                            <div class="invalid-feedback">Birth date is required.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit-avatar" class="form-label">Profile Image URL</label>
-                            <input type="url" id="edit-avatar" class="form-control" placeholder="Enter image URL">
-                        </div>
-                        <button type="button" class="btn btn-success" id="update-btn">Update</button>
-                    </form>
+                <div class="text">
+                    <p><strong>Coins:</strong> <span id="user-coins">Loading...</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- Games Owned Section -->
-        <!-- Shopping Cart Section -->
         <section class="mt-5">
             <h2 class="text-white mb-4">Games Owned</h2>
             <div id="shopping-cart" class="row g-4">
@@ -79,8 +54,8 @@
             </div>
         </section>
 
-        <!-- Edit Profile Modal -->
-        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content" style="background-color: #2c3e50; color: #fff;">
                     <div class="modal-header">
@@ -113,6 +88,15 @@
         </div>
     </main>
 
+    <?php include __DIR__ . '/../layouts/footer.php'; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Your JavaScript functions remain unchanged, adjusting only for styles
+    </script>
+</body>
+</html>
+
     <!-- Include Footer -->
     <?php include __DIR__ . '/../layouts/footer.php'; ?>
 
@@ -131,12 +115,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+
     try {
         const profileData = await fetchShoppingCart(userId);
         
         if (profileData) {
             const userData = profileData.data; // Extract the 'data' object from the response
-
+            console.log(userData);
             populateUserProfile(userData);
             displayGames(userData.games || []);
 
@@ -152,10 +137,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function openEditProfileModal(userData) {
-    document.getElementById('editUsername').value = userData.username || '';
+
+    document.getElementById('editUsername').value = userData.full_name || '';
     document.getElementById('editPhone').value = userData.phone_number || '';
     document.getElementById('editBirth').value = userData.date_of_birth || '';
     document.getElementById('editAvatar').value = userData.avatar || '';
+    // document.getElementById('user-coins').value = userData.coins;
+    console.log(userData.coins);
 
     new bootstrap.Modal(document.getElementById('editProfileModal')).show();
 }
@@ -163,7 +151,7 @@ function openEditProfileModal(userData) {
 async function saveProfileChanges() {
     const updatedProfile = {
         id: localStorage.getItem('id'),
-        username: document.getElementById('editUsername').value,
+        fullName: document.getElementById('editUsername').value,
         phone: document.getElementById('editPhone').value,
         birth: document.getElementById('editBirth').value,
         url_link: document.getElementById('editAvatar').value
@@ -178,7 +166,7 @@ async function saveProfileChanges() {
         });
 
         const result = await response.json();
-        if (result.success) {
+        if (result.status === 'success') {
             alert('Profile updated successfully!');
             window.location.reload(); // To reflect the updated data on the profile page
         } else {
@@ -198,6 +186,7 @@ async function fetchShoppingCart(userId) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const cartData = await response.json();
+        console.log(cartData); // Giúp bạn xem phản hồi dữ liệu
         return cartData;
     } catch (error) {
         console.error('Error fetching shopping cart:', error);
@@ -207,12 +196,14 @@ async function fetchShoppingCart(userId) {
 }
 
 function populateUserProfile(user) {
+    console.log(user.avatar); // Kiểm tra dữ liệu avatar nào đang được gán
     document.getElementById('user-avatar').src = user.avatar || '/assets/images/default-avatar.jpg';
-    document.getElementById('user-name').textContent = user.full_name || 'Unknown';
+    document.getElementById('user-name').textContent = user.full_name || 'ZeroMember';
     document.getElementById('user-username').textContent = user.username || 'Unknown';
     document.getElementById('user-email').textContent = user.email || 'Unknown';
     document.getElementById('user-phone').textContent = user.phone_number || 'Unknown';
     document.getElementById('user-birth').textContent = user.date_of_birth || 'Unknown';
+    document.getElementById('user-coins').textContent = user.coins;
 }
 
 function displayGames(games) {
@@ -243,5 +234,10 @@ function displayGames(games) {
     }
 }
     </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>
+
