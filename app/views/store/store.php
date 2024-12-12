@@ -110,6 +110,93 @@
             </div>
         </div>
 
+        <!-- Modal for Editing Game -->
+        <div id="editGameModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1b2838; padding: 20px; border-radius: 10px; z-index: 1000; width: 80%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+            <h3 style="color: #fff; text-align: center;">Edit Game</h3>
+            <form id="editGameForm" style="color: #fff;">
+                <label for="gameName">Game Name:</label>
+                <input type="text" id="gameName" required>
+
+                <label for="publisher">Publisher:</label>
+                <input type="text" id="publisher" required>
+
+                <label for="genre">Genre:</label>
+                <input type="text" id="genre">
+
+                <label for="price">Price:</label>
+                <input type="number" id="price">
+
+                <label for="discount">Discount:</label>
+                <input type="number" id="discount">
+
+                <label for="downloads">Downloads:</label>
+                <input type="number" id="downloads">
+
+                <label for="releaseDate">Release Date:</label>
+                <input type="date" id="releaseDate">
+
+                <label for="description">Description:</label>
+                <textarea id="description"></textarea>
+
+                <label for="avt">Avatar URL:</label>
+                <input type="text" id="avt">
+
+                <label for="background">Background URL:</label>
+                <input type="text" id="background">
+
+                <label for="introduction">Introduction:</label>
+                <textarea id="introduction"></textarea>
+
+                <label for="rating">Rating:</label>
+                <input type="number" id="rating">
+
+                <label for="downloadLink">Download Link:</label>
+                <input type="text" id="downloadLink">
+
+                <label for="recOS">Recommended OS:</label>
+                <input type="text" id="recOS">
+
+                <label for="recProcessor">Recommended Processor:</label>
+                <input type="text" id="recProcessor">
+
+                <label for="recMemory">Recommended Memory:</label>
+                <input type="text" id="recMemory">
+
+                <label for="recGraphics">Recommended Graphics:</label>
+                <input type="text" id="recGraphics">
+
+                <label for="recDirectX">Recommended DirectX:</label>
+                <input type="text" id="recDirectX">
+
+                <label for="recStorage">Recommended Storage:</label>
+                <input type="text" id="recStorage">
+
+                <label for="minOS">Minimum OS:</label>
+                <input type="text" id="minOS">
+
+                <label for="minProcessor">Minimum Processor:</label>
+                <input type="text" id="minProcessor">
+
+                <label for="minMemory">Minimum Memory:</label>
+                <input type="text" id="minMemory">
+
+                <label for="minGraphics">Minimum Graphics:</label>
+                <input type="text" id="minGraphics">
+
+                <label for="minDirectX">Minimum DirectX:</label>
+                <input type="text" id="minDirectX">
+
+                <label for="minStorage">Minimum Storage:</label>
+                <input type="text" id="minStorage">
+
+                <div class="mt-3" style="text-align: center;">
+                    <button type="button" class="btn btn-success" onclick="updateGame()">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditGameModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div id="modalBackdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+
     </main>
 
     <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->

@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
         let games = [];
         try {
-            const response = await fetch("/../api/get_carousels_game.php");
+            const response = await fetch("/../api/get_carousels_game.php"); 
             const responseData = await response.json();
             
             console.log("Fetched game data:", responseData);
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Function to handle actions for cart and purchase
     const handleCartAction = async (gameId) => {
         try {
-            const response = await fetch("http://localhost/test_api/store_api/add_to_cart.php", {
+            const response = await fetch("/../api/get_carousels_game.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const handlePurchaseAction = async (gameId) => {
         try {
-            const response = await fetch("http://localhost/test_api/store_api/buy_game.php", {
+            const response = await fetch("/../api/get_carousels_game.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: userId, game_id: gameId }),
@@ -159,11 +159,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("Error purchasing game:", error);
         }
-    };
-
-    // Open edit game modal (Admin functionality)
-    const openEditGameModal = (gameId) => {
-        alert(`Open edit modal for game ID: ${gameId}`); // Implementation for editing game
     };
 
     // Initialize swiper carousel
@@ -196,21 +191,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         wrapper.innerHTML = ""; // Clear existing cards
     
         games.forEach((game) => {
+            const final_price = game.discount > 0
+            ? Math.floor(game.price - (game.price * game.discount / 100))
+            : Math.floor(game.price);
             const cardElement = document.createElement("div");
             cardElement.className = "col-md-3 mb-3";
             cardElement.innerHTML = `
                 <div class="card h-100">
                     <img src="${game.avt}" class="card-img-top" alt="${game.game_name}">
-                    <div class="card-body text-center bg-dark">
-                        <h5 class="card-title text-white">${game.game_name}</h5>
-                        <p class="text-white mb-1">Downloads: ${game.downloads}</p>
-                        <p class="text-warning mb-1">Rating: ${game.rating}</p>
-                        <p class="text-muted mb-1">
-                            ${game.discount > 0 ? `<s>${game.price}</s>` : `${game.price}`}
-                        </p>
-                        ${game.discount > 0 ? `<p class="text-danger mb-1">Discount: ${game.discount}%</p>` : ''}
-                        <p class="text-success mb-1">Final Price: ${game.final_price}</p>
-                        <div class="d-flex justify-content-center">
+                    <div class="card-body">
+                        <h5 class="card-title">${game.game_name}</h5>
+                        <p class="card-text"> <span class="cus-color">Downloads: </span>${game.downloads}</p>
+                        <p class="card-text"><span class="cus-color">Rating: </span><span class="text-warning">${game.rating}</span></p>
+                        <p class="card-text"><span class="cus-color">Price: </span><span>${game.discount > 0 ? `<s>${game.price} coins</s> ${final_price} coins` : `${game.price} coins`} </span></p>
+                        ${game.discount > 0 ? `<p class="card-text discount-rate"><span class="cus-color">Discount: </span>${game.discount}%</p>` : ''}
+                        <div class="card-actions d-flex justify-content-center">
                             ${renderCarouselButtons(game, role)}
                         </div>
                     </div>
@@ -305,4 +300,105 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Initial Rendering
     renderCategoryCards();
+});
+
+// Ensure DOMContentLoaded is only invoked once
+document.addEventListener("DOMContentLoaded", async () => {
+    // Existing code...
+
+    // Open modal and load game data for editing
+    async function openEditGameModal(gameId) {
+        try {
+            const response = await fetch(`/../api/get_game_info.php?game_id=${gameId}`);
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                const game = data.data;
+
+                document.getElementById('gameName').value = game.game_name || '';
+                document.getElementById('publisher').value = game.publisher || '';
+                document.getElementById('genre').value = game.genre || '';
+                document.getElementById('price').value = game.price || 0;
+                document.getElementById('discount').value = game.discount || 0;
+                document.getElementById('downloads').value = game.downloads || 0;
+                document.getElementById('releaseDate').value = game.release_date || '';
+                document.getElementById('description').value = game.description || '';
+                document.getElementById('avt').value = game.avt || '';
+                document.getElementById('background').value = game.background || '';
+                document.getElementById('introduction').value = game.introduction || '';
+                document.getElementById('rating').value = game.rating || 0;
+                document.getElementById('downloadLink').value = game.download_link || '';
+                document.getElementById('recOS').value = game.recOS || '';
+                document.getElementById('recProcessor').value = game.recProcessor || '';
+                document.getElementById('recMemory').value = game.recMemory || '';
+                document.getElementById('recGraphics').value = game.recGraphics || '';
+                document.getElementById('recDirectX').value = game.recDirectX || '';
+                document.getElementById('recStorage').value = game.recStorage || '';
+                document.getElementById('minOS').value = game.minOS || '';
+                document.getElementById('minProcessor').value = game.minProcessor || '';
+                document.getElementById('minMemory').value = game.minMemory || '';
+                document.getElementById('minGraphics').value = game.minGraphics || '';
+                document.getElementById('minDirectX').value = game.minDirectX || '';
+                document.getElementById('minStorage').value = game.minStorage || '';
+
+                // Show modal
+                document.getElementById('editGameModal').style.display = 'block';
+                document.getElementById('modalBackdrop').style.display = 'block';
+            } else {
+                console.error('Failed to fetch game details: ', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching game details:', error);
+        }
+    }
+
+    // Hide modal
+    function closeEditGameModal() {
+        document.getElementById('editGameModal').style.display = 'none';
+        document.getElementById('modalBackdrop').style.display = 'none';
+    }
+
+    // Update game details
+    async function updateGame() {
+        const gameData = {
+            game_id: gameId,
+            game_name: document.getElementById('gameName').value,
+            publisher: document.getElementById('publisher').value,
+            // Collect other necessary fields similarly
+        };
+
+        try {
+            const response = await fetch(`/../api/update_game.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gameData)
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                console.log('Game updated successfully!');
+                closeEditGameModal();
+                // Optionally refresh/update your UI
+            } else {
+                console.error('Failed to update game: ', result.message);
+            }
+        } catch (error) {
+            console.error('Error updating game:', error);
+        }
+    }
+
+    // Attach click listener for the edit button
+    const attachCarouselButtonListeners = () => {
+        document.querySelectorAll(".edit-game").forEach((button) => {
+            button.addEventListener("click", async (e) => {
+                e.stopPropagation();
+                const gameId = button.getAttribute("data-id");
+                await openEditGameModal(gameId);
+            });
+        });
+    };
+
+    // Existing code...
 });

@@ -126,11 +126,11 @@ class UserModel {
             SELECT u.id, t.username, t.email, t.phone_number,t.full_name, t.avatar, t.date_of_birth, u.coins,
                    g.id AS game_id, g.game_name, g.price, g.avt
             FROM user u
-            JOIN tai_khoan t ON u.id = t.id
+            JOIN tai_khoan t ON u.account_id = t.id
             LEFT JOIN don_hang dh ON dh.user_id = u.id
             LEFT JOIN chi_tiet_don_hang ctdh ON dh.id = ctdh.order_id
             LEFT JOIN game g ON ctdh.game_id = g.id
-            WHERE t.id = :id AND dh.status = 'Pending'" ;
+            WHERE t.id = :id AND dh.status = 'Paid'" ;
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);

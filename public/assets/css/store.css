@@ -40,6 +40,7 @@
     font-size: 1.8rem; /* Bigger and bold title for visibility */
     font-weight: bold;
     margin-bottom: 10px;
+    color: white !important;
 }
 
 .carousel-caption p {
@@ -74,12 +75,35 @@
     border-radius: 10px;
 }
 
+.card-title {
+    font-size: 1.1rem;
+    color: white !important;
+    font-weight: bold;
+    text-align: center;
+    min-height: 2em; /* Ensure the same space is reserved even for short titles */
+}
+
+.card-text {
+    flex-grow: 1; /* Allow the text to take up any remaining space */
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+}
+
+.cus-color {
+    color: rgb(35, 155, 207);
+}
+
 .card {
     background-color: #2a475e;
     color: white;
     border: none;
-    flex: 0 0 auto; /* Prevent wrapping for horizontal scrolling */
-    min-width: 200px; /* Minimum width for cards */
+    flex: 0 0 24%; /* Adjust card width */
+    min-width: 200px;
+    display: flex;
+    flex-direction: column; /* Make the card a flex container */
+    margin: 15px;
 }
 
 .card img {
@@ -89,8 +113,21 @@
 }
 
 .card .card-body {
+    flex: 1;  /* Allow card body to grow to fill the card */
+    display: flex;
+    flex-direction: column;  /* Arrange child elements vertically */
+    justify-content: space-between; /* Space items apart vertically */
     padding: 10px;
+    background-color: #04192b !important;
 }
+
+.card-actions {
+    text-align: center;
+    margin-top: auto; /* Push button group to the bottom */
+}
+
+.car-text
+
 
 #prevButton,
 #nextButton {
