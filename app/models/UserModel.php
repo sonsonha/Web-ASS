@@ -45,7 +45,10 @@ class UserModel {
     }
 
     public function authenticate($email, $password) {
-        $query = "SELECT id, username, email,role, phone_number, password FROM tai_khoan WHERE email = :email";
+        $query = "SELECT id, username, email, role, phone_number, password
+                  FROM tai_khoan
+                  WHERE email = :email";
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
@@ -54,9 +57,31 @@ class UserModel {
 
         if ($user && password_verify($password, $user['password'])) {
             unset($user['password']);
+
+            if ($user['role'] === 'User') {
+                $query = "SELECT u.status FROM user u WHERE u.account_id = :id";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':id', $user['id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                $status = $stmt->fetch(PDO::FETCH_ASSOC);
+                $user['status'] = $status['status'];
+            }
             return $user;
         }
+
         return null;
+    }
+
+    public function updatePassword($userId, $newPassword) {
+        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+
+        $query = "UPDATE tai_khoan SET password = :password WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
     }
 
     public function getUserInfo($id) {
@@ -112,11 +137,11 @@ class UserModel {
             SELECT u.id, t.username, t.email, t.phone_number,t.full_name, t.avatar, t.date_of_birth, u.coins,
                    g.id AS game_id, g.game_name, g.price, g.avt
             FROM user u
-            JOIN tai_khoan t ON u.id = t.id
+            JOIN tai_khoan t ON u.account_id = t.id
             LEFT JOIN don_hang dh ON dh.user_id = u.id
             LEFT JOIN chi_tiet_don_hang ctdh ON dh.id = ctdh.order_id
             LEFT JOIN game g ON ctdh.game_id = g.id
-            WHERE t.id = :id AND dh.status = 'Pending'" ;
+            WHERE t.id = :id AND dh.status = 'Paid'" ;
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
@@ -235,4 +260,6 @@ class UserModel {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
 }

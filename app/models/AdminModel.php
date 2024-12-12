@@ -24,13 +24,13 @@ class AdminModel {
     public function getAllUsers() {
         $query = "SELECT u.id, t.username, t.email, u.coins ,u.status
             FROM user u
-            JOIN tai_khoan t ON u.id = t.id";
+            JOIN tai_khoan t ON u.account_id = t.id";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     public function toggleUserStatus($username) {
         $query = "SELECT status FROM user WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
         $stmt = $this->db->prepare($query);
@@ -49,7 +49,7 @@ class AdminModel {
 
             return $updateStmt->execute();
         } else {
-            return false; 
+            return false;
         }
     }
 
@@ -60,7 +60,7 @@ class AdminModel {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            return false; 
+            return false;
         }
 
         $query = "UPDATE tai_khoan SET username = :newUsername WHERE username = :oldUsername";
@@ -68,31 +68,31 @@ class AdminModel {
         $stmt->bindParam(":newUsername", $newUsername, PDO::PARAM_STR);
         $stmt->bindParam(":oldUsername", $oldUsername, PDO::PARAM_STR);
 
-        return $stmt->execute(); 
+        return $stmt->execute();
     }
 
     public function deleteUser($username) {
         $this->db->beginTransaction();
-    
+
         try {
             $query1 = "DELETE FROM user WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
             $stmt1 = $this->db->prepare($query1);
             $stmt1->bindParam(":username", $username, PDO::PARAM_STR);
             $stmt1->execute();
-    
+
             if ($stmt1->rowCount() === 0) {
                 throw new Exception("No rows affected in user table");
             }
-    
+
             $query2 = "DELETE FROM tai_khoan WHERE username = :username";
             $stmt2 = $this->db->prepare($query2);
             $stmt2->bindParam(":username", $username, PDO::PARAM_STR);
             $stmt2->execute();
-    
+
             if ($stmt2->rowCount() === 0) {
                 throw new Exception("No rows affected in tai_khoan table");
             }
-    
+
             $this->db->commit();
             return true;
         } catch (Exception $e) {
@@ -107,31 +107,31 @@ class AdminModel {
 
     public function updateReputationPoints($username, $newReputationPoints) {
         $this->db->beginTransaction();
-    
+
         try {
             $query1 = "SELECT id FROM tai_khoan WHERE username = :username";
             $stmt1 = $this->db->prepare($query1);
             $stmt1->bindParam(":username", $username, PDO::PARAM_STR);
             $stmt1->execute();
-    
+
             $user = $stmt1->fetch(PDO::FETCH_ASSOC);
-    
+
             if (!$user) {
                 throw new Exception("User not found");
             }
-    
+
             $userId = $user['id'];
-    
+
             $query2 = "UPDATE user SET reputation_points = :reputation_points WHERE id = :id";
             $stmt2 = $this->db->prepare($query2);
             $stmt2->bindParam(":reputation_points", $newReputationPoints, PDO::PARAM_INT);
             $stmt2->bindParam(":id", $userId, PDO::PARAM_INT);
             $stmt2->execute();
-    
+
             if ($stmt2->rowCount() === 0) {
                 throw new Exception("No rows affected in user table");
             }
-    
+
             $this->db->commit();
             return true;
         } catch (Exception $e) {
@@ -145,7 +145,7 @@ class AdminModel {
     }
 
     public function reportError($user_id, $game_id, $error_description) {
-        $query = "INSERT INTO bao_loi (user_id, game_id, error_description) 
+        $query = "INSERT INTO bao_loi (user_id, game_id, error_description)
                   VALUES (:user_id, :game_id, :error_description)";
         $stmt = $this->db->prepare($query);
 
@@ -155,17 +155,17 @@ class AdminModel {
 
         return $stmt->execute();
     }
-    
+
     public function deleteErrorReport($id) {
         $query = "DELETE FROM bao_loi WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-    
+
         return $stmt->execute();
     }
 
     public function addArticle($article_data) {
-        $query = "INSERT INTO bai_bao (description, image_url, title) 
+        $query = "INSERT INTO bai_bao (description, image_url, title)
                   VALUES (:description, :image_url, :title)";
 
         $stmt = $this->db->prepare($query);
@@ -183,10 +183,10 @@ class AdminModel {
     }
 
     public function editArticle($article_data) {
-        $query = "UPDATE bai_bao 
-                  SET description = :description, 
-                      image_url = :image_url, 
-                      title = :title 
+        $query = "UPDATE bai_bao
+                  SET description = :description,
+                      image_url = :image_url,
+                      title = :title
                   WHERE id = :id";
 
         $stmt = $this->db->prepare($query);

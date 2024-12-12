@@ -58,4 +58,21 @@ class StoreController {
           ]);
       }
     }
+
+    public function getCarouselsGame() {
+        header('Content-Type: application/json');
+        $game = $this->storeModel->getCarouselsGame();
+
+        if ( $game) {
+            echo json_encode([
+                'status' => 'success',
+                'data' => $game
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Trending game not found'
+            ]);
+        }
+    }
   }

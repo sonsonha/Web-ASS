@@ -56,19 +56,26 @@ class UserController {
         }
     }
 
-    public function getIdBySession() {
-        session_start();
-
-        header('Content-Type: application/json');
-
-        if (isset($_SESSION['user_id'])) {
-            $userId = $_SESSION['user_id'];
-            echo json_encode(['status' => 'success', 'user_id' => $userId]);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
+    public function changePassword($data) {
+        if (!isset($data['email']) || !isset($data['current_password']) || !isset($data['new_password'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input.']);
+            return;
         }
-        exit;
+
+        $user = $this->userModel->authenticate($data['email'], $data['current_password']);
+
+        if ($user === null) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email or current password.']);
+            return;
+        }
+
+        if ($this->userModel->updatePassword($user['id'], $data['new_password'])) {
+            echo json_encode(['status' => 'success', 'message' => 'Password updated successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update password.']);
+        }
     }
+
 
     public function getUserInfo($userId) {
       header('Content-Type: application/json');
@@ -104,7 +111,6 @@ class UserController {
             ]);
         }
     }
-
 
     public function deleteShoppingCart($userId, $gameId) {
         header('Content-Type: application/json');

@@ -9,19 +9,19 @@ class GameModel {
 
     public function addGame($game_data) {
         $query = "INSERT INTO game (
-            game_name, publisher, genre, price, discount, downloads, release_date, description, 
-            avt, background, introduction, rating, download_link, recOS, recProcessor, 
-            recMemory, recGraphics, recDirectX, recStorage, minOS, minProcessor, minMemory, 
+            game_name, publisher, genre, price, discount, downloads, release_date, description,
+            avt, background, introduction, rating, download_link, recOS, recProcessor,
+            recMemory, recGraphics, recDirectX, recStorage, minOS, minProcessor, minMemory,
             minGraphics, minDirectX, minStorage
         ) VALUES (
-            :game_name, :publisher, :genre, :price, :discount, :downloads, :release_date, :description, 
-            :avt, :background, :introduction, :rating, :download_link, :recOS, :recProcessor, 
-            :recMemory, :recGraphics, :recDirectX, :recStorage, :minOS, :minProcessor, :minMemory, 
+            :game_name, :publisher, :genre, :price, :discount, :downloads, :release_date, :description,
+            :avt, :background, :introduction, :rating, :download_link, :recOS, :recProcessor,
+            :recMemory, :recGraphics, :recDirectX, :recStorage, :minOS, :minProcessor, :minMemory,
             :minGraphics, :minDirectX, :minStorage
         )";
-    
+
         $stmt = $this->db->prepare($query);
-    
+
         $stmt->bindParam(':game_name', $game_data['game_name']);
         $stmt->bindParam(':publisher', $game_data['publisher']);
         $stmt->bindParam(':genre', $game_data['genre']);
@@ -47,7 +47,7 @@ class GameModel {
         $stmt->bindParam(':minGraphics', $game_data['minGraphics']);
         $stmt->bindParam(':minDirectX', $game_data['minDirectX']);
         $stmt->bindParam(':minStorage', $game_data['minStorage']);
-    
+
         try {
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -55,10 +55,10 @@ class GameModel {
             return false;
         }
     }
-    
+
 
     public function editGame($game_id, $game_data) {
-        $query = "UPDATE game SET 
+        $query = "UPDATE game SET
             game_name = :game_name,
             publisher = :publisher,
             genre = :genre,
@@ -85,9 +85,9 @@ class GameModel {
             minDirectX = :minDirectX,
             minStorage = :minStorage
         WHERE id = :game_id";
-    
+
         $stmt = $this->db->prepare($query);
-    
+
         // Gán tham số
         $stmt->bindParam(':game_name', $game_data['game_name']);
         $stmt->bindParam(':publisher', $game_data['publisher']);
@@ -115,7 +115,7 @@ class GameModel {
         $stmt->bindParam(':minDirectX', $game_data['minDirectX']);
         $stmt->bindParam(':minStorage', $game_data['minStorage']);
         $stmt->bindParam(':game_id', $game_id, PDO::PARAM_INT);
-    
+
         try {
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -123,19 +123,19 @@ class GameModel {
             return false;
         }
     }
-    
-    
+
+
     public function deleteGame($game_id) {
         $query = "DELETE FROM game WHERE id = :game_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":game_id", $game_id, PDO::PARAM_INT);
-    
+
         return $stmt->execute();
     }
-    
+
     public function getRepresentativeGameByGenre($genre) {
         $query = "
-            SELECT 
+            SELECT
                 g.genre AS genre,
                 t.url AS url
             FROM game g
@@ -143,19 +143,19 @@ class GameModel {
             WHERE g.genre = :genre
             LIMIT 1
         ";
-    
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':genre', $genre, PDO::PARAM_STR);
         $stmt->execute();
-    
+
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
         if ($result) {
             $result['slug'] = str_replace(' ', '-', $result['genre']);
             return $result;
         }
-    
-        return null; 
+
+        return null;
     }
 
     public function getGamesByGenre($genre) {
@@ -164,17 +164,17 @@ class GameModel {
             FROM game
             WHERE genre = :genre
         ";
-    
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':genre', $genre, PDO::PARAM_STR);
         $stmt->execute();
-    
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getThumbnailsByGameId($game_id) {
-        $query = "SELECT type, url 
-                  FROM thumbnails 
+        $query = "SELECT type, url
+                  FROM thumbnails
                   WHERE game_id = :game_id";
 
         $stmt = $this->db->prepare($query);
@@ -188,12 +188,12 @@ class GameModel {
             return false;
         }
     }
-    
+
     public function getGameInfo($id) {
         $query = "SELECT * FROM game WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    
+
         try {
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -204,6 +204,6 @@ class GameModel {
     }
 
 
-    
+
 }
 ?>

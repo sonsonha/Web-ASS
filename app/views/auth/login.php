@@ -145,7 +145,7 @@
             <input class="input" type="password" id="password">
             <span>Password</span>
         </label>
-        <label> 
+        <label>
             <input type="checkbox" id="rememberMe" style="margin-right: 10px;"> Remember me
         </label>
         <button class="submit" type="button" id="loginButton">Login</button>
@@ -157,7 +157,7 @@
 <script>
     // Xử lý sự kiện login
     document.getElementById('loginButton').addEventListener('click', async () => {
-        console.log("Login button clicked"); 
+        console.log("Login button clicked");
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
         const rememberMe = document.getElementById('rememberMe').checked; // Kiểm tra "Remember me"
@@ -208,13 +208,12 @@
                 } else {
                     window.location.href = 'zerostress-game-store';
                 }
-                // window.location.href = 'zerostress-game-store';  
+                // window.location.href = 'zerostress-game-store';
             } else {
                 alert(data.error || 'Login Failed!');
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred, please try again!');
+            alert('Invalid email or password!');
         }
     });
 
@@ -230,7 +229,7 @@
     window.onload = function() {
         const email = getCookie('email');
         const password = getCookie('password');
-        
+
         // Kiểm tra nếu có email và mật khẩu trong cookies
         if (email && password) {
             // Tự động điền vào form đăng nhập
