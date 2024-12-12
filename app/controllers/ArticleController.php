@@ -33,12 +33,24 @@ class ArticleController {
             ]);
         }
     }
+
     public function editArticle($article_data) {
         header('Content-Type: application/json');
-
+    
         if (!empty($article_data['id']) && !empty($article_data['description']) && !empty($article_data['image_url']) && !empty($article_data['title'])) {
+            
+            $article_exists = $this->articleModel->checkArticleExists($article_data['id']);
+    
+            if (!$article_exists) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Article ID does not exist.'
+                ]);
+                return; 
+            }
+    
             $result = $this->articleModel->editArticle($article_data);
-
+    
             if ($result) {
                 echo json_encode([
                     'status' => 'success',
@@ -79,6 +91,26 @@ class ArticleController {
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Invalid article ID'
+            ]);
+        }
+    }
+
+    public function getAllArticles() {
+        header('Content-Type: application/json');
+
+        // Gọi phương thức trong model để lấy tất cả bài báo
+        $articles = $this->articleModel->getAllArticles();
+
+        // Kiểm tra xem có bài báo nào không
+        if (empty($articles)) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'No articles found'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'success',
+                'data' => $articles
             ]);
         }
     }

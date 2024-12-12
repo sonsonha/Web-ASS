@@ -1,70 +1,74 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    const userId = localStorage.getItem('id');
+    const role = localStorage.getItem('role') || 'Guest';
+
     if (typeof Swiper === 'undefined') {
         console.error("Swiper is not loaded.");
         return; // Exit early if Swiper is not defined
     }
 
-    const swiperWrapper = document.getElementById("swiperWrapper");
-    const thumbnails = document.getElementById("thumbnails");
-
-    let games = [];
-    try {
-        const response = await fetch("http://localhost/test_api/store_api/fetch_carousel_games.php");
-        if (!response.ok) throw new Error("Failed to fetch game data");
-        games = await response.json();
-    } catch (error) {
-        console.error("Error fetching game data:", error);
-        return;
-    }
-
-    // Sort games by rating in descending order and pick the top 5
-    const topRatedGames = games.sort((a, b) => b.rating - a.rating).slice(0, 5);
-
-    // Function to render the carousel
-    const renderCarousel = () => {
+    // Initialize Swiper Carousel
+    const initSwiperCarousel = async () => {
+        const swiperWrapper = document.getElementById("swiperWrapper");
+        const thumbnails = document.getElementById("thumbnails");
+    
+        let games = [];
+        try {
+            const response = await fetch("/../api/get_carousels_game.php");
+            const responseData = await response.json();
+            
+            console.log("Fetched game data:", responseData);
+    
+            if (!response.ok || responseData.status !== 'success') {
+                throw new Error("Failed to fetch game data");
+            }
+    
+            games = responseData.data; // Ensure you are accessing .data which is the array
+    
+            if (!Array.isArray(games)) {
+                throw new Error("Data format error: Expected an array but got: " + typeof games);
+            }
+    
+        } catch (error) {
+            console.error("Error fetching game data:", error);
+            return;
+        }
+    
+        const topRatedGames = games.sort((a, b) => b.rating - a.rating).slice(0, 5);
+    
         swiperWrapper.innerHTML = ""; // Clear existing slides
         thumbnails.innerHTML = ""; // Clear existing thumbnails
-
+    
         topRatedGames.forEach((game, index) => {
-            // Swiper slide
             const slide = document.createElement("div");
             slide.className = "swiper-slide";
             slide.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">   
+                <img src="${game.avt}" alt="${game.game_name}">
                 <div class="carousel-caption gradient-bg p-3 rounded">
-                    <h5 class="text-white">${game.title}</h5>
+                    <h5 class="text-white">${game.game_name}</h5>
                     <p class="text-light">Rating: ${game.rating} | ${game.discount || "No Discount"} | <span class="text-white">${game.final_price}</span></p>
-                    ${
-                        game.is_free
-                            ? `<button class="btn btn-info play-free" data-id="${game.id}">Play for Free</button>`
-                            : `<button class="btn btn-info buy-now" data-id="${game.id}">Buy Now</button>`
-                    }
-                    <button class="btn btn-outline-light add-to-cart" data-id="${game.id}">Add to Cart</button>
+                    ${renderCarouselButtons(game, role)}
                 </div>
             `;
             swiperWrapper.appendChild(slide);
-
-            // Click event for the slide (navigate to game detail)
+    
             slide.addEventListener("click", () => {
-                window.location.href = `/zerostress-game-store/${game.genres[0]}/${game.id}/${encodeURIComponent(game.title.replace(/ /g, "_"))}`;
+                window.location.href = `/zerostress-game-store/${game.genres[0]}/${game.id}/${encodeURIComponent(game.game_name.replace(/ /g, "_"))}`;
             });
-
-            // Thumbnail
+    
             const thumbnail = document.createElement("div");
             thumbnail.className = "thumbnail d-flex align-items-center gap-2";
             thumbnail.innerHTML = `
-                <img src="${game.image}" alt="${game.title}">
-                <p class="text-white mb-0">${game.title}</p>
+                <img src="${game.avt}" alt="${game.game_name}">
+                <p class="text-white mb-0">${game.game_name}</p>
             `;
             thumbnails.appendChild(thumbnail);
-
-            // Thumbnail click event
+    
             thumbnail.addEventListener("click", () => {
                 swiper.slideTo(index); // Navigate to the corresponding slide
             });
         });
-
-        // Initialize Swiper
+    
         const swiper = new Swiper("#gameSwiper", {
             loop: true,
             spaceBetween: 10,
@@ -81,354 +85,224 @@ document.addEventListener("DOMContentLoaded", async () => {
                 delay: 5000,
             },
         });
+    
+        attachCarouselButtonListeners();
+    };
+    const renderCarouselButtons = (game, role) => {
+        return role === 'Admin'
+            ? `<button class="btn btn-warning edit-game" data-id="${game.id}">Edit Game</button>`
+            : game.is_free
+                ? `<button class="btn btn-info play-free" data-id="${game.id}">Play for Free</button>`
+                : `<button class="btn btn-info buy-now" data-id="${game.id}">Buy Now</button>
+                   <button class="btn btn-outline-light add-to-cart" data-id="${game.id}">Add to Cart</button>`;
+    };
 
-        // Add event listeners for buttons inside slides
+    const attachCarouselButtonListeners = () => {
         document.querySelectorAll(".add-to-cart").forEach((button) => {
             button.addEventListener("click", async (e) => {
-                e.stopPropagation(); // Prevent slide click event
+                e.stopPropagation(); 
                 const gameId = button.getAttribute("data-id");
-                await addToCart(gameId);
+                await handleCartAction(gameId);
             });
         });
 
         document.querySelectorAll(".buy-now").forEach((button) => {
             button.addEventListener("click", async (e) => {
-                e.stopPropagation(); // Prevent slide click event
+                e.stopPropagation(); 
                 const gameId = button.getAttribute("data-id");
-                await buyGame(gameId);
+                await handlePurchaseAction(gameId);
             });
         });
 
         document.querySelectorAll(".play-free").forEach((button) => {
             button.addEventListener("click", (e) => {
-                e.stopPropagation(); // Prevent slide click event
+                e.stopPropagation(); 
                 const gameId = button.getAttribute("data-id");
                 window.location.href = `/app/views/games/detail.php?id=${gameId}`;
             });
         });
+
+        document.querySelectorAll(".edit-game").forEach((button) => {
+            button.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const gameId = button.getAttribute("data-id");
+                openEditGameModal(gameId);
+            });
+        });
     };
 
-    // Render the carousel
-    renderCarousel();
-
-    // Function to add a game to the cart
-    async function addToCart(gameId) {
+    // Function to handle actions for cart and purchase
+    const handleCartAction = async (gameId) => {
         try {
-            const userId = 1; // Example user ID, replace with actual logic
             const response = await fetch("http://localhost/test_api/store_api/add_to_cart.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: userId, game_id: gameId }),
             });
             const data = await response.json();
-            if (data.success) {
-                alert("Game added to cart successfully!");
-            } else {
-                alert("Failed to add game to cart.");
-            }
+            alert(data.success ? "Game added to cart successfully!" : "Failed to add game to cart.");
         } catch (error) {
             console.error("Error adding game to cart:", error);
         }
-    }
+    };
 
-    // Function to buy a game
-    async function buyGame(gameId) {
+    const handlePurchaseAction = async (gameId) => {
         try {
-            const userId = 1; // Example user ID, replace with actual logic
             const response = await fetch("http://localhost/test_api/store_api/buy_game.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: userId, game_id: gameId }),
             });
             const data = await response.json();
-            if (data.success) {
-                alert("Game purchased successfully!");
-                window.location.reload(); // Refresh the page after purchase
-            } else {
-                alert("Failed to purchase the game.");
-            }
+            alert(data.success ? "Game purchased successfully!" : "Failed to purchase the game.");
+            if (data.success) window.location.reload();
         } catch (error) {
             console.error("Error purchasing game:", error);
         }
-    }
+    };
+
+    // Open edit game modal (Admin functionality)
+    const openEditGameModal = (gameId) => {
+        alert(`Open edit modal for game ID: ${gameId}`); // Implementation for editing game
+    };
+
+    // Initialize swiper carousel
+    await initSwiperCarousel();
+
+    const renderGameSection = async (apiUrl, wrapperId) => {
+        const wrapper = document.getElementById(wrapperId);
+        let games = [];
+    
+        try {
+            const response = await fetch(apiUrl);
+            const responseData = await response.json();
+            
+            console.log("API Response Data:", responseData);
+    
+            if (!response.ok || responseData.status !== 'success') throw new Error(`Failed to fetch games from ${apiUrl}`);
+    
+            games = responseData.data; // Extract the data array
+            
+            if (!Array.isArray(games)) {
+                console.error("Expected an array of games, got:", games);
+                throw new Error("Data format error: Expected an array");
+            }
+    
+        } catch (error) {
+            console.error("Error fetching games:", error);
+            return;
+        }
+    
+        wrapper.innerHTML = ""; // Clear existing cards
+    
+        games.forEach((game) => {
+            const cardElement = document.createElement("div");
+            cardElement.className = "col-md-3 mb-3";
+            cardElement.innerHTML = `
+                <div class="card h-100">
+                    <img src="${game.avt}" class="card-img-top" alt="${game.game_name}">
+                    <div class="card-body text-center bg-dark">
+                        <h5 class="card-title text-white">${game.game_name}</h5>
+                        <p class="text-white mb-1">Downloads: ${game.downloads}</p>
+                        <p class="text-warning mb-1">Rating: ${game.rating}</p>
+                        <p class="text-muted mb-1">
+                            ${game.discount > 0 ? `<s>${game.price}</s>` : `${game.price}`}
+                        </p>
+                        ${game.discount > 0 ? `<p class="text-danger mb-1">Discount: ${game.discount}%</p>` : ''}
+                        <p class="text-success mb-1">Final Price: ${game.final_price}</p>
+                        <div class="d-flex justify-content-center">
+                            ${renderCarouselButtons(game, role)}
+                        </div>
+                    </div>
+                </div>
+            `;
+            wrapper.appendChild(cardElement);
+        });
+    
+        attachCarouselButtonListeners();
+    };
+
+    // Fetch and render each game section
+    await renderGameSection("/../api/get_trending_game.php", "trendingGamesWrapper");
+    await renderGameSection("/../api/get_new_release_game.php", "newReleasesWrapper");
+    await renderGameSection("/../api/get_top_rate_game.php", "topRateWrapper");
+
 });
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const cardsPerPage = 4; // Number of cards to show at a time
-    let currentIndex = 0; // Start index for the current view
 
+document.addEventListener("DOMContentLoaded", async () => {
     const carouselWrapper = document.getElementById("carouselWrapper");
     const prevButton = document.getElementById("prevButton");
     const nextButton = document.getElementById("nextButton");
+    let currentIndex = 0;
+    const cardsPerPage = 4;
 
-    // Fetch categories from the back-end
     let categories = [];
     try {
-        const response = await fetch("http://localhost/test_api/store_api/fetch_categories.php");
+        const response = await fetch("/../api/get_all_categories.php");
+        
         if (!response.ok) throw new Error("Failed to fetch categories");
-        categories = await response.json();
+
+        const responseData = await response.json();
+
+        if (responseData.status !== 'success') {
+            throw new Error("API did not return a successful status");
+        }
+
+        categories = responseData.data;
     } catch (error) {
         console.error("Error fetching categories:", error);
-        return; // Stop execution if there's an error
+        return;
     }
 
-    // Function to render cards
-    const renderCards = () => {
-        // Clear the current cards
+    const renderCategoryCards = () => {
         carouselWrapper.innerHTML = "";
 
-        // Determine which cards to display
         for (let i = 0; i < cardsPerPage; i++) {
-            const cardIndex = (currentIndex + i) % categories.length; // Loop around if we exceed the array length
+            if (categories.length === 0) return;
+
+            const cardIndex = (currentIndex + i) % categories.length;
             const category = categories[cardIndex];
 
-            // Create card element
+            if (!category || !category.genre || !category.thumbnail_url) {
+                console.warn("Incomplete category data:", category);
+                continue;
+            }
+
             const cardElement = document.createElement("div");
-            cardElement.className = "col-md-3"; // 3 columns per card
+            cardElement.className = "col-md-3 mb-3";
             cardElement.innerHTML = `
-                <div class="card h-100 category-card" data-category="${category.slug}">
-                    <img src="${category.image}" class="card-img-top" alt="${category.name}">
+                <div class="card h-100 category-card" data-category="${encodeURIComponent(category.genre)}">
+                    <img src="${category.thumbnail_url}" class="card-img-top" alt="${category.genre}">
                     <div class="card-body text-center bg-dark">
-                        <h5 class="card-title">${category.name}</h5>
+                        <h5 class="card-title">${category.genre}</h5>
                     </div>
                 </div>
-                `;
-            carouselWrapper.appendChild(cardElement);   
+            `;
+            carouselWrapper.appendChild(cardElement);
 
+            // Register event listener for card click
             cardElement.querySelector('.category-card').addEventListener('click', () => {
-                window.location.href = `/zerostress-game-store/category/${category.slug}`;
+                window.location.href = `/zerostress-game-store/category/${category.genre}`;
             });
         }
     };
 
-    // Event listeners for navigation buttons
-    prevButton.addEventListener("click", () => {
-        // Move backwards by the number of cards per page
-        currentIndex = (currentIndex - cardsPerPage + categories.length) % categories.length;
-        renderCards();
-    });
+    // Button existence and assignment
+    if (prevButton && nextButton) {
+        prevButton.addEventListener("click", () => {
+            currentIndex = (currentIndex - cardsPerPage + categories.length) % categories.length;
+            renderCategoryCards();
+        });
 
-    nextButton.addEventListener("click", () => {
-        // Move forward by the number of cards per page
-        currentIndex = (currentIndex + cardsPerPage) % categories.length;
-        renderCards();
-    });
-
-    // Initial render
-    renderCards();
-});
-
-document.addEventListener("DOMContentLoaded", async () => {
-    const newReleasesWrapper = document.getElementById("newReleasesWrapper");
-    const newPrevButton = document.getElementById("newPrevButton");
-    const newNextButton = document.getElementById("newNextButton");
-
-    const cardsPerPage = 4; // Number of cards to show at a time
-    let currentIndex = 0; // Start index for the current view
-
-    let newReleases = [];
-
-    // Fetch new releases from the backend
-    try {
-        const response = await fetch("http://localhost/test_api/store_api/fetch_carousel_games.php");
-        if (!response.ok) throw new Error("Failed to fetch new releases");
-        newReleases = await response.json();
-    } catch (error) {
-        console.error("Error fetching new releases:", error);   
-        return;
+        nextButton.addEventListener("click", () => {
+            currentIndex = (currentIndex + cardsPerPage) % categories.length;
+            renderCategoryCards();
+        });
+    } else {
+        console.error("Navigation buttons for categories are missing.");
     }
 
-    // Function to render new releases cards
-    const renderNewReleases = () => {
-        newReleasesWrapper.innerHTML = ""; // Clear the current cards
-
-        // Determine which cards to display
-        for (let i = 0; i < cardsPerPage; i++) {
-            const cardIndex = (currentIndex + i) % newReleases.length; // Loop around if exceeding array length
-            const game = newReleases[cardIndex];
-
-            const cardElement = document.createElement("div");
-            cardElement.className = "col-md-3"; // 3 columns per card
-            cardElement.innerHTML = `
-                <div class="card h-100">
-                    <img src="${game.image}" class="card-img-top" alt="${game.title}">
-                    <div class="card-body text-center bg-dark">
-                        <h5 class="card-title">${game.title}</h5>
-                        <p class="text-white">${game.final_price}</p>
-                        ${
-                            game.discount
-                                ? `<p class="text-danger">-${game.discount}</p>`
-                                : ""
-                        }
-                        <button class="btn btn-info">View</button>
-                    </div>
-                </div>
-            `;
-            newReleasesWrapper.appendChild(cardElement);
-        }
-    };
-
-    // Event listeners for navigation buttons
-    newPrevButton.addEventListener("click", () => {
-        currentIndex = (currentIndex - cardsPerPage + newReleases.length) % newReleases.length;
-        renderNewReleases();
-    });
-
-    newNextButton.addEventListener("click", () => {
-        currentIndex = (currentIndex + cardsPerPage) % newReleases.length;
-        renderNewReleases();
-    });
-
-    // Initial render
-    renderNewReleases();
-});
-
-document.addEventListener("DOMContentLoaded", async () => {
-    const trendingGamesWrapper = document.getElementById("trendingGamesWrapper");
-    const trendingPrevButton = document.getElementById("trendingPrevButton");
-    const trendingNextButton = document.getElementById("trendingNextButton");
-
-    const cardsPerPage = 4; // Number of cards to show at a time
-    let currentIndex = 0; // Start index for the current view
-
-    let trendingGames = [];
-
-    // Fetch trending games from the backend
-    try {
-        const response = await fetch("http://localhost/test_api/store_api/fetch_carousel_games.php");
-        if (!response.ok) throw new Error("Failed to fetch trending games");
-        trendingGames = await response.json();
-    } catch (error) {
-        console.error("Error fetching trending games:", error);
-        return;
-    }
-
-    // Function to render trending games cards
-    const renderTrendingGames = () => {
-        trendingGamesWrapper.innerHTML = ""; // Clear the current cards
-
-        // Determine which cards to display
-        for (let i = 0; i < cardsPerPage; i++) {
-            const cardIndex = (currentIndex + i) % trendingGames.length; // Loop around if exceeding array length
-            const game = trendingGames[cardIndex];
-
-            const cardElement = document.createElement("div");
-            cardElement.className = "col-md-3"; // 3 columns per card
-            cardElement.innerHTML = `
-                <div class="card h-100">
-                    <img src="${game.image}" class="card-img-top" alt="${game.title}">
-                    <div class="card-body text-center bg-dark">
-                        <h5 class="card-title">${game.title}</h5>
-                        <p class="text-white">${game.final_price}</p>
-                        ${
-                            game.discount
-                                ? `<p class="text-danger">-${game.discount}</p>`
-                                : ""
-                        }
-                        <button class="btn btn-info">View</button>
-                    </div>
-                </div>
-            `;
-            trendingGamesWrapper.appendChild(cardElement);
-        }
-    };
-
-    // Event listeners for navigation buttons
-    trendingPrevButton.addEventListener("click", () => {
-        currentIndex = (currentIndex - cardsPerPage + trendingGames.length) % trendingGames.length;
-        renderTrendingGames();
-    });
-
-    trendingNextButton.addEventListener("click", () => {
-        currentIndex = (currentIndex + cardsPerPage) % trendingGames.length;
-        renderTrendingGames();
-    });
-
-    // Initial render
-    renderTrendingGames();
-});
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('searchInput');
-    const searchForm = document.getElementById('searchForm');
-
-    // Add a keydown event listener to the input
-    searchInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') { // Check if the Enter key is pressed
-            event.preventDefault(); // Prevent the default form submission behavior
-            const query = searchInput.value.trim(); // Get the search query
-            if (query) {
-                console.log('Search for:', query); // Replace with your search logic
-                // Example: Redirect to a search results page or call an API
-                window.location.href = `/search?query=${encodeURIComponent(query)}`;
-            }
-        }
-    });
-});
-
-document.addEventListener("DOMContentLoaded", async () => {
-    const topRateWrapper = document.getElementById("topRateWrapper");
-    const topRatePrevButton = document.getElementById("topRatePrevButton");
-    const topRateNextButton = document.getElementById("topRateNextButton");
-
-    const cardsPerPage = 4; // Number of cards to show at a time
-    let currentIndex = 0; // Start index for the current view
-
-    let topRateGames = [];
-
-    // Fetch top-rated games from the backend
-    try {
-        const response = await fetch("/../test_api/store_api/fetch_carousel_games.php");
-        if (!response.ok) throw new Error("Failed to fetch top-rated games");
-        topRateGames = await response.json();
-    } catch (error) {
-        console.error("Error fetching top-rated games:", error);
-        return;
-    }
-
-    // Function to render top-rated ( > 4.5 stars) games cards
-    const renderTopRateGames = () => {
-        topRateWrapper.innerHTML = ""; // Clear the current cards
-
-        // Determine which cards to display
-        for (let i = 0; i < cardsPerPage; i++) {
-            const cardIndex = (currentIndex + i) % topRateGames.length; // Loop around if exceeding array length
-            const game = topRateGames[cardIndex];
-
-            const cardElement = document.createElement("div");
-            cardElement.className = "col-md-3"; // 3 columns per card
-            cardElement.innerHTML = `
-                <div class="card h-100">
-                    <img src="${game.image}" class="card-img-top" alt="${game.title}">
-                    <div class="card-body text-center bg-dark">
-                        <h5 class="card-title">${game.title}</h5>
-                        <p class="text-white">${game.final_price}</p>
-                        ${
-                            game.discount
-                                ? `<p class="text-danger">-${game.discount}</p>`
-                                : ""
-                        }
-                        <p class="text-warning">Rating: ${game.rating}</p>
-                        <button class="btn btn-info">View</button>
-                    </div>
-                </div>
-            `;
-            topRateWrapper.appendChild(cardElement);
-        }
-    };
-
-    // Event listeners for navigation buttons
-    topRatePrevButton.addEventListener("click", () => {
-        currentIndex = (currentIndex - cardsPerPage + topRateGames.length) % topRateGames.length;
-        renderTopRateGames();
-    });
-
-    topRateNextButton.addEventListener("click", () => {
-        currentIndex = (currentIndex + cardsPerPage) % topRateGames.length;
-        renderTopRateGames();
-    });
-
-    // Initial render
-    renderTopRateGames();
+    // Initial Rendering
+    renderCategoryCards();
 });
