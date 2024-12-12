@@ -270,5 +270,120 @@ class GameModel {
             return false;
         }
     }
+    public function addToCart($accountId, $gameId, $price) {
+        $this->db->beginTransaction();
+
+        try {
+            $query = "SELECT id FROM user WHERE account_id = :account_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':account_id', $accountId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $userId = $stmt->fetchColumn();
+
+            if (!$userId) {
+                throw new Exception('User not found.');
+            }
+
+            $query = "INSERT INTO don_hang (user_id, order_date, total_amount, status, payment_status)
+                      VALUES (:user_id, CURDATE(), :total_amount, 'Pending', 'Paid')";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':total_amount', $price);
+            $stmt->execute();
+
+            $orderId = $this->db->lastInsertId();
+
+            $query = "INSERT INTO chi_tiet_don_hang (order_id, game_id, quantity) VALUES (:order_id, :game_id, 1)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+            $stmt->bindParam(':game_id', $gameId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->db->commit();
+
+            return ['status' => 'success', 'message' => 'Added to cart successfully.'];
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return ['status' => 'error', 'message' => 'Failed to add to cart: ' . $e->getMessage()];
+        }
+    }
+
+    public function buyGames($accountId, $gameIds) {
+
+        $query = "SELECT id, coins FROM user WHERE account_id = :account_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':account_id', $accountId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            return ['status' => 'error', 'message' => 'User not found.'];
+        }
+
+        $userId = $user['id'];
+        $userCoins = $user['coins'];
+
+        $this->db->beginTransaction();
+
+        try {
+            $totalAmount = 0;
+
+            foreach ($gameIds as $gameId) {
+                $query = "SELECT price, discount FROM game WHERE id = :game_id";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':game_id', $gameId, PDO::PARAM_INT);
+                $stmt->execute();
+                $game = $stmt->fetch(PDO::FETCH_ASSOC);
+                $discountedPrice = $game['price'] * (1 - $game['discount'] / 100);
+                $totalAmount += $discountedPrice;
+            }
+
+            // Kiểm tra số dư coin
+            if ($userCoins < $totalAmount) {
+                $this->db->rollBack();
+                return ['status' => 'error', 'message' => 'Insufficient coins.'];
+            }
+
+            // Cập nhật đơn hàng
+            $query = "INSERT INTO don_hang (user_id, order_date, total_amount, status, payment_status, payment_date)
+                      VALUES (:user_id, CURDATE(), :total_amount, 'Paid', 'Paid',CURDATE())";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':total_amount', $totalAmount);
+            $stmt->execute();
+            $orderId = $this->db->lastInsertId();
+
+            // Thêm từng game vào user_game và chi_tiet_don_hang
+            foreach ($gameIds as $gameId) {
+                $query = "INSERT INTO chi_tiet_don_hang (order_id, game_id, quantity) VALUES (:order_id, :game_id, 1)";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+                $stmt->bindParam(':game_id', $gameId, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $query = "INSERT INTO user_game (user_id, game_id) VALUES (:user_id, :game_id)";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $stmt->bindParam(':game_id', $gameId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+
+            $query = "UPDATE user SET coins = coins - :total_amount WHERE id = :user_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':total_amount', $totalAmount);
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $this->db->commit();
+
+            return ['status' => 'success', 'message' => 'Order created and coins deducted successfully.'];
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return ['status' => 'error', 'message' => 'Game already owned'];
+        }
+    }
+
 }
 ?>

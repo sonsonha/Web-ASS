@@ -269,4 +269,16 @@ class UserModel {
 
         return $stmt->execute();
     }
+
+    public function getCoins($accountId) {
+        $query = "SELECT u.coins
+                  FROM user u
+                  JOIN tai_khoan t ON u.account_id = t.id
+                  WHERE t.id = :account_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':account_id', $accountId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
+    }
 }

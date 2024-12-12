@@ -6,9 +6,9 @@
     <title>My Cart</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/../assets/css/cart.css">
+    <link rel="stylesheet" href="/public/assets/css/cart.css">
 </head>
-<body>
+<body class="custom-colorss">
     <!-- Include Header -->
     <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
@@ -43,12 +43,54 @@
         </div>
     </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Lấy user ID
+        const userId = localStorage.getItem('id');
+
+        // Hàm để lấy số coins
+        function fetchCoins() {
+            fetch(`http://localhost/api/get_coins.php?id=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('user-coins').textContent = data.coins;
+                    } else {
+                        alert('Failed to load coins');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching coins:', error);
+                    alert('Error fetching coins');
+                });
+        }
+
+        // Sự kiện cho nút Add Coins
+        document.getElementById('add-coins').addEventListener('click', function() {
+            // Điều hướng đến trang Add Coins
+            window.location.href = 'add_coins'; // Cập nhật đường dẫn thực tế của bạn
+        });
+
+        // Gọi hàm fetchCoins khi trang được tải
+        fetchCoins();
+    });
+
+
+    </script>
+
     <!-- Include Header -->
     <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Cart JS -->
-    <script src="/../assets/js/my_cart.js"></script>
+    <script src="/public/assets/js/my_cart.js"></script>
 </body>
 </html>
+
+<style>
+    .custom-colorss{
+        background-color: #1b2838 !important;
+        color: white;
+    }
+</style>

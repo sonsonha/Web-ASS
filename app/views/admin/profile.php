@@ -65,7 +65,7 @@
                     <div class="modal-body">
                         <form id="editProfileForm">
                             <div class="mb-3">
-                                <label for="editUsername" class="form-label">Username</label>
+                                <label for="editUsername" class="form-label">Full name</label>
                                 <input type="text" id="editUsername" class="form-control">
                             </div>
                             <div class="mb-3">

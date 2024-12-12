@@ -217,8 +217,32 @@ class GameController {
         }
     }
 
+
+
+public function addToCart($data) {
+    if (!isset($data['account_id'], $data['game_id'], $data['price'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Missing parameters: account_id, game_id, or price']);
+        return;
+    }
+    $accountId = $data['account_id'];
+    $gameId = $data['game_id'];
+    $price = $data['price'];
+
+    $result = $this->gameModel->addToCart($accountId, $gameId, $price);
+    echo json_encode($result);
 }
 
+public function buyGames($data) {
+    if (!isset($data['account_id'], $data['game_ids']) || !is_array($data['game_ids'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid input data.']);
+        return;
+    }
 
+    $accountId = $data['account_id'];
+    $gameIds = $data['game_ids'];
 
+    $result = $this->gameModel->buyGames($accountId, $gameIds);
+    echo json_encode($result);
+}
+}
 ?>

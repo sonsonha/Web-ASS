@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const pathParts = window.location.pathname.split('/');
-    const category = pathParts[pathParts.length - 1];
+    const category = pathParts[pathParts.length - 1]; 
     if (!category) {
         console.error('Category not specified');
         return;
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchCategoryGames(category); // For carousel and popular games
 });
 
-// Fetch and populate category games (carousel + popular games)
 function fetchCategoryGames(category) {
     const gameCardsContainer = document.getElementById('gameCardsContainer');
     const trendingGamesContainer = document.getElementById('trendingGamesContainer');
@@ -26,27 +25,28 @@ function fetchCategoryGames(category) {
     categoryTitleElement.textContent = `Popular ${category} Games`;
 
     const fetchGames = () => {
-        if (isLoading || !hasMoreGames) return;
+        if (isLoading || !hasMoreGames) return;  // Prevent multiple calls if already loading or no more games
 
         isLoading = true;
         showSpinner(gameCardsContainer);
 
-        fetch('/../test_api/store_api/fetch_category_games.php', {
+        fetch('http://localhost/api/get_games_by_genre.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category, page }),
+            body: JSON.stringify({ genre: category, page: page }),
         })
             .then((response) => response.json())
             .then((data) => {
-                if (data.error) {
-                    console.error(data.error);
-                    return;
+                if (data.status === 'success' && data.data.length > 0) {
+                    const games = data.data;
+                    populateCarousel(games); // Populate carousel
+                    appendGameRows(games, gameCardsContainer); // Populate game cards
+                    populateTrendingGames(games, trendingGamesContainer);
+                    page++; // Increase page number for next request
+                } else {
+                    console.log('No more games to load.');
+                    hasMoreGames = false; // No more games available
                 }
-                populateCarousel(data.popular); // Populate carousel
-                appendGameRows(data.popular, gameCardsContainer); // Populate popular games
-                populateTrendingGames(data.popular, trendingGamesContainer);
-                if (data.popular.length < 10) hasMoreGames = false; // Check if there are more games
-                page++;
             })
             .catch((error) => console.error('Error fetching games:', error))
             .finally(() => {
@@ -57,14 +57,7 @@ function fetchCategoryGames(category) {
 
     fetchGames();
 
-    window.addEventListener('scroll', () => {
-        if (
-            window.innerHeight + window.scrollY >=
-            document.body.offsetHeight - 100
-        ) {
-            fetchGames();
-        }
-    });
+    // Handle scroll event to fetch more games when scrolled to bottom
 }
 
 // Populate rows for popular games
@@ -79,24 +72,17 @@ function appendGameRows(games, container) {
             col.className = 'col';
             col.innerHTML = `
                 <div class="card game-card bg-dark" data-id="${game.id}">
-                    <img src="${game.background_image}" class="card-img-top" alt="${game.title}">
+                    <img src="${game.avt}" class="card-img-top" alt="${game.game_name}">
                     <div class="card-body">
-                        <h5 class="card-title">${game.title}</h5>
-                        <p class="price text-success">Price: ${game.price}</p>
-                        ${
-                            game.discount
-                                ? `<div class="discount-label">${game.discount}</div>`
-                                : ''
-                        }   
+                        <h5 class="card-title">${game.game_name}</h5>
+                        <p class="price text-success">Price: $${game.price}</p>
+                        ${game.discount ? `<div class="discount-label">${game.discount}</div>` : ''}
                     </div>
                 </div>
             `;
 
             col.querySelector('.game-card').addEventListener('click', () => {
-                // /zerostress-game-store/category/${category.slug}
-                // window.location.href = `/../views/games/detail.php?id=${game.id}`;
-                window.location.href = `/zerostress-game-store/${game.genres[0]}/${game.id}/${encodeURIComponent(game.title.replace(/ /g, "_"))}`;
-
+                window.location.href = `/zerostress-game-store/${game.genre}/${game.id}/${encodeURIComponent(game.game_name.replace(/ /g, "_"))}?id=`;
             });
 
             row.appendChild(col);
@@ -113,21 +99,19 @@ function populateTrendingGames(games, container) {
         col.className = 'col-12 col-md-4'; // 3 cards per row on medium+ screens
         col.innerHTML = `
             <div class="card game-card bg-dark" data-id="${game.id}" style="height: 300px; width: 300px;">
-                <img src="${game.background_image}" class="card-img-top" alt="${game.title}" style="height: 150px; object-fit: cover;">
+                <img src="${game.avt}" class="card-img-top" alt="${game.game_name}" style="height: 150px; object-fit: cover;">
                 <div class="card-body">
-                    <h5 class="card-title text-white">${game.title}</h5>
-                    <p class="price text-success">Price: ${game.price}</p>
-                    ${
-                        game.discount
-                            ? `<div class="discount-label">${game.discount}</div>`
-                            : ''
-                    }
+                    <h5 class="card-title text-white">${game.game_name}</h5>
+                    <p class="price text-success">Price: $${game.price}</p>
+                    ${game.discount ? `<div class="discount-label">${game.discount}</div>` : ''}
                 </div>
             </div>
         `;
 
         col.querySelector('.game-card').addEventListener('click', () => {
-            window.location.href = `/zerostress-game-store/${game.genres[0]}/${game.id}/${encodeURIComponent(game.title.replace(/ /g, "_"))}`;
+            const gameName = game.game_name.replace(/ /g, "_").replace(/:/g, "_");
+            window.location.href = `/zerostress-game-store/${game.genre}/${game.id}/${gameName}?id=${game.id}`;
+            
         });
 
         container.appendChild(col);
@@ -135,12 +119,12 @@ function populateTrendingGames(games, container) {
 }
 
 // Populate carousel with trending games
-function populateCarousel(trendingGames) {
+function populateCarousel(games) {
     const carouselInner = document.querySelector('.carousel-inner');
     const trendingSection = document.getElementById('trendingCarousel');
     carouselInner.innerHTML = '';
 
-    trendingGames.forEach((game, index) => {
+    games.forEach((game, index) => {
         const isActive = index === 0 ? 'active' : '';
         const slide = document.createElement('div');
         slide.className = `carousel-item ${isActive}`;
@@ -148,15 +132,11 @@ function populateCarousel(trendingGames) {
 
         slide.innerHTML = `
             <div class="carousel-content">
-                <img src="${game.background_image}" class="game-image" alt="${game.title}">
+                <img src="${game.avt}" class="game-image" alt="${game.game_name}">
                 <div class="game-details text-white p-3 bg-dark bg-opacity-75 rounded">
-                    <h2>${game.title}</h2>
-                    <p>Price: ${game.price}</p>
-                    ${
-                        game.discount
-                            ? `<span class="text-danger">${game.discount}</span>`
-                            : ''
-                    }
+                    <h2>${game.game_name}</h2>
+                    <p>Price: $${game.price}</p>
+                    ${game.discount ? `<span class="text-danger">${game.discount}</span>` : ''}
                 </div>
             </div>
         `;

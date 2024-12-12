@@ -47,7 +47,7 @@
 
         <!-- Trending Games Section -->
         <section class="trending-games container mt-5">
-            <h2 class="text-white mb-4">Trending Games</h2>
+            <h2 class="text-white mb-4">Game list</h2>
             <div id="trendingGamesContainer" class="row g-4">
                 <!-- Trending game cards will be dynamically populated here -->
             </div>

@@ -99,73 +99,94 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const attachCarouselButtonListeners = () => {
         document.querySelectorAll(".add-to-cart").forEach((button) => {
-            button.addEventListener("click", async (e) => {
-                e.stopPropagation(); 
-                const gameId = button.getAttribute("data-id");
-                await handleCartAction(gameId);
-            });
+            button.replaceWith(button.cloneNode(true)); // Xóa tất cả các event cũ
         });
-
+    
         document.querySelectorAll(".buy-now").forEach((button) => {
+            button.replaceWith(button.cloneNode(true)); // Xóa tất cả các event cũ
+        });
+    
+        document.querySelectorAll(".add-to-cart").forEach((button) => {
             button.addEventListener("click", async (e) => {
-                e.stopPropagation(); 
-                const gameId = button.getAttribute("data-id");
-                await handlePurchaseAction(gameId);
-            });
-        });
-
-        document.querySelectorAll(".play-free").forEach((button) => {
-            button.addEventListener("click", (e) => {
-                e.stopPropagation(); 
-                const gameId = button.getAttribute("data-id");
-                window.location.href = `/app/views/games/detail.php?id=${gameId}`;
-            });
-        });
-
-        document.querySelectorAll(".edit-game").forEach((button) => {
-            button.addEventListener("click", (e) => {
                 e.stopPropagation();
                 const gameId = button.getAttribute("data-id");
-                console.log(gameId);
-                openEditGameModal(gameId);
+                await handleAddToCart(gameId);
+            });
+        });
+    
+        document.querySelectorAll(".buy-now").forEach((button) => {
+            button.addEventListener("click", async (e) => {
+                e.stopPropagation();
+                const gameId = button.getAttribute("data-id");
+                const userId = localStorage.getItem("id");
+                const requestBody = {
+                    account_id: parseInt(userId),
+                    game_ids: [parseInt(gameId)],
+                };
+                await handleBuyNow(requestBody);
             });
         });
     };
+    
 
     // Function to handle actions for cart and purchase
-    const handleCartAction = async (gameId) => {
+    const handleAddToCart = async (userId, gameId) => {
         try {
-            const response = await fetch("/../api/get_carousels_game.php", {
+            const response = await fetch("/../api/buy_game.php", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId, game_id: gameId }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    account_id: userId,
+                    game_id: gameId
+                }),
             });
             const data = await response.json();
-            alert(data.success ? "Game added to cart successfully!" : "Failed to add game to cart.");
+    
+            if (data.status === 'success') {
+                alert('Game added to cart successfully!');
+            } else {
+                alert('Failed to add game to cart.');   
+            }
         } catch (error) {
             console.error("Error adding game to cart:", error);
         }
     };
 
-    const handlePurchaseAction = async (gameId) => {
-        try {
-            const response = await fetch("/../api/get_carousels_game.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId, game_id: gameId }),
-            });
-            const data = await response.json();
-            alert(data.success ? "Game purchased successfully!" : "Failed to purchase the game.");
-            if (data.success) window.location.reload();
-        } catch (error) {
-            console.error("Error purchasing game:", error);
-        }
-    };
+        // Function to handle actions for cart and purchase
+        const handleBuyNow = async (requestBody) => {
+            try {
+                const response = await fetch("/../api/buy_game.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(requestBody), // Send the correct data structure
+                });
+    
+                console.log('requestBody:', requestBody);
+    
+                const data = await response.json();
+    
+                if (data.status === "success") {
+                    alert("Game(s) purchased successfully!");
+                } else {
+                    alert(data.message); // Show the error message returned from the server
+                }
+            } catch (error) {
+                console.error("Error purchasing game(s):", error);
+                alert("An error occurred while processing your purchase. Please try again later.");
+            } finally {
+                // Re-enable the button after the request is finished, regardless of success or failure
+                button.disabled = false;
+            }
+        };
 
     // Initialize swiper carousel
     await initSwiperCarousel();
 
-    const renderGameSection = async (apiUrl, wrapperId) => {
+    const renderGameSection = async (apiUrl, wrapperId) => {    
         const wrapper = document.getElementById(wrapperId);
         let games = [];
     

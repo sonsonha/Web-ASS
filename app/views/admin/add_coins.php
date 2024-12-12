@@ -177,28 +177,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             addCoinsForm.addEventListener('submit', (e) => {
                 e.preventDefault();
 
-                const desiredCoins = parseInt(desiredCoinsInput.value, 10);
-                if (isNaN(desiredCoins) || desiredCoins <= 0 || desiredCoins > 99999) {
-                    alert('Please enter a valid number of coins between 1 and 99999.');
-                    return;
-                }
+                const desiredCoins = parseInt(desiredCoinsInput.value, 10);  // Parse as an integer
+            if (isNaN(desiredCoins) || desiredCoins <= 0 || desiredCoins > 99999) {
+                alert('Please enter a valid number of coins between 1 and 99999.');
+                return;
+            }
+            
+            const userId = localStorage.getItem('id'); // Get user ID from localStorage
 
-                fetch('add_coins.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: 1, desired_coins: desiredCoins })
+            fetch('/../api/add_coins.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId, 
+                    coins: desiredCoins // Ensure coins is an integer here
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            alert(`Coins added successfully! New Balance: ${data.new_coins}${data.is_vip ? ' - VIP Customer!' : ''}`);
-                        } else {
-                            alert('Failed to add coins. Please try again.');
-                        }
-                    })
-                    .catch((error) => console.error('Error:', error));
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === 'success') {
+                        alert('Coins added successfully!');
+                    } else {
+                        alert('Failed to add coins. Please try again.');
+                    }
+                })
+                .catch((error) => console.error('Error:', error));
+
             });
         });
     </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>

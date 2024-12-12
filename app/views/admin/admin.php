@@ -75,14 +75,12 @@
     <div class="btn-group d-inline-block" role="group" aria-label="Admin Navigation">
         <button class="btn btn-primary active" id="manageUsersBtn" onclick="showSection('manageUsers', this)">Manage Users</button>
         <button class="btn btn-primary" id="manageContactsBtn" onclick="showSection('manageContacts', this)">Manage Contacts</button>
-        <button class="btn btn-primary" id="manageEventBtn" onclick="showSection('manageEvent', this)">Manage Event</button>
         <button class="btn btn-primary" id="manageProductsBtn" onclick="showSection('manageProducts', this)">Manage Products</button>
     </div>
 
     <?php include(__DIR__ . '/managerpage/manage_users.php'); ?>
     
     <?php include(__DIR__ . '/managerpage/manage_contacts.php'); ?>
-    <?php include(__DIR__ . '/managerpage/manage_event.php'); ?>
     <?php include(__DIR__ . '/managerpage/manage_products.php'); ?>
 </div>
 

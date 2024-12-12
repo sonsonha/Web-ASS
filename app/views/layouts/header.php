@@ -166,13 +166,13 @@
 
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                         <li><a class="dropdown-item admin-role" href="admin">Manage</a></li>
-                        <li><a class="dropdown-item" href="http://localhost/profile">Profile</a></li>
+                        <li><a class="dropdown-item user-role" href="http://localhost/profile">Profile</a></li>
                         <li><a class="dropdown-item" href="http://localhost/change_password">Change Password</a></li>
                         <li><a class="dropdown-item" id="logoutLink" href="logout">Logout</a></li>
                     </ul>
                 </div>
 
-                <a href="login" id="loginLink" class="btn btn-link small">
+                <a href="http://localhost/login" id="loginLink" class="btn btn-link small">
                     <i class="fas fa-sign-in-alt"> Login</i>
                 </a>
             </div>
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Fetch and populate categories dynamically
     const categoriesDropdown = document.getElementById("categoriesDropdown").nextElementSibling;
     try {
-        const response = await fetch("http://localhost/test_api/store_api/fetch_categories.php");
+        const response = await fetch("/../api/get_all_categories.php");
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const categories = await response.json();
@@ -206,24 +206,45 @@ document.addEventListener("DOMContentLoaded", async () => {
         categoriesDropdown.innerHTML = `<li><span class="dropdown-item text-danger">Error loading categories</span></li>`;
     }
 
-    // Fetch user info (avatar and username) from the API
-    const userId = 17; // Example user ID
-    const cartButton = document.querySelector('.cart-btn');
+    const userId = localStorage.getItem("id"); // Example user ID
+    const cartButton = document.querySelector(".cart-btn");
     const usernameElement = document.getElementById("username");
-    const avatarElement = document.querySelector('.custom-avatar');
+    const avatarElement = document.querySelector(".custom-avatar");
     const roleElement = document.getElementById("role-check");
 
-    try {
-        const userResponse = await fetch(`/../api/get_shoping_cart.php?id=${userId}`);
-        const userData = await userResponse.json();
+    let userResponse = null;
 
-        if (userData.status === 'success') {
-            const user = userData.data;
-            usernameElement.textContent = user.username;
-            avatarElement.src = user.avatar || "/assets/images/default-avatar.jpg"; // Default avatar if none provided
-            roleElement.textContent = user.role || "User"; // Assuming you have a role in the API response, or you can use localStorage or other logic for this
-        } else {
-            console.error("Error fetching user data:", userData.message);
+    try {
+        const role = localStorage.getItem("role");
+        if (role === "Admin") {
+            const username = localStorage.getItem("username"); // Fetch username from localStorage
+            userResponse = await fetch("/../api/get_admin_info.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username: username }), // Send JSON with username
+            });
+        } else if (role === "User") {
+            userResponse = await fetch(`/../api/get_shoping_cart.php?id=${userId}`);
+        }
+
+        if (userResponse && userResponse.ok) {
+            const userData = await userResponse.json();
+
+            if (userData.status === "success") {
+                const user = userData.data;
+                console.log("User Data:", user);
+
+                usernameElement.textContent = user.username || "User";
+                avatarElement.src = user.avatar || "/assets/images/default-avatar.jpg"; // Default avatar if none provided
+                roleElement.textContent = user.role || "User"; // Fallback role
+            } else {
+                console.error("Error fetching user data:", userData.message);
+                usernameElement.textContent = "Guest"; // Fallback to Guest
+                avatarElement.src = "/assets/images/default-avatar.jpg"; // Default avatar in case of error
+                roleElement.textContent = "Guest"; // Fallback role
+            }
         }
     } catch (error) {
         console.error("Error fetching user info:", error);
@@ -231,12 +252,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         avatarElement.src = "/assets/images/default-avatar.jpg"; // Default avatar in case of error
         roleElement.textContent = "Guest"; // Fallback role
     }
-
     const role = localStorage.getItem("role") ? localStorage.getItem("role") : "Guest";
+
     console.log(role);
+
+    roleElement.textContent = localStorage.getItem('role');
 
     if (role === "Admin" || role === "Guest") {
         cartButton.style.display = "none";
+    }
+
+    if (role === "Admin") {
+        document.querySelector('.user-role').style.display = "none";
     }
 
     if (role === "User") {

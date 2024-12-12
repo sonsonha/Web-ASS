@@ -1,518 +1,162 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const userId = '1'; // Example user ID (replace with actual logic)
-
-    // const urlParams = new URLSearchParams(window.location.search);
-    // const gameId = urlParams.get('id'); // Retrieve the id from the query string
-
-    // const pathParts = window.location.pathname.split('/');
-    // const gameId = pathParts[pathParts.length - 2];
-
-    console.log('Game ID:', gameId);
+    const gameId = new URLSearchParams(window.location.search).get('id'); // Get the gameId from URL query string
 
     if (!gameId) {
         console.error('No game ID provided in the URL.');
         return;
     }
 
-    if (!userId) {
-        console.error('No user ID found.');
-        return;
-    }
+    // Fetch game details and populate the page
+    fetchGameDetails(gameId);
 
-    // Fetch game details and user information
-    fetch('/../test_api/games_api/fetch_game_details.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, game_id: gameId }),
-    })
-        .then((response) => {
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            return response.json();
-        })
-        .then((data) => {
-            const { game, reviews, user } = data;
-            populateGameDetails(game, user);
-            populateReviews(reviews, user, game);
-            setupReviewSection(game, user);
-            setupThumbnails(gameID);
-            fetchPopularArticles(user);
-        })
-        .catch((error) => console.error('Error fetching game details:', error));
-    
-        // Function to fetch and display the thumbnails
-        function setupThumbnails(gameId) {
-
-            // Fetch the thumbnails data
-            fetch('/../api/get_thumbnails.php', {
-                method: 'POST',
-                headers: { 'content-Type': 'application/json' },
-                body: JSON.stringify({ game_id: gameId })
-            })
-            .then((response) => {
-                if (!response.ok) throw new Error('Failed to fetch thumbnails');
-                return response.json();
-            })
+    function fetchGameDetails(gameId) {
+        fetch(`/../api/get_game_info.php?id=${gameId}`)
+            .then((response) => response.json())
             .then((data) => {
                 if (data.status === 'success' && data.data) {
-                    const thumbnailsContainer = document.getElementById('thumbnails');
+                    const game = data.data;
+                    const user = getUser(); // Simulate fetching current user info
+                    populateGameDetails(game, user);
+                } else {
+                    console.error('Error fetching game details:', data.message);
                 }
             })
-            const thumbnailsContainer = document.getElementById('thumbnails');
-            const mainDisplayImage = document.getElementById('imageDisplay');
-            const iframeContainer = document.getElementById('videoIframeContainer'); // Container for YouTube iframe
-        
-            let currentIndex = 0;
-            let autoSlideTimeout;
-            let videoPlaying = false; // To track if the video is playing
-            let videoIframe = null; // To store the iframe element
-        
-            // Populate thumbnails
-            thumbnails.forEach((thumbnail, index) => {
-                const thumbnailElement = document.createElement('div');
-                thumbnailElement.className = 'thumbnail';
-                thumbnailElement.dataset.index = index;
-        
-                if (thumbnail.type === 'image') {
-                    const img = document.createElement('img');
-                    img.src = thumbnail.src;
-                    thumbnailElement.appendChild(img);
-                } else if (thumbnail.type === 'video') {
-                    // YouTube video thumbnail (use the thumbnail image for YouTube)
-                    const img = document.createElement('img');
-                    img.src = `https://img.youtube.com/vi/${getYouTubeVideoId(thumbnail.src)}/0.jpg`;
-                    thumbnailElement.appendChild(img);
-                }
-        
-                // Click event for thumbnails
-                thumbnailElement.addEventListener('click', () => {
-                    currentIndex = index; // Update index for clicked thumbnail
-                    clearTimeout(autoSlideTimeout); // Pause auto-slide
-                    displayMedia(index, thumbnails, false);
-                    startAutoSlide(); // Resume auto-slide after interaction
-                });
-        
-                thumbnailsContainer.appendChild(thumbnailElement);
+            .catch((error) => {
+                console.error('Error fetching game details:', error);
             });
-        
-            // Display selected media
-            function displayMedia(index, thumbnails, auto = false) {
-                const selectedThumbnail = thumbnails[index];
-        
-                if (selectedThumbnail.type === 'image') {
-                    // Hide video and show image
-                    iframeContainer.style.display = 'none';
-                    mainDisplayImage.style.display = 'block';
-                    mainDisplayImage.src = selectedThumbnail.src;
-                    if (auto) scheduleNextSlide(5000); // Wait 5 seconds for images
-                } else if (selectedThumbnail.type === 'video') {
-                    // Hide image and show YouTube video iframe
-                    mainDisplayImage.style.display = 'none';
-                    iframeContainer.style.display = 'block';
-        
-                    const youtubeId = getYouTubeVideoId(selectedThumbnail.src);
-                    videoIframe = document.createElement('iframe');
-                    videoIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=0&mute=1`; // Mute initially to comply with autoplay policies
-                    videoIframe.frameBorder = "0";
-                    videoIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                    videoIframe.allowFullscreen = true;
-        
-                    iframeContainer.innerHTML = ''; // Clear any previous iframe
-                    iframeContainer.appendChild(videoIframe);
-        
-                    // Handle video play/pause behavior
-                    videoIframe.addEventListener('click', () => {
-                        if (!videoPlaying) {
-                            videoIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`; // Play video on click
-                            videoPlaying = true;
-                            pauseAutoSlide(); // Pause auto-slide when video is playing
-                        } else {
-                            videoIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=0`; // Pause video on click
-                            videoPlaying = false;
-                            resumeAutoSlide(); // Resume auto-slide when video is paused
-                        }
-                    });
-        
-                    // Ensure auto-slide waits for video to finish or pause
-                    videoIframe.onload = function() {
-                        // Watch for video end or pause
-                        videoIframe.contentWindow.addEventListener('pause', () => {
-                            videoPlaying = false;
-                            resumeAutoSlide(); // Resume auto-slide when paused
-                        });
-        
-                        videoIframe.contentWindow.addEventListener('ended', () => {
-                            videoPlaying = false;
-                            resumeAutoSlide(); // Resume auto-slide when video ends
-                        });
-                    };
-                }
-            }
-        
-            // Pause auto-slide
-            function pauseAutoSlide() {
-                clearTimeout(autoSlideTimeout); // Stop the auto-slide
-            }
-        
-            // Resume auto-slide
-            function resumeAutoSlide() {
-                scheduleNextSlide(5000); // Continue with auto-slide
-            }
-        
-            // Schedule the next slide
-            function scheduleNextSlide(delay = 0) {
-                clearTimeout(autoSlideTimeout);
-                autoSlideTimeout = setTimeout(() => {
-                    currentIndex = (currentIndex + 1) % thumbnails.length;
-                    displayMedia(currentIndex, thumbnails, true);
-                }, delay);
-            }
-        
-            // Auto-slide function
-            function startAutoSlide() {
-                displayMedia(currentIndex, thumbnails, true);
-            }
-        
-            // Start auto-slide
-            startAutoSlide();
-        
-            // Utility function to extract YouTube video ID from the URL
-            function getYouTubeVideoId(url) {
-                const regExp = /^https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
-                const match = url.match(regExp);
-                return match && match[1];
-            }
-        }
-});
+    }
 
-function fetchPopularArticles (user) {
-    // Fetch the articles data
-    fetch('/../test_api/games_api/fetch_popular_articles.php')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+    function populateGameDetails(game, user) {
+        if (!game) {
+            console.error('Game data is missing.');
+            return;
         }
-        return response.json(); // Parse the response as JSON
-    })
-    .then(data => {
-        // Check if data is an array
-        if (Array.isArray(data)) {
-            console.log('Fetched Articles:', data); // Log the fetched data
-            const articlesContainer = document.getElementById('popular-articles');
-            // Loop through each article and create a card
-            data.forEach(article => {   
-                const articleCard = document.createElement('div');
-                articleCard.classList.add('card', 'mb-3');
-                articleCard.style.width = '18rem'; // Adjust the size of the card
 
-                articleCard.innerHTML = `
-                    <img src="${article.image}" class="card-img-top" alt="${article.title}">
-                    <div class="card-body">
-                        <h5 class="card-title">${article.title}</h5>
-                        <p class="card-text">${article.description}</p>
-                        <a href="${article.link}" class="btn btn-primary" target="_blank">Read More</a>
-                    </div>
-                `;
+        // Update game details
+        document.getElementById('game-title').textContent = game.game_name || 'Unknown';
+        document.getElementById('buy-game-title').textContent = `Buy ${game.game_name}`;
+        document.getElementById('game-thumbnail').src = game.avt || '';
+        document.getElementById('release-date').textContent = game.release_date || 'Unknown';
+        document.getElementById('publisher').textContent = game.publisher || 'Unknown';
 
-                // Add the card to the container
-                articlesContainer.appendChild(articleCard);
-                // Add click event for the edit button (only for Admin)
-                if (user.role === 'Admin') {
-                    const toggleButton = document.createElement('button');
-                    toggleButton.className = `btn btn-outline-info edit-article-btn`;
-                    toggleButton.textContent = 'Edit Article';
-                    articleCard.appendChild(toggleButton);
-                    const editBtn = articleCard.querySelector('.edit-article-btn'); 
-                    editBtn.addEventListener('click', () => {
-                        openEditModal(article); // Open the modal with the article's data
-                });
-        }
-            });
+        // Genres
+        const genresContainer = document.getElementById('genres');
+        genresContainer.innerHTML = '';
+        game.genre.split(',').forEach(genre => {
+            const genreLink = document.createElement('a');
+            genreLink.href = `/app/views/store/category.php?category=${encodeURIComponent(genre.trim())}`;
+            genreLink.textContent = genre.trim();
+            genreLink.classList.add('genre-link');
+            genresContainer.appendChild(genreLink);
+
+            const separator = document.createElement('span');
+            separator.textContent = ' | ';
+            genresContainer.appendChild(separator);
+        });
+
+        // Prices and Discounts
+        const discountBadge = document.getElementById('discount-badge');
+        const discountPercentage = document.getElementById('discount-percentage');
+        const originalPrice = document.getElementById('original-price');
+        const finalPrice = document.getElementById('final-price');
+
+        if (game.discount && parseFloat(game.discount) > 0) {
+            discountPercentage.textContent = game.discount;
+            discountBadge.classList.remove('d-none');
+            originalPrice.textContent = `${game.price} coins`;
+            finalPrice.textContent = `${(parseFloat(game.price) - parseFloat(game.discount)).toFixed(2)} coins`;
         } else {
-            console.error('Expected an array, but got:', data);
+            discountBadge.classList.add('d-none');
+            originalPrice.textContent = '';
+            finalPrice.textContent = `${game.price} coins`;
         }
-    })
-    .catch(error => {
-        console.error('Error fetching articles:', error);
-    });
-}
 
-function openEditModal(article) {
-    // Populate the modal with article data
-    document.getElementById('editImage').value = article.image;
-    document.getElementById('editTitle').value = article.title;
-    document.getElementById('editDescription').value = article.description;
+        // Add to Cart / Download
+        const addToCartButton = document.getElementById('add-to-cart-btn');
+        if ((user['game-own'].includes(game.id) || game.is_free) && user.role === 'User') {
+            addToCartButton.textContent = 'Download Now';
+            addToCartButton.classList.replace('btn-success', 'btn-primary');
+        } else {
+            addToCartButton.textContent = 'Add to Cart';
+            addToCartButton.addEventListener('click', () => {
+                if (user.role === 'Guest') {
+                    showLoginAlert('addToCart');
+                    return;
+                }
+                addToCart(user.id, game.id);
+            });
+        }
 
-    // Store the article ID for updating
-    const editArticleForm = document.getElementById('editArticleForm');
-    editArticleForm.onsubmit = function (e) {
-        e.preventDefault();
+        // Introduction and Description
+        document.getElementById('game-introduction').textContent = game.introduction || 'Introduction not available.';
+        document.getElementById('about-game').textContent = game.description || 'Description not available.';
 
-        const updatedArticle = {
-            id: article.id,
-            image: document.getElementById('editImage').value,
-            title: document.getElementById('editTitle').value,
-            description: document.getElementById('editDescription').value
+        // System Requirements
+        populateSystemRequirements({
+            minimum: {
+                OS: game.minOS,
+                Processor: game.minProcessor,
+                Memory: game.minMemory,
+                Graphics: game.minGraphics,
+                Storage: game.minStorage,
+            },
+            recommended: {
+                OS: game.recOS,
+                Processor: game.recProcessor,
+                Memory: game.recMemory,
+                Graphics: game.recGraphics,
+                Storage: game.recStorage,
+            },
+        });
+    }
+
+    function populateSystemRequirements(systemReq) {
+        const minReq = document.getElementById('minimum-req');
+        const recReq = document.getElementById('recommended-req');
+
+        minReq.innerHTML = '';
+        recReq.innerHTML = '';
+
+        Object.entries(systemReq.minimum || {}).forEach(([key, value]) => {
+            minReq.innerHTML += `<li><strong>${key}:</strong> ${value || 'N/A'}</li>`;
+        });
+
+        Object.entries(systemReq.recommended || {}).forEach(([key, value]) => {
+            recReq.innerHTML += `<li><strong>${key}:</strong> ${value || 'N/A'}</li>`;
+        });
+    }
+
+    function getUser() {
+        // Simulate fetching user data
+        return {
+            id: 1,
+            role: 'User',
+            'game-own': [2], // Example owned games
         };
+    }
 
-        // Send the updated data to the back-end
-        fetch('/../test_api/games_api/update_article.php', {
+    function addToCart(userId, gameId) {
+        fetch('/../test_api/games_api/add_to_cart.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedArticle)
+            body: JSON.stringify({ user_id: userId, game_id: gameId }),
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Article updated successfully!');
-                location.reload(); // Reload the page to reflect changes
-            } else {
-                alert('Failed to update the article.');
-            }
-        })
-        .catch(error => console.error('Error updating article:', error));
-    };
-
-    // Show the modal
-    new bootstrap.Modal(document.getElementById('editArticleModal')).show();
-}
-
-function populateGameDetails(game, user) {
-    if (!game) {
-        console.error('Game data is missing.');
-        return;
-    }
-
-    // Update the breadcrumb and game title
-    document.querySelector('.breadcrumb-item.active').textContent = game.title;
-    document.getElementById('game-title').textContent = game.title || 'Unknown';
-    document.getElementById('buy-game-title').textContent = `Buy ${game.title}`;
-
-    document.getElementById('game-thumbnail').src = game.background_image || '';
-    document.getElementById('release-date').textContent = game.release_date || 'Unknown';
-    document.getElementById('publisher').textContent = game.publisher || 'Unknown';
-
-    // Update genres - make genres clickable
-    const genresContainer = document.getElementById('genres');
-    genresContainer.innerHTML = ''; // Clear any existing genres
-    game.genres.forEach(genre => {
-        const genreLink = document.createElement('a');
-        genreLink.href = `/app/views/store/category.php?category=${encodeURIComponent(genre)}`;  // Link to the category page
-        genreLink.textContent = genre;
-        genreLink.classList.add('genre-link');
-        genresContainer.appendChild(genreLink);
-        
-        // Optionally, add spacing between genre links
-        const separator = document.createElement('span');
-        separator.textContent = ' | ';
-        genresContainer.appendChild(separator);
-    });
-
-    // Discount badge logic
-    const discountBadge = document.getElementById('discount-badge');
-    const discountPercentage = document.getElementById('discount-percentage');
-    
-    const originalPrice = document.getElementById('original-price');
-    const finalPrice = document.getElementById('final-price');
-
-    if (game.discount) {
-        discountPercentage.textContent = game.discount;
-        discountBadge.classList.remove('d-none');
-        originalPrice.textContent = `${game.original_price} coins`;
-        if (!user['game-own'].includes(game.id)) {
-            finalPrice.textContent = `${game.price} coins`; // Show price in coins
-        }
-        else {
-            finalPrice.textContent = user.role == 'user' ? 'Owned' : `${game.price} coins`; // Show price in coins
-        }
-    } else {
-        discountBadge.classList.add('d-none');
-        originalPrice.textContent = ''; // Hide original price if no discount
-        finalPrice.textContent = `${game.price} coins`; // Show price in coins
-    }
-
-    // Add to Cart or download button logic
-    const addToCartButton = document.getElementById('add-to-cart-btn');
-    if ((user['game-own'].includes(game.id) || game.is_free) && user.role === 'user') {
-        addToCartButton.textContent = `Download Now`;
-        addToCartButton.classList.replace('btn-success', 'btn-primary');
-        // addToCartButton.addEventListener('click', () => {
-        //     window.location.href = `/app/views/games/test_api/download.php?game_id=${game.id}`;
-        // });
-    } else {
-        addToCartButton.textContent = 'Add to Cart';
-        addToCartButton.addEventListener('click', () => {
-            if (user.role === 'guest') {
-                showLoginAlert('addToCart'); // Show login modal
-                return;
-            }
-            addToCart(userId, game.id);
-        });
-    }
-
-    // Update introduction and about sections
-    document.getElementById('game-introduction').textContent = game.introduction || 'Introduction not available.';
-    document.getElementById('about-game').textContent = game.about || 'Description not available.';
-
-    // Populate system requirements
-    const systemReq = game.system_requirements || {};
-    populateSystemRequirements(systemReq);
-}
-
-function addToCart(userId, gameId) {
-    fetch('/../test_api/games_api/add_to_cart.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, game_id: gameId }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                alert('Game added to cart successfully!');
-            } else {
-                alert('Failed to add game to cart.');
-            }
-        })
-        .catch((error) => console.error('Error adding game to cart:', error));
-}
-
-// Set up the review section based on user role and game ownership
-function setupReviewSection(game, user) {
-    const reviewFormSection = document.getElementById('review-form-section');
-    const reviewsSection = document.getElementById('reviews-section');
-    // const noReviewsMessage = document.getElementById('no-reviews-message');
-
-    // Admin Role
-    if (user.role === 'Admin') {
-        reviewFormSection.style.display = 'none'; // Hide review form
-        const toggleButton = document.createElement('button');
-        const hiddenClass = game.enable_comments ? 'btn-danger' : 'btn-success';
-        toggleButton.className = `btn ${hiddenClass}`;
-        toggleButton.textContent = game.enable_comments ? 'Disable Comments' : 'Enable Comments';
-        reviewsSection.appendChild(toggleButton);
-
-        // Handle comment toggle (placeholder logic)
-        toggleButton.addEventListener('click', () => {
-            fetch('/../test_api/games_api/toggle_comments.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ game_id: game.id, enable_comments: !game.enable_comments})
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Game added to cart successfully!');
+                } else {
+                    alert('Failed to add game to cart.');
+                }
             })
-            // Add backend call to toggle comments
-            alert('Toggle comments logic here.');
-        });
-        return;
+            .catch(error => console.error('Error adding game to cart:', error));
     }
 
-    // Check if comments are disabled
-    if (!game.enable_comments) {
-        reviewFormSection.innerHTML = '<p class="text-danger">The comments are disabled!</p>';
-        return;
+    function showLoginAlert(action) {
+        alert(`Please log in to ${action}`);
     }
+});
 
-    // Guest Role
-    if (user.role === 'guest') {
-        const submitButton = document.querySelector('#reviewForm button[type="submit"]');
-        submitButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            showLoginAlert('review'); // Show login modal
-        });
-        return;
-    }
-
-    // User Role
-    if (user.role === 'user') {
-        if (!user['game-own'].includes(game.id)) {
-            // User doesn't own the game
-            reviewFormSection.innerHTML = '<p class="text-warning">You must purchase the game to leave a review.</p>';
-        }
-    }
-}
-
-// Populate game details dynamically
-
-// Populate system requirements dynamically
-function populateSystemRequirements(systemReq) {
-    const minReq = document.getElementById('minimum-req');
-    const recReq = document.getElementById('recommended-req');
-
-    if (minReq) minReq.innerHTML = '';
-    if (recReq) recReq.innerHTML = '';
-
-    if (systemReq.minimum && minReq) {
-        Object.entries(systemReq.minimum).forEach(([key, value]) => {
-            minReq.innerHTML += `<li><strong>${key}:</strong> ${value}</li>`;
-        });
-    }
-
-    if (systemReq.recommended && recReq) {
-        Object.entries(systemReq.recommended).forEach(([key, value]) => {
-            recReq.innerHTML += `<li><strong>${key}:</strong> ${value}</li>`;
-        });
-    }
-}
-
-// Populate reviews dynamically
-function populateReviews(reviews, user, game) {
-    const reviewsContainer = document.getElementById('reviews-container');
-    reviewsContainer.innerHTML = '';
-
-    if (!reviews || reviews.length === 0) {
-        reviewsContainer.innerHTML = '<p>No reviews yet. Be the first to review!</p>';
-        return;
-    }
-
-    reviews.forEach((review, index) => {
-        const hiddenClass = !review.show ? 'blurred' : ''; 
-
-        const reviewHTML = user.role === 'Admin' || review.show ? `
-            <div class="review mb-4 ${hiddenClass}">
-                <div class="d-flex align-items-start">
-                    <img src="${review.avatar}" alt="${review.username}" class="rounded-circle me-3" width="50">
-                    <div class="ms-3">
-                        <div class="review-username">${review.username}</div>
-                        <span class="text-warning">${'⭐'.repeat(review.rating)}</span>
-                        <div class="review-message">${review.message}</div>
-
-                        <div class="d-flex mt-2">
-                            <button class="btn btn-sm like-btn ${review.userLiked ? 'active' : ''}" data-review-index="${index}" data-action="like">
-                                👍 <span class="like-count text-white">${review.likes || 0}</span>
-                            </button>
-                            <button class="btn btn-sm dislike-btn ${review.userDisliked ? 'active' : ''}" data-review-index="${index}" data-action="dislike">
-                                👎 <span class="dislike-count text-white">${review.dislikes || 0}</span>
-                            </button>
-                        </div>
-
-                        <!-- Admin controls on reviews -->
-                        ${user.role === 'Admin' ? `
-                        <div class="d-flex mt-2">
-                            <button class="btn btn-sm btn-outline-primary toggle-visibility-btn" data-id="${review.id}" data-show="${review.show}">${review.show ? 'Hide' : 'Unhide'}</button>
-                            <button class="btn btn-sm btn-outline-danger delete-review-btn" data-id="${review.id}">Delete</button>
-                        </div>` : ``}
-                    </div>
-                </div>
-            </div>
-        ` : '';
-
-        const reviewElement = document.createElement('div');
-        reviewElement.innerHTML = reviewHTML;
-        reviewsContainer.appendChild(reviewElement);
-
-        // Like/Dislike Event Listeners
-        const likeBtn = reviewElement.querySelector('.like-btn');
-        const dislikeBtn = reviewElement.querySelector('.dislike-btn');
-
-        if (likeBtn) {
-            likeBtn.addEventListener('click', () => handleLikeDislike(user, game.id, review, 'like', likeBtn, dislikeBtn));
-        }
-        if (dislikeBtn) {
-            dislikeBtn.addEventListener('click', () => handleLikeDislike(user, game.id, review, 'dislike', likeBtn, dislikeBtn));
-        }
-    });
-
-    document.getElementById('game-price').textContent = game.price || 'Unknown';
-    document.getElementById('release-date').textContent = game.release_date || 'Unknown';
-    document.getElementById('reviews-count').textContent = `${game.rating}/5⭐` || 'N/A'; // Add average rating
-}
 
 // Handle Like/Dislike Logic
 function handleLikeDislike(user, gameId, review, action, likeBtn, dislikeBtn) {

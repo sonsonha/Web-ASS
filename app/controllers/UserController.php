@@ -146,16 +146,18 @@ class UserController {
             echo json_encode(['status' => 'error', 'message' => 'Missing required parameters: user_id or coins']);
             return;
         }
-
+    
         $userId = $data['user_id'];
-        $coinToAdd = $data['coins'];
-
+        // Ensure the coin value is an integer
+        $coinToAdd = (int)$data['coins'];  // Cast to integer
+    
         if ($this->userModel->addCoins($userId, $coinToAdd)) {
             echo json_encode(['status' => 'success', 'message' => 'Coins added successfully.']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Failed to add coins.']);
         }
     }
+    
 
     public function changePassword($data) {
         if (!isset($data['email']) || !isset($data['current_password']) || !isset($data['new_password'])) {
@@ -174,6 +176,21 @@ class UserController {
             echo json_encode(['status' => 'success', 'message' => 'Password updated successfully.']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Failed to update password.']);
+        }
+    }
+
+    public function getCoins($accountId) {
+        if ($accountId === null) {
+            echo json_encode(['status' => 'error', 'message' => 'Account ID is missing']);
+            return;
+        }
+
+        $coins = $this->userModel->getCoins($accountId);
+
+        if ($coins !== false) {
+            echo json_encode(['status' => 'success', 'coins' => $coins]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'User not found']);
         }
     }
 

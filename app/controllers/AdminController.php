@@ -153,5 +153,22 @@ class AdminController {
             ]);
         }
     }
+
+    public function getAdminInfo($username) {
+        header('Content-Type: application/json');
+        $users = $this->adminModel->getAdminInfo($username);
+
+        if ($users) {
+            echo json_encode([
+                'status' => 'success',
+                'data' => $users
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'No users found'
+            ]);
+        }
+    }
 }
 ?>

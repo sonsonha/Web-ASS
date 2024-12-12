@@ -4,267 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Detail</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/../assets/css/game-detail.css">
+    <style>
+        .customs {
+            background-color:rgb(27, 27, 66);
+            color: #f5f5f5;
+        }
+        .background-banner {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+        }
+        .game-thumbnail {
+            max-width: 100%;
+            height: auto;
+        }
+        h1, h2, h4 {
+            color: #ffdd57;
+        }
+        a {
+            color: #1e90ff;
+        }
+        a:hover {
+            color: #87cefa;
+        }
+        .btn-primary {
+            background-color: #1e90ff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #4682b4;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
-<body>
-    <!-- Include Header -->
-    <?php include __DIR__ . '/../layouts/header.php'; ?> <!-- Updated -->
 
-    <main class="container my-5">
 
-        <!-- Main Title -->
-        <h1 class="text-white" id="game-title">Game Name</h1>
+<body class="customs">
+<?php include __DIR__ . '/../layouts/header.php'; ?>
 
+
+    <main class="container my-4">
+        <!-- Background Banner -->
+        <div id="background-banner" class="background-banner mb-4"></div>
+
+        <!-- Game Details -->
         <div class="row">
-            <!-- Left Content -->
-            <div class="col-md-8">
-                <!-- Display Area -->
-                <div class="display-area">
-                    <video id="mainDisplay" controls style="display: noneav;">
-                        <source id="videoSource" src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <img id="imageDisplay" src="assets/images/feature1.jpg" alt="Game Display">
-                    <div id="videoIframeContainer" style="display: none;">
-                        <!-- YouTube iframe will be dynamically added here -->
-                    </div>
-                </div>
-
-
-                <!-- Thumbnail Carousel -->
-                <div class="thumbnail-carousel-container">
-                    <div class="thumbnail-carousel mt-3 d-flex gap-2" id="thumbnails">
-                        <!-- Thumbnails populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Add to Cart Section -->
-                <section class="purchase-section bg-dark text-white p-4 rounded my-4">
-                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
-                        <div>
-                            <h4 id="buy-game-title">Buy Game Name</h4>
-                            <div class="d-flex align-items-center gap-3">
-                                <div id="discount-badge" class="badge bg-danger d-none">
-                                    <span id="discount-percentage"></span>% OFF
-                                </div>
-                                <p id="pricing-info" class="mb-0">
-                                    <span class="text-decoration-line-through text-muted" id="original-price"></span>
-                                    <span class="text-warning ms-2" id="final-price"></span>
-                                </p>
-                            </div>
-                        </div>
-                        <button class="btn btn-success add-to-cart-btn mt-3 mt-md-0" id="add-to-cart-btn">
-                            Add to Cart
-                        </button>
-                    </div>
-                </section>
-
-
-                <!-- Game Introduction -->
-                <section class="bg-dark text-white p-4 rounded my-4">
-                    <h2>Introduction</h2>
-                    <p id="game-introduction">Game Introduction goes here...</p>
-                </section>
-
-                <!-- About the Game -->
-                <section class="bg-dark text-white p-4 rounded my-4">
-                    <h2>About the Game</h2>
-                    <p id="about-game">Game description goes here...</p>
-                </section>
-
-                <!-- System Requirements -->
-                <section class="bg-dark text-white p-4 rounded my-4">
-                    <h2>System Requirements</h2>
-                    <div class="row">
-                        <!-- Minimum Requirements -->
-                        <div class="col-md-6">
-                            <h4>Minimum</h4>
-                            <ul id="minimum-req">
-                                <!-- Populated dynamically -->
-                            </ul>
-                        </div>
-                        <!-- Recommended Requirements -->
-                        <div class="col-md-6">
-                            <h4>Recommended</h4>
-                            <ul id="recommended-req">
-                                <!-- Populated dynamically -->
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Customer Reviews -->
-                <section class="bg-dark text-white p-4 rounded my-4" id="reviews-section">
-                    <h2>Reviews</h2>
-                    <div id="reviews-container">
-                        <!-- Reviews populated dynamically -->
-                    </div>
-                </section>
-
-                <!-- <section class="bg-dark text-white p-4 rounded my-4"> -->
-                    <section id="review-form-section" class="bg-dark text-white p-4 rounded my-4">
-                        <h4>Leave a Review</h4>
-                        <form id="reviewForm">
-                            <input type="hidden" name="game_id" id="game_id">
-                            <div class="mb-3">
-                                <div id="star-rating" class="d-flex gap-1">
-                                    
-                                </div>
-                                <input type="hidden" name="rating" id="rating" value="0">
-                            </div>
-                            <div class="mb-3">
-                                <!-- <label for="message" class="form-label">Your Review</label> -->
-                                <textarea name="message" id="message" rows="3" class="form-control"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-success">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                </svg>
-                            </button>
-                        </form>
-                    </section>
-                <!-- </section> -->
-
-            </div>
-
-            <!-- Right Sidebar -->
             <div class="col-md-4">
-                <div class="bg-dark text-white p-4 rounded">
-                    <img id="game-thumbnail" src="https://i.ytimg.com/vi_webp/y1Rx-Bbht5E/maxresdefault.webp" alt="Game Thumbnail" class="img-detail">
-                    <p><strong>Release Date:</strong> <span id="release-date">Unknown</span></p>
-                    <p><strong>Average Rating:</strong> <span id="reviews-count"></span></p>
-                    <p><strong>Price:</strong> <span class="text-success" id="game-price">Unknown</span></p>
-                    <p><strong>Publisher:</strong> <span class="text-success" id="publisher">Unknown</span></p>
+                <img id="game-thumbnail" class="game-thumbnail rounded" alt="Game Thumbnail">
+            </div>
 
-                    <!-- Dynamically generate and display genres as clickable links -->
-                    <p><strong>Genres:</strong> 
-                        <span id="genres">
-                            <!-- Genres will be populated here -->
-                        </span>
-                    </p>
+            <div class="col-md-8">
+                <h1 id="game-title"></h1>
+                <p><strong>Publisher:</strong> <span id="publisher"></span></p>
+                <p><strong>Genre:</strong> <span id="genre"></span></p>
+                <p><strong>Release Date:</strong> <span id="release-date"></span></p>
+                <p><strong>Downloads:</strong> <span id="downloads"></span></p>
+
+                <div class="mb-3">
+                    <h4>Price: <span id="final-price"></span></h4>
+                    <p id="original-price" class="text-muted text-decoration-line-through"></p>
+                    <div id="discount-badge" class="badge bg-danger d-none"></div>
                 </div>
 
-                <!-- Popular Articles Section -->
-                <div id="popular-articles" class="d-flex flex-wrap gap-3 mt-4">
-                    <!-- Articles will be populated here -->
-                </div>
+                <button id="add-to-cart-btn" class="btn btn-success">Add to Cart</button>
+                <a id="download-link" href="#" class="btn btn-primary d-none">Download</a>
             </div>
         </div>
 
-        <!-- Modal for editing the article -->
-        <div class="modal fade" id="editArticleModal" tabindex="-1" aria-labelledby="editArticleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editArticleModalLabel">Edit Article</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editArticleForm">
-                            <div class="mb-3">
-                                <label for="editImage" class="form-label">Image URL</label>
-                                <input type="text" class="form-control" id="editImage" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editTitle" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="editTitle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editDescription" class="form-label">Description</label>
-                                <textarea class="form-control" id="editDescription" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </form>
-                    </div>
+        <!-- Introduction -->
+        <section class="mt-4">
+            <h2>Introduction</h2>
+            <p id="introduction"></p>
+        </section>
+
+        <!-- Description -->
+        <section class="mt-4">
+            <h2>About the Game</h2>
+            <p id="description"></p>
+        </section>
+
+        <!-- System Requirements -->
+        <section class="mt-4">
+            <h2>System Requirements</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Minimum</h4>
+                    <ul id="minimum-req"></ul>
+                </div>
+                <div class="col-md-6">
+                    <h4>Recommended</h4>
+                    <ul id="recommended-req"></ul>
                 </div>
             </div>
-        </div>
-
-
-
-
-        <!-- Add Review Form -->
-
-        <!-- <section id="review-form-section" class="bg-dark text-white p-4 rounded my-4">
-            <h4>Leave a Review</h4>
-            <form id="reviewForm">
-                <input type="hidden" name="game_id" id="game_id">
-                <div class="mb-3">
-                    <label for="rating" class="form-label">Rating</label>
-                    <div id="star-rating" class="d-flex gap-1">
-                        
-                    </div>
-                    <input type="hidden" name="rating" id="rating" value="0">
-                </div>
-                <div class="mb-3">
-                    <label for="message" class="form-label">Your Review</label>
-                    <textarea name="message" id="message" rows="3" class="form-control"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Review</button>
-            </form>
-        </section> -->
-
+        </section>
     </main>
-    
-    <div class="modal fade" id="editArticleModal" tabindex="-1" aria-labelledby="editArticleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editArticleModalLabel">Edit Article</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editArticleForm">
-                        <div class="mb-3">
-                            <label for="editImage" class="form-label">Image URL</label>
-                            <input type="text" class="form-control" id="editImage" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="editTitle" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="editDescription" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
+    <footer class="text-white text-center py-3">
+        <p>&copy; 2024 Game Store</p>
+    </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameId = new URLSearchParams(window.location.search).get('id');
 
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Sign In Required</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="loginModalBody">
-                    <p>Please sign in to take this action.</p>
-                </div>
-                <div class="modal-footer">
-                    <a href="/app/views/auth/login.php" class="btn btn-primary">Sign In</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
+            if (!gameId) {
+                console.error('No game ID provided.');
+                return;
+            }
 
+            fetch(`/../api/get_game_info.php?id=${gameId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success' && data.data) {
+                        populateGameDetails(data.data);
+                    } else {
+                        console.error('Error fetching game details:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error fetching game details:', error));
+        });
 
-    <!-- Include Footer -->
+        function populateGameDetails(game) {
+            document.getElementById('background-banner').style.backgroundImage = `url('${game.background}')`;
+            document.getElementById('game-thumbnail').src = game.avt;
+            document.getElementById('game-title').textContent = game.game_name;
+            document.getElementById('publisher').textContent = game.publisher;
+            document.getElementById('genre').textContent = game.genre;
+            document.getElementById('release-date').textContent = game.release_date;
+            document.getElementById('downloads').textContent = game.downloads;
 
-    <?php include __DIR__ . '/../layouts/footer.php'; ?> <!-- Updated -->
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="/../assets/js/game-detail.js"></script>
+            // Price and Discount
+            const finalPrice = document.getElementById('final-price');
+            const originalPrice = document.getElementById('original-price');
+            const discountBadge = document.getElementById('discount-badge');
+
+            if (game.discount && parseFloat(game.discount) > 0) {
+                const discountedPrice = (parseFloat(game.price) - parseFloat(game.discount)).toFixed(2);
+                finalPrice.textContent = `$${discountedPrice}`;
+                originalPrice.textContent = `$${game.price}`;
+                discountBadge.textContent = `${game.discount} OFF`;
+                discountBadge.classList.remove('d-none');
+            } else {
+                finalPrice.textContent = `$${game.price}`;
+                originalPrice.textContent = '';
+                discountBadge.classList.add('d-none');
+            }
+
+            // Introduction and Description
+            document.getElementById('introduction').textContent = game.introduction || 'No introduction available.';
+            document.getElementById('description').textContent = game.description || 'No description available.';
+
+            // System Requirements
+            populateSystemRequirements({
+                minimum: {
+                    OS: game.minOS,
+                    Processor: game.minProcessor,
+                    Memory: game.minMemory,
+                    Graphics: game.minGraphics,
+                    Storage: game.minStorage
+                },
+                recommended: {
+                    OS: game.recOS,
+                    Processor: game.recProcessor,
+                    Memory: game.recMemory,
+                    Graphics: game.recGraphics,
+                    Storage: game.recStorage
+                }
+            });
+
+            // Add to Cart or Download Button
+            const addToCartButton = document.getElementById('add-to-cart-btn');
+            const downloadLink = document.getElementById('download-link');
+
+            if (game.download_link) {
+                downloadLink.href = game.download_link;
+                downloadLink.classList.remove('d-none');
+                addToCartButton.classList.add('d-none');
+            } else {
+                addToCartButton.addEventListener('click', () => alert('Added to cart!'));
+            }
+        }
+
+        function populateSystemRequirements(systemReq) {
+            const minReq = document.getElementById('minimum-req');
+            const recReq = document.getElementById('recommended-req');
+
+            minReq.innerHTML = '';
+            recReq.innerHTML = '';
+
+            Object.entries(systemReq.minimum).forEach(([key, value]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${key}:</strong> ${value || 'N/A'}`;
+                minReq.appendChild(li);
+            });
+
+            Object.entries(systemReq.recommended).forEach(([key, value]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${key}:</strong> ${value || 'N/A'}`;
+                recReq.appendChild(li);
+            });
+        }
+    </script>
+
+<?php include __DIR__ . '/../layouts/footer.php'; ?>
 </body>
 </html>

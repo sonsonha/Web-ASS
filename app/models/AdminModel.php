@@ -109,44 +109,19 @@ class AdminModel {
         }
     }
 
-    // public function updateReputationPoints($username, $newReputationPoints) {
-    //     $this->db->beginTransaction();
-    
-    //     try {
-    //         $query1 = "SELECT id FROM tai_khoan WHERE username = :username";
-    //         $stmt1 = $this->db->prepare($query1);
-    //         $stmt1->bindParam(":username", $username, PDO::PARAM_STR);
-    //         $stmt1->execute();
-    
-    //         $user = $stmt1->fetch(PDO::FETCH_ASSOC);
-    
-    //         if (!$user) {
-    //             throw new Exception("User not found");
-    //         }
-    
-    //         $userId = $user['id'];
-    
-    //         $query2 = "UPDATE user SET reputation_points = :reputation_points WHERE id = :id";
-    //         $stmt2 = $this->db->prepare($query2);
-    //         $stmt2->bindParam(":reputation_points", $newReputationPoints, PDO::PARAM_INT);
-    //         $stmt2->bindParam(":id", $userId, PDO::PARAM_INT);
-    //         $stmt2->execute();
-    
-    //         if ($stmt2->rowCount() === 0) {
-    //             throw new Exception("No rows affected in user table");
-    //         }
-    
-    //         $this->db->commit();
-    //         return true;
-    //     } catch (Exception $e) {
-    //         $this->db->rollBack();
-    //         echo json_encode([
-    //             'status' => 'error',
-    //             'message' => 'Failed to update reputation points: ' . $e->getMessage()
-    //         ]);
-    //         return false;
-    //     }
-    // }
+    public function getAdminInfo($username) {
+        $query = "
+            SELECT username, avatar
+            FROM tai_khoan
+            WHERE username = :username AND role = 'Admin'
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     public function reportError($user_id, $game_id, $error_description) {
         $query = "INSERT INTO bao_loi (user_id, game_id, error_description) 
