@@ -182,7 +182,7 @@ class GameModel {
 
         try {
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC); // Lấy tất cả bản ghi
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Error fetching thumbnails: " . $e->getMessage());
             return false;
@@ -213,16 +213,62 @@ class GameModel {
         return $count > 0; 
     }
     
-    public function getAllCategories() {
-        $query = "SELECT DISTINCT genre FROM game";
-
+    public function getAllCategoriesWithThumbnail() {
+        $query = "
+            SELECT DISTINCT g.genre, 
+                            t.url AS thumbnail_url
+            FROM game g
+            LEFT JOIN thumbnails t ON g.id = t.game_id AND t.type = 'image'
+            GROUP BY g.genre
+            ORDER BY g.genre
+        ";
+        
         $stmt = $this->db->prepare($query);
-
         $stmt->execute();
-
-        // Trả về tất cả thể loại dưới dạng mảng kết hợp
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        foreach ($categories as &$category) {
+            $random_thumbnail = $this->getRandomThumbnailByGenre($category['genre']);
+            
+            $category['thumbnail_url'] = $random_thumbnail ? $random_thumbnail['url'] : null;
+        }
+    
+        return $categories;
     }
     
+    public function getRandomThumbnailByGenre($genre) {
+        $query = "
+            SELECT url 
+            FROM thumbnails t
+            JOIN game g ON t.game_id = g.id
+            WHERE g.genre = :genre AND t.type = 'image'
+            ORDER BY RAND() 
+            LIMIT 1
+        ";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':genre', $genre, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    
+    public function addThumbnail($game_id, $thumbnail_data) {
+        $query = "INSERT INTO thumbnails (game_id, url, type) VALUES (:game_id, :url, :type)";
+        $stmt = $this->db->prepare($query);
+
+        $stmt->bindParam(':game_id', $game_id, PDO::PARAM_INT);
+        $stmt->bindParam(':url', $thumbnail_data['url'], PDO::PARAM_STR);
+        $stmt->bindParam(':type', $thumbnail_data['type'], PDO::PARAM_STR);
+
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error adding thumbnail: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?>

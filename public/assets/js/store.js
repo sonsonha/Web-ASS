@@ -227,79 +227,82 @@ document.addEventListener("DOMContentLoaded", async () => {
     await renderGameSection("/../api/get_new_release_game.php", "newReleasesWrapper");
     await renderGameSection("/../api/get_top_rate_game.php", "topRateWrapper");
 
-    // Fetch and render Categories
+});
+
+
+document.addEventListener("DOMContentLoaded", async () => {
     const carouselWrapper = document.getElementById("carouselWrapper");
     const prevButton = document.getElementById("prevButton");
     const nextButton = document.getElementById("nextButton");
     let currentIndex = 0;
     const cardsPerPage = 4;
 
-    // Fetch categories from the back-end
     let categories = [];
     try {
         const response = await fetch("/../api/get_all_categories.php");
-        // const response = await fetch("/../test_api/store_api/fetch_categories.php"); debug purpose
+        
         if (!response.ok) throw new Error("Failed to fetch categories");
-        categories = await response.json();
+
+        const responseData = await response.json();
+
+        if (responseData.status !== 'success') {
+            throw new Error("API did not return a successful status");
+        }
+
+        categories = responseData.data;
     } catch (error) {
         console.error("Error fetching categories:", error);
-        return; // Stop execution if there's an error
+        return;
     }
 
-    // Function to render category cards
     const renderCategoryCards = () => {
-        carouselWrapper.innerHTML = ""; // Clear the current cards
-    
+        carouselWrapper.innerHTML = "";
+
         for (let i = 0; i < cardsPerPage; i++) {
+            if (categories.length === 0) return;
+
             const cardIndex = (currentIndex + i) % categories.length;
             const category = categories[cardIndex];
-    
-            if (!category || !category.name || !category.image) {
+
+            if (!category || !category.genre || !category.thumbnail_url) {
                 console.warn("Incomplete category data:", category);
-                continue; // Skip this iteration if data is incomplete
+                continue;
             }
-    
+
             const cardElement = document.createElement("div");
             cardElement.className = "col-md-3 mb-3";
             cardElement.innerHTML = `
-                <div class="card h-100 category-card" data-category="${category.name}">
-                    <img src="${category.image}" class="card-img-top" alt="${category.name}">
+                <div class="card h-100 category-card" data-category="${encodeURIComponent(category.genre)}">
+                    <img src="${category.thumbnail_url}" class="card-img-top" alt="${category.genre}">
                     <div class="card-body text-center bg-dark">
-                        <h5 class="card-title">${category.name}</h5>
+                        <h5 class="card-title">${category.genre}</h5>
                     </div>
                 </div>
             `;
             carouselWrapper.appendChild(cardElement);
-    
+
+            // Register event listener for card click
             cardElement.querySelector('.category-card').addEventListener('click', () => {
-                window.location.href = `/zerostress-game-store/category/${category.name}`;
+                window.location.href = `/zerostress-game-store/category/${category.genre}`;
             });
         }
     };
 
-    // Event listeners for navigation buttons
-    prevButton.addEventListener("click", () => {
-        currentIndex = (currentIndex - cardsPerPage + categories.length) % categories.length;
-        renderCategoryCards();
-    });
+    // Button existence and assignment
+    if (prevButton && nextButton) {
+        prevButton.addEventListener("click", () => {
+            currentIndex = (currentIndex - cardsPerPage + categories.length) % categories.length;
+            renderCategoryCards();
+        });
 
-    nextButton.addEventListener("click", () => {
-        currentIndex = (currentIndex + cardsPerPage) % categories.length;
-        renderCategoryCards();
-    });
+        nextButton.addEventListener("click", () => {
+            currentIndex = (currentIndex + cardsPerPage) % categories.length;
+            renderCategoryCards();
+        });
+    } else {
+        console.error("Navigation buttons for categories are missing.");
+    }
 
-    // Initial render for categories
+    // Initial Rendering
     renderCategoryCards();
-
-    // Handle search bar
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            const query = searchInput.value.trim();
-            if (query) {
-                window.location.href = `/search?query=${encodeURIComponent(query)}`;
-            }
-        }
-    });
 });
