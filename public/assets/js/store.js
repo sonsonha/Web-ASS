@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <img src="${game.avt}" alt="${game.game_name}">
                 <div class="carousel-caption gradient-bg p-3 rounded">
                     <h5 class="text-white">${game.game_name}</h5>
-                    <p class="text-light">Rating: ${game.rating} | ${game.discount || "No Discount"} | <span class="text-white">${game.final_price}</span></p>
+                    <p class="text-light">Rating: ${game.rating} | Discount: ${game.discount ? game.discount + "%" : "No Discount"} | <span class="text-white">${game.price} coins</span></p>
                     ${renderCarouselButtons(game, role)}
                 </div>
             `;

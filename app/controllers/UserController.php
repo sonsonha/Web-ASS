@@ -147,4 +147,20 @@ class UserController {
         }
     }
 
-  }
+    public function addCoins($data) {
+        if (!isset($data['user_id']) || !isset($data['coins'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Missing required parameters: user_id or coins']);
+            return;
+        }
+
+        $userId = $data['user_id'];
+        $coinToAdd = $data['coins'];
+
+        if ($this->userModel->addCoins($userId, $coinToAdd)) {
+            echo json_encode(['status' => 'success', 'message' => 'Coins added successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to add coins.']);
+        }
+    }
+
+}

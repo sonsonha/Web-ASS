@@ -261,5 +261,12 @@ class UserModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function addCoins($userId, $coin) {
+        $query = "UPDATE user SET coins = coins + :coin WHERE account_id = :user_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':coin', $coin, PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
 
+        return $stmt->execute();
+    }
 }
