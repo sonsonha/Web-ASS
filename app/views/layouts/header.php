@@ -117,7 +117,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="zerostress-game-store">
+        <a class="navbar-brand d-flex align-items-center" href="http://localhost/zerostress-game-store">
             <img src="/assets/images/ZeroStress.jpg" alt="Logo" class="me-2" style="height: 40px;">
             <span>ZeroStress</span>
         </a>
@@ -139,10 +139,10 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="support">Support</a>
+                    <a class="nav-link" href="http://localhost/support">Support</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="about">About</a>
+                    <a class="nav-link" href="http://localhost/about">About</a>
                 </li>
             </ul>
 
@@ -166,8 +166,8 @@
 
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                         <li><a class="dropdown-item admin-role" href="admin">Manage</a></li>
-                        <li><a class="dropdown-item" href="profile">Profile</a></li>
-                        <li><a class="dropdown-item" href="change_password">Change Password</a></li>
+                        <li><a class="dropdown-item" href="http://localhost/profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="http://localhost/change_password">Change Password</a></li>
                         <li><a class="dropdown-item" id="logoutLink" href="logout">Logout</a></li>
                     </ul>
                 </div>
