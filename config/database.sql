@@ -153,19 +153,19 @@ VALUES
 
 INSERT INTO don_hang (user_id, order_date, total_amount, status, payment_status, payment_method, payment_date)
 VALUES
-(1, CURRENT_DATE, 59.99, 'Pending', 'Unpaid', 'Credit Card', NULL),
-(2, CURRENT_DATE, 39.99, 'Paid', 'Paid', 'PayPal', CURRENT_DATE),
-(3, CURRENT_DATE, 69.99, 'Paid', 'Paid', 'Credit Card', CURRENT_DATE),
-(3, CURRENT_DATE, 49.99, 'Pending', 'Unpaid', 'Credit Card', NULL),
-(2, CURRENT_DATE, 29.99, 'Canceled', 'Failed', 'PayPal', CURRENT_DATE);
+(9, CURRENT_DATE, 59.99, 'Pending', 'Unpaid', 'Credit Card', NULL),
+(9, CURRENT_DATE, 39.99, 'Paid', 'Paid', 'PayPal', CURRENT_DATE),
+(9, CURRENT_DATE, 69.99, 'Paid', 'Paid', 'Credit Card', CURRENT_DATE),
+(9, CURRENT_DATE, 49.99, 'Pending', 'Unpaid', 'Credit Card', NULL),
+(9, CURRENT_DATE, 29.99, 'Canceled', 'Failed', 'PayPal', CURRENT_DATE);
 
 INSERT INTO chi_tiet_don_hang (order_id, game_id, quantity)
 VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 1),
-(4, 4, 3),
-(5, 5, 1);
+(12, 1, 1),
+(12, 2, 1),
+(12, 3, 1),
+(12, 4, 1),
+(12, 5, 1);
 
 
 INSERT INTO danh_gia (user_id, game_id, score, comment, review_timestamp)
