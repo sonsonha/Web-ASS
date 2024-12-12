@@ -20,7 +20,7 @@
             <!-- User Information -->
             <div class="col-md-6 p-4 rounded" style="background-color: #1b2838;">
                 <div class="text-center mb-3">
-                    <img id="user-avatar" src="/public/assets/images/default-avatar.png" alt="User Avatar" class="rounded-circle" width="150">
+                    <img id="user-avatar" src="/assets/images/default-avatar.jpg" alt="User Avatar" class="rounded-circle" width="150">
                 </div>
                 <!-- Moved Edit button here -->
                 <div class="text-center mb-3">
@@ -71,12 +71,46 @@
         </div>
 
         <!-- Games Owned Section -->
+        <!-- Shopping Cart Section -->
         <section class="mt-5">
             <h2 class="text-white mb-4">Games Owned</h2>
-            <div id="games-owned" class="row g-4">
-                <!-- Games will be dynamically populated -->
+            <div id="shopping-cart" class="row g-4">
+                <!-- Game cards will be dynamically populated here -->
             </div>
         </section>
+
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="background-color: #2c3e50; color: #fff;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editProfileForm">
+                            <div class="mb-3">
+                                <label for="editUsername" class="form-label">Username</label>
+                                <input type="text" id="editUsername" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPhone" class="form-label">Phone</label>
+                                <input type="text" id="editPhone" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editBirth" class="form-label">Birth</label>
+                                <input type="date" id="editBirth" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editAvatar" class="form-label">Profile Image URL</label>
+                                <input type="url" id="editAvatar" class="form-control">
+                            </div>
+                            <button type="button" class="btn btn-success" id="saveProfileBtn">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Include Footer -->
@@ -88,139 +122,126 @@
     <!-- <script src="/../assets/js/user_profile.js"></script> -->
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const userId = localStorage.getItem('user_id') || 1; // Default to 1 for testing
-            const EditProfile = document.getElementById('change-picture-btn');
-            const updateBtn = document.getElementById('update-btn');
-            const editProfileForm = document.getElementById('edit-profile-form');
-            const profileForm = document.getElementById('profile-form');
+document.addEventListener('DOMContentLoaded', async () => {
+    const userId = localStorage.getItem('id') || 1;
 
-            if (!userId) {
-                alert('You need to log in to view this page.');
-                window.location.href = '/login.php'; // Redirect to the login page
-                return;
-            }
+    if (!userId) {
+        alert('You need to log in to view this page.');
+        window.location.href = '/login.php'; // Redirect to login page if not logged in
+        return;
+    }
 
-            try {
-                const userData = await fetchData('http://localhost/test_api/user_api/fetch_user_profile.php', { user_id: userId });
-                populateUserProfile(userData);
+    try {
+        const profileData = await fetchShoppingCart(userId);
+        
+        if (profileData) {
+            const userData = profileData.data; // Extract the 'data' object from the response
 
-                if (userData['game-own'] && userData['game-own'].length > 0) {
-                    const gamesData = await fetchData('http://localhost/test_api/user_api/fetch_games.php', { game_ids: userData['game-own'] });
-                    populateGamesOwned(gamesData);
-                } else {
-                    document.getElementById('games-owned').innerHTML = '<p class="text-center text-muted">No games purchased yet.</p>';
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+            populateUserProfile(userData);
+            displayGames(userData.games || []);
 
-            // Edit Profile button click handler
-            EditProfile.addEventListener('click', () => {
-                // Toggle the editable form (show/hide)
-                editProfileForm.classList.toggle('d-none');
-                if (!editProfileForm.classList.contains('d-none')) {
-                    document.getElementById('edit-username').value = document.getElementById('user-name').innerText;
-                    document.getElementById('edit-email').value = document.getElementById('user-email').innerText;
-                    document.getElementById('edit-phone').value = document.getElementById('user-phone').innerText;
-                    document.getElementById('edit-birth').value = document.getElementById('user-birth').innerText;
-                    document.getElementById('edit-avatar').value = document.getElementById('user-avatar').src;
-                }
+            document.getElementById("change-picture-btn").addEventListener("click", () => {
+                openEditProfileModal(userData);
             });
 
-            // Update button click handler
-            updateBtn.addEventListener('click', async () => {
-                const username = document.getElementById('edit-username').value;
-                const phone = document.getElementById('edit-phone').value;
-                const birth = document.getElementById('edit-birth').value;
-                let avatar = document.getElementById('edit-avatar').value || '/public/assets/images/default-avatar.png'; // Default profile image if empty
+            document.getElementById("saveProfileBtn").addEventListener("click", saveProfileChanges);
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+});
 
-                // Validate required fields
-                if (!username || !phone || !birth) {
-                    if (!username) {
-                        document.getElementById('edit-username').classList.add('is-invalid');
-                    }
-                    if (!phone) {
-                        document.getElementById('edit-phone').classList.add('is-invalid');
-                    }
-                    if (!birth) {
-                        document.getElementById('edit-birth').classList.add('is-invalid');
-                    }
-                    return;
-                }
+function openEditProfileModal(userData) {
+    document.getElementById('editUsername').value = userData.username || '';
+    document.getElementById('editPhone').value = userData.phone_number || '';
+    document.getElementById('editBirth').value = userData.date_of_birth || '';
+    document.getElementById('editAvatar').value = userData.avatar || '';
 
-                // Send updated data to the backend
-                try {
-                    const response = await fetchData('http://localhost/test_api/user_api/update_user_profile.php', {
-                        user_id: userId,
-                        username,
-                        phone,
-                        birth,
-                        avatar,
-                    });
-                    
-                    if (response.success) {
-                        alert('Profile updated successfully!');
-                        window.location.reload(); // Reload the page to reflect updated data
-                    } else {
-                        alert('Failed to update profile.');
-                    }
-                } catch (error) {
-                    console.error('Error updating profile:', error);
-                    alert('An error occurred while updating profile.');
-                }
-            });
+    new bootstrap.Modal(document.getElementById('editProfileModal')).show();
+}
+
+async function saveProfileChanges() {
+    const updatedProfile = {
+        id: localStorage.getItem('id'),
+        username: document.getElementById('editUsername').value,
+        phone: document.getElementById('editPhone').value,
+        birth: document.getElementById('editBirth').value,
+        url_link: document.getElementById('editAvatar').value
+    };
+
+    // Replace the below URL with your actual API endpoint to update the profile
+    try {
+        const response = await fetch('/../api/get_update_profile.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedProfile)
         });
 
-        // Utility function to make POST requests
-        async function fetchData(url, payload) {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            return response.json();
+        const result = await response.json();
+        if (result.success) {
+            alert('Profile updated successfully!');
+            window.location.reload(); // To reflect the updated data on the profile page
+        } else {
+            alert('Failed to update profile.');
         }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        alert('An error occurred while updating profile.');
+    }
+}
 
-        // Populate user profile details
-        function populateUserProfile(user) {
-            document.getElementById('user-avatar').src = user.avatar || '/public/assets/images/default-avatar.png';
-            document.getElementById('user-name').textContent = user.name || 'Unknown';
-            document.getElementById('user-email').textContent = user.email || 'Unknown';
-            document.getElementById('user-phone').textContent = user.phone || 'Unknown';
-            document.getElementById('user-birth').textContent = user.birth || 'Unknown';
+async function fetchShoppingCart(userId) {
+    try {
+        const response = await fetch(`/../api/get_shoping_cart.php?id=${userId}`, { method: 'GET' });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        const cartData = await response.json();
+        return cartData;
+    } catch (error) {
+        console.error('Error fetching shopping cart:', error);
+    }
+    
+    return null;
+}
 
-        // Populate games owned
-        function populateGamesOwned(games) {
-            const gamesOwnedContainer = document.getElementById('games-owned');
-            gamesOwnedContainer.innerHTML = ''; // Clear existing content
+function populateUserProfile(user) {
+    document.getElementById('user-avatar').src = user.avatar || '/assets/images/default-avatar.jpg';
+    document.getElementById('user-name').textContent = user.full_name || 'Unknown';
+    document.getElementById('user-username').textContent = user.username || 'Unknown';
+    document.getElementById('user-email').textContent = user.email || 'Unknown';
+    document.getElementById('user-phone').textContent = user.phone_number || 'Unknown';
+    document.getElementById('user-birth').textContent = user.date_of_birth || 'Unknown';
+}
 
-            games.forEach((game) => {
-                const gameCard = document.createElement('div');
-                gameCard.className = 'col-md-4';
+function displayGames(games) {
+    const gamesOwnedContainer = document.getElementById('shopping-cart');
 
-                gameCard.innerHTML = `
-                <a href="/app/views/games/detail.php?id=${game.id}">
-                    <div class="card text-white">
-                        <img src="${game.thumbnail}" class="card-img-top" alt="${game.title}">
-                        <div class="card-body">
-                            <h5 class="card-title">${game.title}</h5>
-                            <p class="card-text">${game.price || 'Free'}</p>
-                            <button type="button" class="btn btn-success">Install now</button>
-                        </div>
+    if (games.length > 0) {
+        gamesOwnedContainer.innerHTML = ''; // Clear any existing content
+
+        games.forEach((game) => {
+            const gameItem = document.createElement('div');
+            gameItem.className = 'col-md-4';
+
+            gameItem.innerHTML = `
+                <div class="card text-white bg-dark mb-3">
+                    <img src="${game.avt}" class="card-img-top" alt="${game.game_name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${game.game_name}</h5>
+                        <p class="card-text">${game.price ? game.price + ' USD' : 'Free'}</p>
+                        <button type="button" class="btn btn-success">Install now</button>
                     </div>
-                </a>
-                `;
+                </div>
+            `;
 
-                gamesOwnedContainer.appendChild(gameCard);
-            });
-        }
+            gamesOwnedContainer.appendChild(gameItem);
+        });
+    } else {
+        gamesOwnedContainer.innerHTML = '<p class="text-center text-muted">Your shopping cart is empty.</p>';
+    }
+}
     </script>
 </body>
 </html>
