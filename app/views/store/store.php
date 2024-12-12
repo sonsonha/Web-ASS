@@ -207,3 +207,98 @@
 </body>
 
 </html>
+
+<style>
+    /* Modal Styling */
+    #editGameModal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #2c3e50; /* Darker background for a sleek look */
+        padding: 30px;
+        border-radius: 12px;
+        z-index: 1000;
+        width: 80%;
+        max-width: 600px; /* Limit max width for better readability */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+        overflow-y: auto;
+        max-height: 90vh; /* Prevents modal from overflowing */
+    }
+
+    #editGameModal h3 {
+        color: #ecf0f1; /* Light text color for contrast */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Form Styling */
+    #editGameForm label {
+        display: block;
+        margin-bottom: 5px;
+        color: #bdc3c7;
+    }
+
+    #editGameForm input[type="text"],
+    #editGameForm input[type="number"],
+    #editGameForm input[type="date"],
+    #editGameForm textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #34495e;
+        border-radius: 4px;
+        background: #34495e;
+        color: #ecf0f1;
+        font-size: 14px;
+    }
+
+    #editGameForm textarea {
+        resize: vertical; /* Allows only vertical resizing */
+    }
+
+    /* Button Styling */
+    #editGameForm button {
+        width: 48%;
+        margin: 5px 1%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    /* Specific Button Colors */
+    .btn-success {
+        background-color: #27ae60;
+        color: #fff;
+        transition: background-color 0.3s;
+    }
+
+    .btn-success:hover {
+        background-color: #2ecc71;
+    }
+
+    .btn-secondary {
+        background-color: #7f8c8d;
+        color: #fff;
+        transition: background-color 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #95a5a6;
+    }
+
+    /* Backdrop Styling */
+    #modalBackdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Darker backdrop */
+        z-index: 999;
+    }
+</style>
