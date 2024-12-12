@@ -145,7 +145,7 @@
             <input class="input" type="password" id="password">
             <span>Password</span>
         </label>
-        <label> 
+        <label>
             <input type="checkbox" id="rememberMe" style="margin-right: 10px;"> Remember me
         </label>
         <button class="submit" type="button" id="loginButton">Login</button>
@@ -155,35 +155,9 @@
 </div>
 
 <script>
-    // Mock Data - Danh sách tài khoản mẫu
-    const mockUsers = [{
-            email: "a",
-            password: "1",
-            profile: {
-                username: "testuser",
-                email: "test@example.com",
-                role: "admin",
-                phone_number: "0123456789",
-                avatar: {},
-            },
-        },
-        {
-            email: "u",
-            password: "1",
-            profile: {
-                username: "user123",
-                email: "user@example.com",
-                role: "user",
-                phone_number: "0987654321",
-                avatar: {},
-            },
-        },
-    ];
-
-
-    // Xử lý sự kiện login
-    document.getElementById('loginButton').addEventListener('click', () => {
-        console.log("Login button clicked"); 
+// Xử lý sự kiện login
+document.getElementById('loginButton').addEventListener('click', async () => {
+        console.log("Login button clicked");
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
         const rememberMe = document.getElementById('rememberMe').checked; // Kiểm tra "Remember me"
@@ -193,34 +167,47 @@
             return;
         }
 
-        // Kiểm tra thông tin trong mock data
-        const user = mockUsers.find(
-            (u) => u.email === email && u.password === password
-        );
+        try {
+            // Gửi dữ liệu tới server với định dạng yêu cầu
+            const response = await fetch('/../api/login_user.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'login',
+                    email: email,
+                    password: password
+                }),
+            });
 
-        if (user) {
-            // Lưu thông tin vào localStorage
-            localStorage.setItem('username', user.profile.username);
-            localStorage.setItem('email', user.profile.email);
-            localStorage.setItem('role', user.profile.role);
-            localStorage.setItem('phone_number', user.profile.phone_number);
+            const data = await response.json();
+            if (response.ok) {
+                // Lưu thông tin vào localStorage
+                localStorage.setItem('id', data.user.id);
+                localStorage.setItem('username', data.user.username);
+                localStorage.setItem('email', data.user.email);
+                localStorage.setItem('role', data.user.role);
+                localStorage.setItem('phone_number', data.user.phone_number);
 
-            // console.log("Role after login: " + localStorage.getItem('role'));
+                // Lưu thông tin vào cookies nếu "Remember me" được chọn
+                if (rememberMe) {
+                    document.cookie = `email=${email}; max-age=604800; path=/`; // Lưu email trong cookie 1 tuần
+                    document.cookie = `password=${password}; max-age=604800; path=/`; // Lưu mật khẩu trong cookie 1 tuần
+                } else {
+                    // Xóa cookie nếu "Remember me" không được chọn
+                    document.cookie = `email=; max-age=0; path=/`;
+                    document.cookie = `password=; max-age=0; path=/`;
+                }
 
-            // Lưu thông tin vào cookies nếu "Remember me" được chọn
-            if (rememberMe) {
-                document.cookie = `email=${email}; max-age=604800; path=/`; // Lưu email trong cookie 1 tuần
-                document.cookie = `password=${password}; max-age=604800; path=/`; // Lưu mật khẩu trong cookie 1 tuần
+                // Chuyển hướng sau khi đăng nhập thành công
+                window.location.href = 'zerostress-game-store';
             } else {
-                // Xóa cookie nếu "Remember me" không được chọn
-                document.cookie = `email=; max-age=0; path=/`;
-                document.cookie = `password=; max-age=0; path=/`;
+                alert(data.error || 'Login Failed!');
             }
-
-            // Chuyển hướng sau khi đăng nhập thành công
-            window.location.href = 'store';
-        } else {
-            alert('Invalid email or password!');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred, please try again!');
         }
     });
 
@@ -232,13 +219,11 @@
         return null;
     }
 
-
-
     // Kiểm tra cookies khi người dùng quay lại trang
     window.onload = function() {
         const email = getCookie('email');
         const password = getCookie('password');
-        
+
         // Kiểm tra nếu có email và mật khẩu trong cookies
         if (email && password) {
             // Tự động điền vào form đăng nhập
@@ -247,43 +232,4 @@
             document.getElementById('rememberMe').checked = true; // Tích chọn "Remember me"
         }
     };
-
-
-    // try {
-    //     const response = await fetch('http://localhost:8080/login', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             email,
-    //             password
-    //         }),
-    //     });
-
-    //     const data = await response.json();
-    //     if (response.ok) {
-
-    //         localStorage.setItem('accessToken', data.accessToken);
-    //         localStorage.setItem('refreshToken', data.refreshToken);
-    //         localStorage.setItem('username', data.profile.username);
-    //         localStorage.setItem('email', data.profile.email);
-    //         localStorage.setItem('role', data.profile.role);
-    //         localStorage.setItem('phone_number', data.profile.phone_number);
-    //         // alert(`
-    //         //     Access Token: ${localStorage.getItem('accessToken')}
-    //         //     Username: ${localStorage.getItem('username')}
-    //         //     Email: ${localStorage.getItem('email')}
-    //         //     Role: ${localStorage.getItem('role')}
-    //         //     Phone Number: ${localStorage.getItem('phone_number')}
-    //         // `);
-    //         window.location.href = 'home';
-    //     } else {
-    //         alert(data.error || 'Login Failed!');
-    //     }
-    // } catch (error) {
-    //     console.error('Error:', error);
-    //     alert('An error occurred, please try again!');
-    // }
-    // });
 </script>

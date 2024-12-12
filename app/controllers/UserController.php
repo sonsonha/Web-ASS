@@ -47,29 +47,13 @@ class UserController {
             return;
         }
 
-        $userId = $this->userModel->authenticate($data['email'], $data['password']);
+        $user = $this->userModel->authenticate($data['email'], $data['password']);
 
-        if ($userId !== null) {
-            session_start();
-            $_SESSION['user_id'] = $userId;
-            echo json_encode(['status' => 'success', 'message' => 'Login successful!', 'user_id' => $userId]);
+        if ($user !== null) {
+            echo json_encode(['status' => 'success', 'message' => 'Login successful!', 'user' => $user]);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
         }
-    }
-
-    public function getIdBySession() {
-        session_start();
-
-        header('Content-Type: application/json');
-
-        if (isset($_SESSION['user_id'])) {
-            $userId = $_SESSION['user_id'];
-            echo json_encode(['status' => 'success', 'user_id' => $userId]);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'User not logged in.']);
-        }
-        exit;
     }
 
     public function getUserInfo($userId) {
@@ -106,7 +90,6 @@ class UserController {
             ]);
         }
     }
-
 
     public function deleteShoppingCart($userId, $gameId) {
         header('Content-Type: application/json');
