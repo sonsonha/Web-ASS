@@ -43,7 +43,7 @@ class GameController {
                 return;
             }
     
-            $result = $this->gameModel->editGame($game_data['game_id'], $game_data);
+            $result = $this->gameModel->editeditGame($game_data['game_id'], $game_data);
     
             if ($result) {
                 echo json_encode([

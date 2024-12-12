@@ -58,10 +58,10 @@ function populateUserTable(users) {
     users.forEach((user) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${user.id}</td> 
+            <td>${user.account_id}</td> 
             <td>${user.username}</td>
             <td>${user.email}</td>
-            <td>${user.reputation_points}</td>
+            <td>${user.coins}</td>
             <td>${user.status ? 'Active' : 'Banned'}</td>
             <td>
                 <button class="btn btn-info btn-sm" onclick="viewUser(${user.id})">View</button>
