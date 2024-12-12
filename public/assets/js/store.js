@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             button.addEventListener("click", (e) => {
                 e.stopPropagation();
                 const gameId = button.getAttribute("data-id");
+                console.log(gameId);
                 openEditGameModal(gameId);
             });
         });
@@ -305,8 +306,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Open the Edit Modal
 async function openEditGameModal(gameId) {
     try {
-        const response = await fetch(`/../api/get_game_info.php?game_id=${gameId}`);
+        const response = await fetch(`/../api/get_game_info.php?id=${gameId}`);
         const data = await response.json();
+
+        console.log("dataaaa: ", data);
 
         if (data.status === 'success') {
             const game = data.data;
@@ -398,7 +401,11 @@ async function updateGame() {
 
         const result = await response.json();
         if (result.status === 'success') {
-            console.log('Game updated successfully!');
+            // console.log('Game updated successfully!');
+            alert('Game updated successfully!');
+
+            window.location.reload();
+            
             closeEditGameModal();
             // Optionally, refresh the page or update the UI to reflect changes
         } else {
