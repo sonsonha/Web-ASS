@@ -339,4 +339,63 @@
             alert('There was an error while adding the game.');
         }
     }
+
+    async function fetchProducts() {
+    try {
+        const response = await fetch('/../api/get_trending_game.php'); // Replace with your API endpoint
+        const products = await response.json(); // Assuming the API returns JSON data
+
+        if (products.status === 'success' && Array.isArray(products.data)) {
+            populateProductTable(products.data); // Populate table if data exists
+        } else {
+            alert('No products found or error in API response.');
+        }
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        alert('There was an error while fetching products.');
+    }
+}
+
+function populateProductTable(products) {
+    const tableBody = document.getElementById('ProductTableBody');
+    tableBody.innerHTML = '';
+
+    products.forEach(product => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td>${product.id}</td>
+            <td>${product.game_name}</td>
+            <td>${product.price}</td>
+            <td>${product.release_date}</td>
+            <td>${product.discount}%</td>
+            <td>
+                <button class="btn btn-warning" onclick="editProduct(${product.id})">Edit</button>
+                <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Delete</button>
+            </td>
+        `;
+        
+        // Append the row to the table body
+        tableBody.appendChild(row);
+    });
+}
+
+// Call fetchProducts on page load to populate the table
+window.onload = function() {
+    fetchProducts(); // Fetch and display the products when the page loads
+};
+
+// Edit and Delete actions (optional)
+function editProduct(productId) {
+    alert('Edit product with ID: ' + productId);
+    // Implement edit functionality here
+}
+
+function deleteProduct(productId) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        // Implement delete functionality here
+        alert('Product with ID ' + productId + ' deleted');
+    }
+}
+
 </script>
