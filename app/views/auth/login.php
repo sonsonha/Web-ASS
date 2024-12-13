@@ -184,6 +184,11 @@
             const data = await response.json();
             console.log(data);
             if (response.ok) {
+
+                if (data.user.status === 0) {
+                    alert('Your account has been disabled. Please contact support for assistance.');
+                    return; // Stop the login process
+                }
                 // Lưu thông tin vào localStorage
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('id', data.user.id);
@@ -191,6 +196,7 @@
                 localStorage.setItem('email', data.user.email);
                 localStorage.setItem('role', data.user.role);
                 localStorage.setItem('phone_number', data.user.phone_number);
+                localStorage.setItem('phone_number', data.user.status);
 
                 // Lưu thông tin vào cookies nếu "Remember me" được chọn
                 if (rememberMe) {

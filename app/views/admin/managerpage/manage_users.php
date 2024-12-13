@@ -68,7 +68,6 @@ function populateUserTable(users) {
                 <button class="btn btn-danger btn-sm" id="banBtn_${user.id}" onclick="toggleBanUser('${user.username}')">
                     ${user.status ? 'Ban' : 'Unban'}
                 </button>
-                <button class="btn btn-secondary btn-sm" onclick="deleteUser(${user.id})">Delete</button>
             </td>
         `;
         tbody.appendChild(row);
@@ -77,6 +76,7 @@ function populateUserTable(users) {
 
 // Function to toggle ban/unban status of a user
 async function toggleBanUser(username) {
+    console.log('Toggling status for user:', username);
     try {
         const response = await fetch('/../api/toggle_status_user.php', {
             method: 'POST',
@@ -115,16 +115,16 @@ function viewUser(id) {
 }
 
 // Function to delete a user
-function deleteUser(id) {
-    const userIndex = mockUsers.findIndex((u) => u.id === id);
-    if (userIndex !== -1) {
-        mockUsers.splice(userIndex, 1);
-        alert('User has been deleted!');
-        populateUserTable(mockUsers);
-    } else {
-        alert('User not found!');
-    }
-}
+// function deleteUser(id) {
+//     const userIndex = mockUsers.findIndex((u) => u.id === id);
+//     if (userIndex !== -1) {
+//         mockUsers.splice(userIndex, 1);
+//         alert('User has been deleted!');
+//         populateUserTable(mockUsers);
+//     } else {
+//         alert('User not found!');
+//     }
+// }
 
 // Function to close modals
 function closeModal(modalId) {

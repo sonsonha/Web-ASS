@@ -96,6 +96,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 : `<button class="btn btn-info buy-now" data-id="${game.id}">Buy Now</button>
                    <button class="btn btn-outline-light add-to-cart" data-id="${game.id}">Add to Cart</button>`;
     };
+    
+    // Attach event listener to dynamically added buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('edit-game')) {
+            const gameId = e.target.getAttribute('data-id');
+            openEditGameModal(gameId); // Call the function to open the modal
+        }
+    });
+    
 
     const attachCarouselButtonListeners = () => {
         document.querySelectorAll(".add-to-cart").forEach((button) => {
@@ -328,9 +337,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function openEditGameModal(gameId) {
     try {
         const response = await fetch(`/../api/get_game_info.php?id=${gameId}`);
+        if (!response.ok) throw new Error(`API call failed with status ${response.status}`);
+        
         const data = await response.json();
 
-        console.log("dataaaa: ", data);
+        console.log("API response data:", data); // Debugging output
 
         if (data.status === 'success') {
             const game = data.data;
@@ -349,30 +360,18 @@ async function openEditGameModal(gameId) {
             document.getElementById('background').value = game.background || '';
             document.getElementById('introduction').value = game.introduction || '';
             document.getElementById('rating').value = game.rating || 0;
-            document.getElementById('downloadLink').value = game.download_link || '';
-            document.getElementById('recOS').value = game.recOS || '';
-            document.getElementById('recProcessor').value = game.recProcessor || '';
-            document.getElementById('recMemory').value = game.recMemory || '';
-            document.getElementById('recGraphics').value = game.recGraphics || '';
-            document.getElementById('recDirectX').value = game.recDirectX || '';
-            document.getElementById('recStorage').value = game.recStorage || '';
-            document.getElementById('minOS').value = game.minOS || '';
-            document.getElementById('minProcessor').value = game.minProcessor || '';
-            document.getElementById('minMemory').value = game.minMemory || '';
-            document.getElementById('minGraphics').value = game.minGraphics || '';
-            document.getElementById('minDirectX').value = game.minDirectX || '';
-            document.getElementById('minStorage').value = game.minStorage || '';
 
-            // Show modal
             document.getElementById('editGameModal').style.display = 'block';
             document.getElementById('modalBackdrop').style.display = 'block';
         } else {
-            console.error('Failed to fetch game details: ', data.message);
+            console.error('Failed to load game information:', data.message);
+            alert('Failed to load game information.');
         }
     } catch (error) {
         console.error('Error fetching game details:', error);
     }
 }
+
 
 // Closing the modal
 function closeEditGameModal() {

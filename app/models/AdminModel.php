@@ -36,7 +36,7 @@ class AdminModel {
     
     
     public function toggleUserStatus($username) {
-        $query = "SELECT status FROM user WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
+        $query = "SELECT status FROM user WHERE account_id IN (SELECT id FROM tai_khoan WHERE username = :username)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":username", $username, PDO::PARAM_STR);
         $stmt->execute();
@@ -46,7 +46,7 @@ class AdminModel {
 
             $newStatus = ($currentStatus == 1) ? 0 : 1;
 
-            $updateQuery = "UPDATE user SET status = :newStatus WHERE id IN (SELECT id FROM tai_khoan WHERE username = :username)";
+            $updateQuery = "UPDATE user SET status = :newStatus WHERE account_id IN (SELECT id FROM tai_khoan WHERE username = :username)";
             $updateStmt = $this->db->prepare($updateQuery);
             $updateStmt->bindParam(":newStatus", $newStatus, PDO::PARAM_INT);
             $updateStmt->bindParam(":username", $username, PDO::PARAM_STR);

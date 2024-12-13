@@ -129,7 +129,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="zerostress-game-store">Store</a>
+                    <a class="nav-link" href="http://localhost/zerostress-game-store">Store</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -184,25 +184,32 @@
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
     // Fetch and populate categories dynamically
-    const categoriesDropdown = document.getElementById("categoriesDropdown").nextElementSibling;
-    try {
-        const response = await fetch("/../api/get_all_categories.php");
+    const categoriesDropdown = document.getElementById("categoriesDropdown")?.nextElementSibling;
+if (!categoriesDropdown) {
+    console.error("Dropdown element not found");
+    return;
+}
+
+try {
+    const response = await fetch("/../api/get_all_categories.php");
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-        const categories = await response.json();
-        categoriesDropdown.innerHTML = "";
+        const categories = await response.json(); // Dữ liệu trả về là một object
+        categoriesDropdown.innerHTML = ""; // Xóa nội dung cũ của dropdown
 
-        if (categories.length > 0) {
-            categories.forEach((category) => {
+        if (categories.status === "success" && Array.isArray(categories.data)) {
+            // Lặp qua mảng `data` chứa các category
+            categories.data.forEach((category) => {
                 const li = document.createElement("li");
-                li.innerHTML = `<a class="dropdown-item" href="category.php?category=${category.slug}">${category.name}</a>`;
+                li.innerHTML = `<a class="dropdown-item" href="/zerostress-game-store/category/${category.genre}">${category.genre}</a>`;
                 categoriesDropdown.appendChild(li);
             });
         } else {
+            // Trường hợp API không trả về mảng `data`
             categoriesDropdown.innerHTML = `<li><span class="dropdown-item">No categories available</span></li>`;
         }
     } catch (error) {
-        console.error("Error fetching categories: ", error);
+        console.error("Error fetching categories:", error);
         categoriesDropdown.innerHTML = `<li><span class="dropdown-item text-danger">Error loading categories</span></li>`;
     }
 
